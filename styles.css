@@ -1,0 +1,633 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background-color: #000;
+    color: #fff;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* Canvas Sections */
+.canvas-section {
+    position: relative;
+    background: transparent;
+}
+
+.canvas-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+.canvas-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Navigation */
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+    padding: 20px 0;
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: #999;
+    text-decoration: none;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: #fff;
+}
+
+/* Hero Section */
+.hero {
+    padding: 180px 0 100px 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.hero-text h1 {
+    font-size: 64px;
+    font-weight: 600;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    letter-spacing: -2px;
+}
+
+.hero-text p {
+    font-size: 20px;
+    color: #999;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 16px 32px;
+    background: #fff;
+    color: #000;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border: 2px solid #fff;
+}
+
+.cta-button:hover {
+    background: transparent;
+    color: #fff;
+}
+
+.hero-visual {
+    position: relative;
+    height: 500px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.hero-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+
+/* Stats Section */
+.stats {
+    padding: 80px 0;
+    background: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 48px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Course Modules Section */
+.modules {
+    padding: 120px 0;
+    background: #000;
+}
+
+.section-header {
+    margin-bottom: 80px;
+}
+
+.section-header h2 {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+}
+
+.section-header p {
+    font-size: 18px;
+    color: #999;
+    max-width: 600px;
+}
+
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+}
+
+.module-card {
+    background: #111;
+    border: 1px solid #333;
+    padding: 40px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.module-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: #fff;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.module-card:hover::before {
+    transform: translateX(0);
+}
+
+.module-card:hover {
+    border-color: #666;
+    background: #1a1a1a;
+}
+
+.module-number {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.module-title {
+    font-size: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.module-description {
+    color: #999;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.module-topics {
+    list-style: none;
+    color: #666;
+    font-size: 14px;
+}
+
+.module-topics li {
+    padding: 8px 0;
+    border-bottom: 1px solid #222;
+}
+
+.module-topics li:last-child {
+    border-bottom: none;
+}
+
+/* Features Section with Canvas */
+.features {
+    padding: 120px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 80px;
+    margin-top: 80px;
+}
+
+.feature-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+}
+
+.feature-visual {
+    height: 300px;
+    background: #111;
+    border: 1px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+.feature-content h3 {
+    font-size: 32px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.feature-content p {
+    color: #999;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+/* Testimonials */
+.testimonials {
+    padding: 120px 0;
+    background: #000;
+}
+
+.testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px;
+    margin-top: 60px;
+}
+
+.testimonial {
+    background: #111;
+    border: 1px solid #333;
+    padding: 40px;
+}
+
+.testimonial-quote {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+    color: #ccc;
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.author-avatar {
+    width: 48px;
+    height: 48px;
+    background: #333;
+    border: 1px solid #666;
+}
+
+.author-info h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+    color: #fff;
+}
+
+.author-info p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* CTA Section with Canvas */
+.cta-section {
+    padding: 120px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section h2 {
+    font-size: 48px;
+    margin-bottom: 24px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.cta-section p {
+    font-size: 20px;
+    color: #999;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Footer */
+footer {
+    padding: 60px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: #000;
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+}
+
+.footer-links a {
+    color: #666;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #fff;
+}
+
+.copyright {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Tabs */
+.tab-container {
+    margin-bottom: 40px;
+}
+
+.tab-buttons {
+    display: flex;
+    gap: 2px;
+    margin-bottom: 0;
+    border-bottom: 1px solid #333;
+}
+
+.tab-button {
+    padding: 16px 32px;
+    background: #111;
+    border: 1px solid #333;
+    border-bottom: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.tab-button:first-child {
+    border-top-left-radius: 8px;
+}
+
+.tab-button:last-child {
+    border-top-right-radius: 8px;
+}
+
+.tab-button.active {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #666;
+    border-bottom: 1px solid #1a1a1a;
+    margin-bottom: -1px;
+}
+
+.tab-button:hover:not(.active) {
+    background: #1a1a1a;
+    color: #ccc;
+}
+
+.tab-content {
+    display: none;
+    padding: 40px 0 0 0;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* Additional utility classes for inline styles */
+.intro-text {
+    margin-top: 40px;
+    font-size: 18px;
+    color: #999;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.timeline-subtitle {
+    font-size: 24px;
+    font-weight: 600;
+    color: #ccc;
+    margin-bottom: 24px;
+}
+
+.link-blue {
+    color: #66b3ff;
+}
+
+.two-column-grid {
+    grid-template-columns: 1fr 1fr;
+}
+
+.beyond-classroom-container {
+    margin-top: 60px;
+    padding: 40px;
+    background: #111;
+    border: 1px solid #333;
+}
+
+.beyond-classroom-title {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.beyond-classroom-text {
+    color: #ccc;
+    line-height: 1.8;
+    font-size: 18px;
+}
+
+.instructor-visual-small {
+    height: 200px;
+    margin-bottom: 24px;
+}
+
+.instructor-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.instructor-section-title {
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.instructor-list {
+    color: #ccc;
+    line-height: 1.6;
+    list-style: none;
+    padding: 0;
+}
+
+.instructor-list-with-margin {
+    color: #ccc;
+    line-height: 1.6;
+    list-style: none;
+    padding: 0;
+    margin-bottom: 24px;
+}
+
+.faq-question {
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.max-width-600 {
+    max-width: 600px;
+}
+
+.section-heading {
+    color: #fff;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.body-text {
+    color: #ccc;
+    line-height: 1.8;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.body-text-extended {
+    color: #ccc;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.feature-list {
+    color: #ccc;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    padding-left: 20px;
+}
+
+.course-details-container {
+    margin: 40px 0;
+    padding: 30px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.course-details-title {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.course-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.course-detail-item {
+    color: #999;
+    margin-bottom: 8px;
+}
+
+.course-includes {
+    color: #ccc;
+    font-size: 14px;
+}

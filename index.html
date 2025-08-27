@@ -4,446 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Automation Mastery - Transform Your Workflow</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-            background-color: #000;
-            color: #fff;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .container {
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-
-        /* Canvas Sections */
-        .canvas-section {
-            position: relative;
-            background: transparent;
-        }
-
-        .canvas-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        .canvas-section .container {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 1000;
-            padding: 20px 0;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1440px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-
-        .logo {
-            font-size: 20px;
-            font-weight: 600;
-            color: #fff;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: #999;
-            text-decoration: none;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #fff;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 180px 0 100px 0;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
-        }
-
-        .hero-text h1 {
-            font-size: 64px;
-            font-weight: 600;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            letter-spacing: -2px;
-        }
-
-        .hero-text p {
-            font-size: 20px;
-            color: #999;
-            margin-bottom: 40px;
-            line-height: 1.6;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 16px 32px;
-            background: #fff;
-            color: #000;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            border: 2px solid #fff;
-        }
-
-        .cta-button:hover {
-            background: transparent;
-            color: #fff;
-        }
-
-        .hero-visual {
-            position: relative;
-            height: 500px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .hero-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.8;
-        }
-
-        /* Stats Section */
-        .stats {
-            padding: 80px 0;
-            background: #000;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 40px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 48px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* Course Modules Section */
-        .modules {
-            padding: 120px 0;
-            background: #000;
-        }
-
-        .section-header {
-            margin-bottom: 80px;
-        }
-
-        .section-header h2 {
-            font-size: 48px;
-            font-weight: 600;
-            margin-bottom: 16px;
-            letter-spacing: -1px;
-        }
-
-        .section-header p {
-            font-size: 18px;
-            color: #999;
-            max-width: 600px;
-        }
-
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-        }
-
-        .module-card {
-            background: #111;
-            border: 1px solid #333;
-            padding: 40px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .module-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #fff;
-            transform: translateX(-100%);
-            transition: transform 0.3s ease;
-        }
-
-        .module-card:hover::before {
-            transform: translateX(0);
-        }
-
-        .module-card:hover {
-            border-color: #666;
-            background: #1a1a1a;
-        }
-
-        .module-number {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .module-title {
-            font-size: 24px;
-            margin-bottom: 16px;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .module-description {
-            color: #999;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        .module-topics {
-            list-style: none;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .module-topics li {
-            padding: 8px 0;
-            border-bottom: 1px solid #222;
-        }
-
-        .module-topics li:last-child {
-            border-bottom: none;
-        }
-
-        /* Features Section with Canvas */
-        .features {
-            padding: 120px 0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 80px;
-            margin-top: 80px;
-        }
-
-        .feature-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            align-items: center;
-        }
-
-        .feature-visual {
-            height: 300px;
-            background: #111;
-            border: 1px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .feature-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.7;
-        }
-
-        .feature-content h3 {
-            font-size: 32px;
-            margin-bottom: 16px;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .feature-content p {
-            color: #999;
-            line-height: 1.6;
-        }
-
-        /* Testimonials */
-        .testimonials {
-            padding: 120px 0;
-            background: #000;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 40px;
-            margin-top: 60px;
-        }
-
-        .testimonial {
-            background: #111;
-            border: 1px solid #333;
-            padding: 40px;
-        }
-
-        .testimonial-quote {
-            font-size: 18px;
-            line-height: 1.6;
-            margin-bottom: 24px;
-            color: #ccc;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .author-avatar {
-            width: 48px;
-            height: 48px;
-            background: #333;
-            border: 1px solid #666;
-        }
-
-        .author-info h4 {
-            font-size: 16px;
-            margin-bottom: 4px;
-            color: #fff;
-        }
-
-        .author-info p {
-            font-size: 14px;
-            color: #666;
-        }
-
-        /* CTA Section with Canvas */
-        .cta-section {
-            padding: 120px 0;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-section h2 {
-            font-size: 48px;
-            margin-bottom: 24px;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        .cta-section p {
-            font-size: 20px;
-            color: #999;
-            margin-bottom: 40px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Footer */
-        footer {
-            padding: 60px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: #000;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 40px;
-            list-style: none;
-        }
-
-        .footer-links a {
-            color: #666;
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: #fff;
-        }
-
-        .copyright {
-            color: #666;
-            font-size: 14px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -466,8 +27,8 @@
         <div class="container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1>The Citizen Developer Revolution Has Already Started</h1>
-                    <p>There's been a fundamental shift in how software gets built, and most people haven't noticed yet. The people who live with problems every day should be building solutions in the age of A.I. Welcome to A.I. Automation for Non-Coders, where we're empowering the real experts—the ones who actually understand the problems—to solve them directly.</p>
+                    <h1>The Age of the Citizen Developer is Here</h1>
+                    <p>In the age of A.I. anyone can build software. Welcome to A.I. Automation for Non-Coders, where we're empowering the real experts—the ones who actually understand the problems—to solve them directly.</p>
                     <a href="#register" class="cta-button">REGISTER NOW</a>
                 </div>
                 <div class="hero-visual">
@@ -478,30 +39,35 @@
     </section>
 
     <!-- Who This Course Is For -->
-    <section class="stats">
+    <section class="modules">
         <div class="container">
             <div class="section-header">
                 <h2>Who This Course Is For</h2>
                 <p>You're clever, and you hate having to do boring, menial tasks, but every day that's exactly what you have to deal with. Maybe you're:</p>
             </div>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-number">📊</div>
-                    <div class="stat-label">Operations Manager</div>
+            <div class="modules-grid">
+                <div class="module-card">
+                    <h3 class="module-title">🏢 A small business owner</h3>
+                    <p class="module-description">Watching hours disappear into invoice processing, data entry, and customer communications.</p>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">🏢</div>
-                    <div class="stat-label">Small Business Owner</div>
+                <div class="module-card">
+                    <h3 class="module-title">📊 An operations manager</h3>
+                    <p class="module-description">Manually pulling data from five different systems every Monday morning to create the same report.</p>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">📈</div>
-                    <div class="stat-label">Marketing Professional</div>
+                <div class="module-card">
+                    <h3 class="module-title">📈 A marketing professional</h3>
+                    <p class="module-description">Copy-pasting campaign results from Facebook, Google, and LinkedIn into spreadsheets, knowing there must be a better way.</p>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-number">👥</div>
-                    <div class="stat-label">HR Team Member</div>
+                <div class="module-card">
+                    <h3 class="module-title">👥 A HR Expert</h3>
+                    <p class="module-description">Reading through hundreds of applications, extracting the same information, updating the same tracking sheets.</p>
+                </div>
+                <div class="module-card">
+                    <h3 class="module-title">💡 Anyone who's ever thought "there has to be a better way"</h3>
+                    <p class="module-description">While doing the same computer task for the hundredth time.</p>
                 </div>
             </div>
+            <p class="intro-text">If you're spending more than 5 hours a week on repetitive computer tasks, you're not just wasting time—you're hemorrhaging money. At $50 an hour, that's $13,000 annually spent on work a computer could do in seconds. But you don't need to hire a developer or wait for IT to build you a solution. You can build it yourself, right now, starting with this course.</p>
         </div>
     </section>
 
@@ -509,55 +75,34 @@
     <section class="modules" id="course">
         <div class="container">
             <div class="section-header">
-                <h2>The Method: Two Weeks That Change Everything</h2>
-                <p>This isn't a passive online course. This is 14.5 hours of intensive, hands-on transformation based on a proven formula tested at Australia's 3 largest A.I. Hackathons with over 500 participants.</p>
+                <h2>The Method: 8 Days That Change Everything</h2>
+                <h3 class="timeline-subtitle">Your Immersive Timeline</h3>
+                <p>This isn't a passive online course where you watch videos and hope for the best. This is 14.5 hours of intensive, hands-on transformation spread across two weeks, with support between sessions. This course is based on a proven formula that was tried and tested running Australia's 3 <a href="https://mlai.au/hackathon" class="link-blue">largest A.I. Hackathons</a> with a total attendance of > 500.</p>
             </div>
-            <div class="modules-grid">
+            <div class="modules-grid two-column-grid">
                 <div class="module-card">
-                    <div class="module-number">SATURDAY, SEPTEMBER 27TH</div>
+                    <div class="module-number">SATURDAY, SEPTEMBER 27TH | 10:00 AM - 6:30 PM</div>
                     <h3 class="module-title">The Foundation Day</h3>
-                    <p class="module-description">10:00 AM - 6:30 PM</p>
-                    <ul class="module-topics">
-                        <li>Understanding AI and neural networks</li>
-                        <li>Build first automation with n8n as a group</li>
-                        <li>Identify your specific problem to solve</li>
-                        <li>Architect your solution</li>
-                    </ul>
+                    <p class="module-description">We start with the big picture—understanding what AI actually is, what neural networks are, and why deployment isn't as scary as it sounds. Then we roll up our sleeves. Together, we'll build our first automation as a group with n8n, watching it come to life in real-time. By lunch (catered, naturally), you'll already be dangerous. The afternoon? That's when you identify the specific problem in your work that's been driving you crazy, and we help you start architecting your solution.</p>
                 </div>
                 <div class="module-card">
-                    <div class="module-number">TUESDAY, SEPTEMBER 30TH</div>
+                    <div class="module-number">TUESDAY, SEPTEMBER 30TH | 5:00 PM - 6:30 PM</div>
                     <h3 class="module-title">First Reality Check</h3>
-                    <p class="module-description">5:00 PM - 6:30 PM</p>
-                    <ul class="module-topics">
-                        <li>Problem-solving session</li>
-                        <li>Address roadblocks</li>
-                        <li>Get clear paths forward</li>
-                        <li>Group troubleshooting</li>
-                    </ul>
+                    <p class="module-description">Three days in, you've been tinkering. You've hit walls. Perfect. This session is pure problem-solving—bringing your specific roadblocks to the group and leaving with clear paths forward.</p>
                 </div>
                 <div class="module-card">
-                    <div class="module-number">THURSDAY, OCTOBER 2ND</div>
+                    <div class="module-number">THURSDAY, OCTOBER 2ND | 5:00 PM - 6:30 PM</div>
                     <h3 class="module-title">Refinement Round</h3>
-                    <p class="module-description">5:00 PM - 6:30 PM</p>
-                    <ul class="module-topics">
-                        <li>Polish your automation</li>
-                        <li>Optimize performance</li>
-                        <li>Make it bulletproof</li>
-                        <li>Real-world preparation</li>
-                    </ul>
+                    <p class="module-description">Your automation is taking shape. Now we polish it, optimize it, and make sure it's bulletproof enough for the real world.</p>
                 </div>
                 <div class="module-card">
-                    <div class="module-number">SATURDAY, OCTOBER 4TH</div>
+                    <div class="module-number">SATURDAY, OCTOBER 4TH | 10:00 AM - 2:30 PM</div>
                     <h3 class="module-title">Launch Day</h3>
-                    <p class="module-description">10:00 AM - 2:30 PM</p>
-                    <ul class="module-topics">
-                        <li>Final production-ready push</li>
-                        <li>Cybersecurity best practices</li>
-                        <li>Industry AI trends</li>
-                        <li>Alumni network connection</li>
-                    </ul>
+                    <p class="module-description">The final push. Morning coding assistance ensures your automation is production-ready. Then we zoom out: understanding cybersecurity practices that keep your automations safe, exploring how AI is reshaping entire industries, and connecting you with your cohort's collective genius through team brainstorming. You leave with a working automation, a support network, and the confidence to build whatever comes next.</p>
                 </div>
             </div>
+            <h3 class="timeline-subtitle">Beyond the Classroom</h3>
+            <p>This isn't a passive online course where you watch videos and hope for the best. This is 14.5 hours of intensive, hands-on transformation spread across two weeks, with support between sessions. This course is based on a proven formula that was tried and tested running Australia's 3 largest A.I. Hackathons with a total attendance of > 500.</p>
         </div>
     </section>
 
@@ -619,11 +164,11 @@
             </div>
             <div class="testimonials-grid">
                 <div class="testimonial">
-                    <div class="feature-visual" style="height: 200px; margin-bottom: 24px;">
-                        <img src="https://via.placeholder.com/400x200/111111/666666?text=[INSTRUCTOR+PHOTO]" alt="Louka Ewington-Pitsos" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="feature-visual instructor-visual-small">
+                        <img src="https://via.placeholder.com/400x200/111111/666666?text=[INSTRUCTOR+PHOTO]" alt="Louka Ewington-Pitsos" class="instructor-image">
                     </div>
-                    <h4 style="color: #fff; margin-bottom: 16px;">Experience & Credentials</h4>
-                    <ul style="color: #ccc; line-height: 1.6; list-style: none; padding: 0;">
+                    <h4 class="instructor-section-title">Experience & Credentials</h4>
+                    <ul class="instructor-list">
                         <li>• Lectured AI courses at Charles Stuart University</li>
                         <li>• YouTube channel: 14k subscribers, 450k+ views</li>
                         <li>• Founded MLAI.au, Australia's largest A.I. advocacy organisation</li>
@@ -631,15 +176,15 @@
                     </ul>
                 </div>
                 <div class="testimonial">
-                    <h4 style="color: #fff; margin-bottom: 16px;">Real-World Impact</h4>
-                    <ul style="color: #ccc; line-height: 1.6; list-style: none; padding: 0; margin-bottom: 24px;">
+                    <h4 class="instructor-section-title">Real-World Impact</h4>
+                    <ul class="instructor-list-with-margin">
                         <li>• Built production AI systems saving clients millions</li>
                         <li>• Created world-class text-to-SQL systems deployed at scale</li>
                         <li>• Surveyed 1/3 of Canberra with AI road survey tool Magpeye</li>
                         <li>• Currently running Antipode and Fair Dinkum Systems</li>
                     </ul>
-                    <div class="feature-visual" style="height: 200px;">
-                        <img src="https://via.placeholder.com/400x200/111111/666666?text=[PROJECTS+SHOWCASE]" alt="AI Projects Showcase" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div class="feature-visual instructor-visual-small">
+                        <img src="https://via.placeholder.com/400x200/111111/666666?text=[PROJECTS+SHOWCASE]" alt="AI Projects Showcase" class="instructor-image">
                     </div>
                 </div>
             </div>
@@ -655,62 +200,75 @@
             </div>
             <div class="testimonials-grid">
                 <div class="testimonial">
-                    <h4 style="color: #fff; margin-bottom: 16px;">"I'm genuinely not technical at all—I barely understand Excel. Can I really do this?"</h4>
+                    <h4 class="faq-question">"I'm genuinely not technical at all—I barely understand Excel. Can I really do this?"</h4>
                     <p class="testimonial-quote">Absolutely. We assume zero coding knowledge. There are thousands of examples online of non-coders building automations that save hours of work each day. If you can use a web browser and describe a problem clearly, you have all the prerequisites you need.</p>
                 </div>
                 <div class="testimonial">
-                    <h4 style="color: #fff; margin-bottom: 16px;">"What if I get stuck after the course ends?"</h4>
+                    <h4 class="faq-question">"What if I get stuck after the course ends?"</h4>
                     <p class="testimonial-quote">You won't be on your own. Every cohort has a dedicated support group that remains active indefinitely. Plus, you gain access to our growing alumni network.</p>
                 </div>
                 <div class="testimonial">
-                    <h4 style="color: #fff; margin-bottom: 16px;">"What software costs are involved after the course?"</h4>
+                    <h4 class="faq-question">"What software costs are involved after the course?"</h4>
                     <p class="testimonial-quote">The tools we teach (primarily n8n) have generous free tiers that cover most small business needs. If you scale up, paid plans start at around $20/month—a fraction of what you'll save in time.</p>
                 </div>
                 <div class="testimonial">
-                    <h4 style="color: #fff; margin-bottom: 16px;">"How quickly will I see ROI on this investment?"</h4>
+                    <h4 class="faq-question">"How quickly will I see ROI on this investment?"</h4>
                     <p class="testimonial-quote">It's reasonable to expect that you can automate 3+ hours of work each week after taking this course. At typical professional rates, you'll recoup your investment in under a month.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Employer Benefits Section -->
+    <!-- Employer/Employee Benefits Section -->
     <section class="modules">
         <div class="container">
-            <div class="section-header">
-                <h2>For Employers: Help Your Team Reclaim Their Time</h2>
-                <p>Your team members are knowledge workers, yet Asana's research found they spend 58% of their day on "work about work." For a 10-person team at average professional salaries, this represents approximately $300,000 in annual opportunity cost.</p>
-            </div>
-            <div class="modules-grid">
-                <div class="module-card">
-                    <div class="module-number">THE REAL COST</div>
-                    <h3 class="module-title">Manual Work Impact</h3>
-                    <p class="module-description">Knowledge workers spend only 33% of time on skilled, strategic work they were actually hired to do.</p>
-                    <ul class="module-topics">
-                        <li>$300,000 annual opportunity cost for 10-person team</li>
-                        <li>58% of day spent on "work about work"</li>
-                        <li>Time that could be redirected toward strategic work</li>
-                    </ul>
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <div class="tab-button active" onclick="switchTab('employers')">For Employers</div>
+                    <div class="tab-button" onclick="switchTab('employees')">For Employees</div>
                 </div>
-                <div class="module-card">
-                    <div class="module-number">WHY IT WORKS</div>
-                    <h3 class="module-title">Employee-Led Automation</h3>
-                    <p class="module-description">60% of automation initiatives fail due to poor understanding of actual workflow needs.</p>
-                    <ul class="module-topics">
-                        <li>67% reduction in process cycle times</li>
-                        <li>70% of organizations report ROI within first year</li>
-                        <li>3.2x faster deployment than traditional development</li>
-                    </ul>
+                
+                <!-- Employers Tab -->
+                <div id="employers-content" class="tab-content active">
+                    <div class="section-header">
+                        <h2>For Employers: Help Your Team Reclaim Their Time</h2>
+                    </div>
+                    <div class="max-width-600">
+                        <h3 class="section-heading">The Real Cost of Manual Work</h3>
+                        <p class="body-text">Your team members are knowledge workers, hired for their expertise and judgment. Yet <a href="https://asana.com/resources/anatomy-of-work" class="link-blue">Asana's Anatomy of Work Index</a> found that knowledge workers spend 58% of their day on "work about work"—searching for information, tracking down status updates, switching between apps, and managing routine communications. Only 33% is spent on skilled, strategic work they were actually hired to do.</p>
+                        <p class="body-text-extended">For a 10-person team at average professional salaries, this represents approximately <a href="https://www.salesforce.com/resources/articles/automation-statistics/" class="link-blue">$300,000 in annual opportunity cost</a>—time that could be redirected toward strategic work, innovation, and growth.</p>
+                        
+                        <h3 class="section-heading">Why Employee-Led Automation Works</h3>
+                        <p class="body-text">Traditional automation projects often struggle because of a fundamental disconnect: <a href="https://www.ey.com/en_gl/consulting/five-design-principles-to-help-build-confidence-in-rpa-implementations" class="link-blue">60% of automation initiatives fail to meet their goals</a>, largely due to poor understanding of actual workflow needs. External consultants and IT departments, however skilled, don't live with these problems daily.</p>
+                        <p class="body-text">This course takes a different approach. Your employees already understand every nuance of their workflows. They know which exceptions break the system, which edge cases matter, and what actually needs to be solved. By giving them the tools to build their own solutions, you eliminate the translation layer where most automation projects fail.</p>
+                        <p class="body-text"><strong>Documented outcomes from low-code automation:</strong></p>
+                        <ul class="feature-list">
+                            <li><a href="https://www.forrester.com/report/the-total-economic-impact-of-microsoft-power-platform-premium-capabilities/RES176017" class="link-blue">67% reduction in process cycle times</a> according to Forrester's analysis of Microsoft Power Platform users</li>
+                            <li><a href="https://n8n.io/blog/no-code-low-code-statistics/" class="link-blue">70% of organizations report ROI within first year</a> of implementing low-code solutions</li>
+                            <li><a href="https://resources.appian.com/rs/875-SXT-145/images/Appian_IDC%20InfoBrief_The%20Impact%20of%20Low-Code%20Platforms%20Technical%20%26%20Business%20Outcomes_December%202021.pdf" class="link-blue">3.2x faster deployment</a> compared to traditional development approaches, per IDC research</li>
+                        </ul>
+                        
+                        <h3 class="section-heading">Building Capability, Not Dependency</h3>
+                        <p class="body-text">When you invest in this training, you're not just solving today's automation needs—you're building organizational capability. Employees who complete this course become problem-solvers who think differently about inefficiency. They stop accepting "that's just how we do things" and start asking "how could we automate this?"</p>
+                        <p class="body-text"><a href="https://www2.deloitte.com/us/en/insights/focus/technology-and-the-future-of-work/upskilling-the-workforce-in-european-union-for-the-future-of-work.html" class="link-blue">Research from Deloitte</a> shows that companies investing in upskilling see 37% higher productivity and report significantly better employee engagement scores. There's something powerful about giving people the tools to eliminate their own frustrations.</p>
+                        <p class="body-text">The September cohort offers a unique opportunity to pilot this approach with select team members. As <a href="https://www.gartner.com/en/newsroom/press-releases/2024-07-30-gartner-forecasts-worldwide-low-code-development-technologies-market-to-grow-25-percent-in-2025" class="link-blue">Gartner predicts</a>, by 2025, 70% of new applications will use low-code technologies. The question isn't whether your team will need these skills—it's whether they'll develop them before or after your competition does.</p>
+                    </div>
                 </div>
-                <div class="module-card">
-                    <div class="module-number">BUILDING CAPABILITY</div>
-                    <h3 class="module-title">Not Dependency</h3>
-                    <p class="module-description">Companies investing in upskilling see 37% higher productivity and better employee engagement scores.</p>
-                    <ul class="module-topics">
-                        <li>Employees become problem-solvers</li>
-                        <li>Think differently about inefficiency</li>
-                        <li>Stop accepting "that's just how we do things"</li>
-                    </ul>
+                
+                <!-- Employees Tab -->
+                <div id="employees-content" class="tab-content">
+                    <div class="section-header">
+                        <h2>But Why Would I Automate Myself Out of a Job?</h2>
+                    </div>
+                    <div class="max-width-600">
+                        <p class="body-text">It's true, if you automate work for your company and times are particularly tough they may lay SOMEONE off. More likely they will just <a href="https://www.jpmorgan.com/insights/global-research/artificial-intelligence/ai-impact-job-growth" class="link-blue">stop hiring</a>, but managers are very, very unlikely to lay off the one specific person who knows how to run the system they now rely on.</p>
+                        
+                        <p class="body-text">Let me tell you a fun story: when I went to school the richest dad among all the dads of my classmates was a software developer. Many years ago he was asked to build software to manage the pump on an oil derrick. He worked for 6 months, the oil company was happy with him, they thanked him, paid him a reasonable wage and sent him on his way.</p>
+                        
+                        <p class="body-text">Then 8 months later the company needed to make a change to the software. It was only then that they realised that there was only one person on this green earth who knew how to make that change, and it was at that exact time that my classmate's dad decided his hourly rate had just increased 5,000 odd percent.</p>
+                        
+                        <p class="body-text">Now I don't know if I'd endorse what he did, but long story short, having intimate knowledge of a valuable system makes you valuable.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -722,19 +280,19 @@
         <div class="container">
             <h2>Take the First Step</h2>
             <p>Stop letting repetitive tasks steal your precious life. In two weeks, you'll go from automation curious to automation capable. You'll have a working system saving you hours every week and the confidence to build whatever solution your work demands.</p>
-            <div style="margin: 40px 0; padding: 30px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);">
-                <h3 style="color: #fff; margin-bottom: 20px;">Course Details</h3>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;">
+            <div class="course-details-container">
+                <h3 class="course-details-title">Course Details</h3>
+                <div class="course-details-grid">
                     <div>
-                        <p style="color: #999; margin-bottom: 8px;"><strong>Location:</strong> Melbourne CBD</p>
-                        <p style="color: #999; margin-bottom: 8px;"><strong>Dates:</strong> September 27 - October 4, 2025</p>
+                        <p class="course-detail-item"><strong>Location:</strong> Melbourne CBD</p>
+                        <p class="course-detail-item"><strong>Dates:</strong> September 27 - October 4, 2025</p>
                     </div>
                     <div>
-                        <p style="color: #999; margin-bottom: 8px;"><strong>Investment:</strong> $896 (Early Bird: $512)</p>
-                        <p style="color: #999; margin-bottom: 8px;"><strong>Class Size:</strong> Maximum 15 participants</p>
+                        <p class="course-detail-item"><strong>Investment:</strong> $896 (Early Bird: $512)</p>
+                        <p class="course-detail-item"><strong>Class Size:</strong> Maximum 15 participants</p>
                     </div>
                 </div>
-                <p style="color: #ccc; font-size: 14px;">Includes: All materials, software access, catered lunches, lifetime alumni network access</p>
+                <p class="course-includes">Includes: All materials, software access, catered lunches, lifetime alumni network access</p>
             </div>
             <a href="mailto:courses@fairdinkumsystems.com" class="cta-button">REGISTER NOW - EARLY BIRD $512</a>
         </div>
@@ -755,208 +313,41 @@
         </div>
     </footer>
 
-    <script>
-        // Perlin Noise Flow Field Implementation
-        class PerlinNoise {
-            constructor() {
-                this.permutation = [];
-                for (let i = 0; i < 256; i++) {
-                    this.permutation[i] = Math.floor(Math.random() * 256);
-                }
-                for (let i = 0; i < 256; i++) {
-                    this.permutation[256 + i] = this.permutation[i];
-                }
-            }
-            
-            fade(t) {
-                return t * t * t * (t * (t * 6 - 15) + 10);
-            }
-            
-            lerp(t, a, b) {
-                return a + t * (b - a);
-            }
-            
-            grad(hash, x, y) {
-                const h = hash & 3;
-                const u = h < 2 ? x : y;
-                const v = h < 2 ? y : x;
-                return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
-            }
-            
-            noise(x, y) {
-                const X = Math.floor(x) & 255;
-                const Y = Math.floor(y) & 255;
-                
-                x -= Math.floor(x);
-                y -= Math.floor(y);
-                
-                const u = this.fade(x);
-                const v = this.fade(y);
-                
-                const a = this.permutation[X] + Y;
-                const aa = this.permutation[a];
-                const ab = this.permutation[a + 1];
-                const b = this.permutation[X + 1] + Y;
-                const ba = this.permutation[b];
-                const bb = this.permutation[b + 1];
-                
-                return this.lerp(v, 
-                    this.lerp(u, this.grad(this.permutation[aa], x, y), 
-                                 this.grad(this.permutation[ba], x - 1, y)),
-                    this.lerp(u, this.grad(this.permutation[ab], x, y - 1),
-                                 this.grad(this.permutation[bb], x - 1, y - 1))
-                );
-            }
-        }
-
-        class GridAngle {
-            constructor(x, y, r, angle) {
-                this.x = x;
-                this.y = y;
-                this.r = r;
-                this.angle = angle;
-                this.vx = x + r * Math.cos(angle);
-                this.vy = y + r * Math.sin(angle);
-            }
-        }
-
-        class Particle {
-            constructor(canvas) {
-                this.canvas = canvas;
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * 10;
-                this.prevX = this.x;
-                this.prevY = this.y;
-                this.age = 0;
-                this.maxAge = 200 + Math.random() * 800;
-                this.hue = 90 + Math.random() * 60;
-                this.speed = 0.5 + Math.random() * 2.5;
-            }
-            
-            update(grid, spacing) {
-                this.prevX = this.x;
-                this.prevY = this.y;
-                
-                const gridX = Math.floor(this.x / spacing);
-                const gridY = Math.floor(this.y / spacing);
-                
-                if (gridX >= 0 && gridX < grid.length && 
-                    gridY >= 0 && gridY < grid[0].length) {
-                    const angle = grid[gridX][gridY].angle;
-                    this.x += Math.cos(angle) * this.speed;
-                    this.y += Math.sin(angle) * this.speed;
-                    this.age++;
-                } else {
-                    this.age = this.maxAge;
-                }
-            }
-            
-            draw(ctx) {
-                if (this.age > 0) {
-                    const alpha = Math.max(0, 1 - this.age / this.maxAge) * 0.8;
-                    ctx.strokeStyle = `hsla(${this.hue}, 90%, 80%, ${alpha})`;
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(this.prevX, this.prevY);
-                    ctx.lineTo(this.x, this.y);
-                    ctx.stroke();
-                }
-            }
-            
-            isDead() {
-                return this.age >= this.maxAge || this.y > this.canvas.height;
-            }
-        }
-
-        // Create flow field for each canvas
-        function createFlowField(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            const rect = canvas.parentElement.getBoundingClientRect();
-            
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-            
-            const spacing = 15;
-            const rez = 0.1;
-            const grid = [];
-            const perlin = new PerlinNoise();
-            
-            // Create grid
-            for (let x = 0; x < canvas.width; x += spacing) {
-                const row = [];
-                for (let y = 0; y < canvas.height; y += spacing) {
-                    const noiseValue = (perlin.noise(x * rez, y * rez) + 1) * 0.5;
-                    const angle = noiseValue * Math.PI * 2;
-                    const biasedAngle = angle * 0.5;
-                    row.push(new GridAngle(x, y, spacing / 2, biasedAngle));
-                }
-                grid.push(row);
-            }
-            
-            let particles = [];
-            let particleLimit = 30;
-            let frameCount = 0;
-            
-            function animate() {
-                frameCount++;
-                
-                if (frameCount % 2 === 0) {
-                    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    
-                    // Add new particles
-                    if (particles.length < particleLimit) {
-                        const spawnCount = Math.min(3, particleLimit - particles.length);
-                        for (let i = 0; i < spawnCount; i++) {
-                            particles.push(new Particle(canvas));
-                        }
-                    }
-                    
-                    // Update and draw particles
-                    for (let i = particles.length - 1; i >= 0; i--) {
-                        particles[i].update(grid, spacing);
-                        particles[i].draw(ctx);
-                        
-                        if (particles[i].isDead()) {
-                            particles.splice(i, 1);
-                        }
-                    }
-                }
-                
-                requestAnimationFrame(animate);
-            }
-            
-            // Clear canvas initially
-            ctx.fillStyle = 'rgba(0, 0, 0, 0)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Start animation
-            animate();
-        }
-
-        // Initialize all canvas elements
+    <script type="module">
+        // Import Perlin background functionality
+        import { initPerlinBackgrounds, handlePerlinResize } from './perlin-background.js';
+        
+        // Initialize Perlin backgrounds on load
         window.addEventListener('load', () => {
-            createFlowField('heroCanvas');
-            createFlowField('featuresCanvas');
-            createFlowField('ctaCanvas');
-        });
-
-        // Handle resize
-        window.addEventListener('resize', () => {
-            const canvases = ['heroCanvas', 'featuresCanvas', 'ctaCanvas'];
-            canvases.forEach(id => {
-                const canvas = document.getElementById(id);
-                if (canvas && canvas.parentElement) {
-                    const rect = canvas.parentElement.getBoundingClientRect();
-                    canvas.width = rect.width;
-                    canvas.height = rect.height;
-                }
-            });
+            initPerlinBackgrounds();
         });
         
+        // Handle resize for Perlin backgrounds
+        window.addEventListener('resize', () => {
+            handlePerlinResize();
+        });
+    </script>
+    
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-content').classList.add('active');
+            
+            // Activate corresponding button
+            event.target.classList.add('active');
+        }
+
         // Smooth scroll for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

@@ -8,7 +8,6 @@ That's exactly what we're going to teach in this course.
 
 Welcome to A.I. Automation for Non-Coders, where we're empowering the real experts—the ones who actually understand the problems—to solve them directly.
 
-Your Journey from Manual to Automated
 Who This Course Is For
 You're clever, and you hate having to do boring, menial tasks, but every day that's exactly what you have to deal with. Maybe you're:
 
