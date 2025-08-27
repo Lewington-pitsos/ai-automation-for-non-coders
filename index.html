@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perlin Noise Flow Field</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            width: 100vw;
+            height: 100vh;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            top: -12px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const spacing = 15;
+        const xOff = 0;
+        const yOff = 0;
+        const rez = 0.01;
+        const grid = [];
+        
+        // Simple Perlin noise implementation
+        class PerlinNoise {
+            constructor() {
+                this.permutation = [];
+                for (let i = 0; i < 256; i++) {
+                    this.permutation[i] = Math.floor(Math.random() * 256);
+                }
+                for (let i = 0; i < 256; i++) {
+                    this.permutation[256 + i] = this.permutation[i];
+                }
+            }
+            
+            fade(t) {
+                return t * t * t * (t * (t * 6 - 15) + 10);
+            }
+            
+            lerp(t, a, b) {
+                return a + t * (b - a);
+            }
+            
+            grad(hash, x, y) {
+                const h = hash & 3;
+                const u = h < 2 ? x : y;
+                const v = h < 2 ? y : x;
+                return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+            }
+            
+            noise(x, y) {
+                const X = Math.floor(x) & 255;
+                const Y = Math.floor(y) & 255;
+                
+                x -= Math.floor(x);
+                y -= Math.floor(y);
+                
+                const u = this.fade(x);
+                const v = this.fade(y);
+                
+                const a = this.permutation[X] + Y;
+                const aa = this.permutation[a];
+                const ab = this.permutation[a + 1];
+                const b = this.permutation[X + 1] + Y;
+                const ba = this.permutation[b];
+                const bb = this.permutation[b + 1];
+                
+                return this.lerp(v, 
+                    this.lerp(u, this.grad(this.permutation[aa], x, y), 
+                                 this.grad(this.permutation[ba], x - 1, y)),
+                    this.lerp(u, this.grad(this.permutation[ab], x, y - 1),
+                                 this.grad(this.permutation[bb], x - 1, y - 1))
+                );
+            }
+        }
+        
+        const perlin = new PerlinNoise();
+        
+        class GridAngle {
+            constructor(x, y, r, angle) {
+                this.x = x;
+                this.y = y;
+                this.r = r;
+                this.angle = angle;
+                this.vx = x + r * Math.cos(angle);
+                this.vy = y + r * Math.sin(angle);
+            }
+            
+            display() {
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(this.x, this.y);
+                ctx.lineTo(this.vx, this.vy);
+                ctx.stroke();
+            }
+        }
+        
+        function createGrid() {
+            for (let x = 0; x < canvas.width; x += spacing) {
+                const row = [];
+                for (let y = 0; y < canvas.height; y += spacing) {
+                    const noiseValue = (perlin.noise(x * rez, y * rez) + 1) * 0.5;
+                    const angle = noiseValue * Math.PI * 2;
+                    // Bias the angle towards downward flow
+                    const biasedAngle = angle * 0.3 + Math.PI * 0.5;
+                    row.push(new GridAngle(x, y, spacing / 2, biasedAngle));
+                }
+                grid.push(row);
+            }
+        }
+        
+        function drawFlowLines(numLines = 100) {
+            for (let i = 0; i < numLines; i++) {
+                let x = Math.random() * (canvas.width - 2 * xOff) + xOff;
+                let y = Math.random() * (canvas.height - 2 * yOff) + yOff;
+                
+                ctx.strokeStyle = `hsla(${180 + Math.random() * 60}, 80%, 70%, 0.3)`;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                
+                for (let step = 0; step < 200; step++) {
+                    const gridX = Math.floor((x - xOff) / spacing);
+                    const gridY = Math.floor((y - yOff) / spacing);
+                    
+                    if (gridX >= 0 && gridX < grid.length && 
+                        gridY >= 0 && gridY < grid[0].length) {
+                        const angle = grid[gridX][gridY].angle;
+                        x += Math.cos(angle) * 1.5;
+                        y += Math.sin(angle) * 1.5;
+                        ctx.lineTo(x, y);
+                    } else {
+                        break;
+                    }
+                }
+                ctx.stroke();
+            }
+        }
+        
+        let frameCount = 0;
+        let particles = [];
+        
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width + 60 - 30;
+                this.y = Math.random() * 10;
+                this.prevX = this.x;
+                this.prevY = this.y;
+                this.age = 0;
+                this.maxAge = 200 + Math.random() * 800;
+                this.hue = 180 + Math.random() * 60;
+                this.speed = 0.5 + Math.random() * 8.5; // Speed between 0.5 and 4
+            }
+            
+            update() {
+                this.prevX = this.x;
+                this.prevY = this.y;
+                
+                const gridX = Math.floor(this.x / spacing);
+                const gridY = Math.floor(this.y / spacing);
+                
+                if (gridX >= 0 && gridX < grid.length && 
+                    gridY >= 0 && gridY < grid[0].length) {
+                    const angle = grid[gridX][gridY].angle;
+                    this.x += Math.cos(angle) * this.speed;
+                    this.y += Math.sin(angle) * this.speed;
+                    this.age++;
+                } else {
+                    this.age = this.maxAge;
+                }
+            }
+            
+            draw() {
+                if (this.age > 0) {
+                    const alpha = Math.max(0, 1 - this.age / this.maxAge) * 1.2;
+                    ctx.strokeStyle = `hsla(${this.hue}, 90%, 80%, ${alpha})`;
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(this.prevX, this.prevY);
+                    ctx.lineTo(this.x, this.y);
+                    ctx.stroke();
+                }
+            }
+            
+            isDead() {
+                return this.age >= this.maxAge;
+            }
+        }
+        
+        function animate() {
+            frameCount++;
+            
+            if (frameCount % 2 === 0) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add new particles
+                while (particles.length < 500) {
+                    particles.push(new Particle());
+                }
+                
+                // Update and draw all particles
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    particles[i].update();
+                    particles[i].draw();
+                    
+                    if (particles[i].isDead()) {
+                        particles.splice(i, 1);
+                    }
+                }
+            }
+            
+            requestAnimationFrame(animate);
+        }
+        
+        // Initialize
+        createGrid();
+        
+        // Clear canvas initially
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Start animation
+        animate();
+        
+        // Handle resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            grid.length = 0;
+            createGrid();
+        });
+    </script>
+</body>
+</html>
