@@ -294,8 +294,8 @@ function initTerminalAnimations() {
             }
         });
     }, {
-        threshold: 0.1,
-        rootMargin: '-30px 0px'
+        threshold: 0.5,
+        rootMargin: '-100px 0px'
     });
 
     observer.observe(terminalContainer);
