@@ -119,7 +119,7 @@
                     const noiseValue = (perlin.noise(x * rez, y * rez) + 1) * 0.5;
                     const angle = noiseValue * Math.PI * 2;
                     // Bias the angle towards downward flow
-                    const biasedAngle = angle * 0.3 + Math.PI * 0.5;
+                    const biasedAngle = angle * 0.5;
                     row.push(new GridAngle(x, y, spacing / 2, biasedAngle));
                 }
                 grid.push(row);
@@ -160,14 +160,14 @@
         
         class Particle {
             constructor() {
-                this.x = Math.random() * canvas.width + 60 - 30;
+                this.x = Math.random() * canvas.width + 200 - 30;
                 this.y = Math.random() * 10;
                 this.prevX = this.x;
                 this.prevY = this.y;
                 this.age = 0;
                 this.maxAge = 200 + Math.random() * 800;
                 this.hue = 90 + Math.random() * 60;
-                this.speed = 0.5 + Math.random() * 8.5; // Speed between 0.5 and 4
+                this.speed = 0.5 + Math.random() * 20.5; // Speed between 0.5 and 4
             }
             
             update() {
@@ -209,7 +209,7 @@
             frameCount++;
             
             if (frameCount % 2 === 0) {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
                 // Random walk for particle limit
