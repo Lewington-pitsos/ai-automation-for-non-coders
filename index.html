@@ -10,10 +10,10 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="#" class="logo">A.I. AUTOMATION FOR NON-CODERS</a>
+            <h2 class="logo">A.I. AUTOMATION FOR NON-CODERS</h2>
             <ul class="nav-links">
                 <li><a href="#course">COURSE</a></li>
-                <li><a href="#success">SUCCESS STORIES</a></li>
+                <li><a href="#success">NO CODE</a></li>
                 <li><a href="#instructor">INSTRUCTOR</a></li>
                 <li><a href="#faq">FAQ</a></li>
                 <li><a href="#register">REGISTER</a></li>
@@ -32,7 +32,9 @@
                     <a href="#register" class="cta-button">REGISTER NOW</a>
                 </div>
                 <div class="hero-visual">
-                    <img src="https://via.placeholder.com/600x500/111111/666666?text=[GRAPH+PLACEHOLDER]" alt="AI Revolution Graph">
+                    <div id="chartContainer">
+                        <canvas id="citizenDeveloperChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,7 +45,7 @@
         <div class="container">
             <div class="section-header">
                 <h2>Who This Course Is For</h2>
-                <p>You're clever, and you hate having to do boring, menial tasks, but every day that's exactly what you have to deal with. Maybe you're:</p>
+                <p>You're clever and you hate having to do boring, menial tasks, and you like a practical, hands-on learning experience. Maybe you're:</p>
             </div>
             <div class="modules-grid">
                 <div class="module-card">
@@ -67,7 +69,7 @@
                     <p class="module-description">While doing the same computer task for the hundredth time.</p>
                 </div>
             </div>
-            <p class="intro-text">If you're spending more than 5 hours a week on repetitive computer tasks, you're not just wasting time—you're hemorrhaging money. At $50 an hour, that's $13,000 annually spent on work a computer could do in seconds. But you don't need to hire a developer or wait for IT to build you a solution. You can build it yourself, right now, starting with this course.</p>
+            <p class="intro-text">If you're spending more than 5 hours a week on repetitive computer tasks, you're not just wasting time—you're hemorrhaging money. At $50 an hour, that's $13,000 annually spent on work a computer could do in seconds. If you don't want to hire a developer or wait for IT to build you a solution this is the course for you.</p>
         </div>
     </section>
 
@@ -104,7 +106,7 @@
                 <div class="timeline-item timeline-right">
                     <div class="timeline-date">SATURDAY, OCTOBER 4TH | 10:00 AM - 2:30 PM</div>
                     <div class="timeline-content">
-                        <h3 class="timeline-title">Launch Day</h3>
+                        <h3 class="timeline-title">Launch</h3>
                         <p class="timeline-description">The final push. Morning coding assistance ensures your automation is production-ready. Then we zoom out: understanding cybersecurity practices that keep your automations safe, exploring how AI is reshaping entire industries, and connecting you with your cohort's collective genius through team brainstorming. You leave with a working automation, a support network, and the confidence to build whatever comes next.</p>
                     </div>
                 </div>
@@ -452,7 +454,7 @@
             <div class="testimonials-grid">
                 <div class="testimonial">
                     <div class="feature-visual instructor-visual-small">
-                        <img src="https://via.placeholder.com/400x200/111111/666666?text=[INSTRUCTOR+PHOTO]" alt="Louka Ewington-Pitsos" class="instructor-image">
+                        <img src="assets/images/speaking.jpg" alt="Louka Ewington-Pitsos" class="instructor-image">
                     </div>
                     <h4 class="instructor-section-title">Teaching Experience</h4>
                     <ul class="instructor-list">
@@ -471,7 +473,7 @@
                         <li>• Currently running Antipode and Fair Dinkum Systems</li>
                     </ul>
                     <div class="feature-visual instructor-visual-small">
-                        <img src="https://via.placeholder.com/400x200/111111/666666?text=[PROJECTS+SHOWCASE]" alt="AI Projects Showcase" class="instructor-image">
+                        <img src="assets/images/magpeye.png" alt="AI Projects Showcase" class="instructor-image">
                     </div>
                 </div>
             </div>
@@ -692,6 +694,134 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
+    
+    <!-- Simple fallback chart if Chart.js fails -->
+    <script>
+        // Fallback canvas chart function  
+        function drawFallbackChart() {
+            const canvas = document.getElementById('citizenDeveloperChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            // High-DPI support
+            const ratio = window.devicePixelRatio || 1;
+            const displayWidth = 560;
+            const displayHeight = 460;
+            
+            canvas.width = displayWidth * ratio;
+            canvas.height = displayHeight * ratio;
+            canvas.style.width = displayWidth + 'px';
+            canvas.style.height = displayHeight + 'px';
+            
+            ctx.scale(ratio, ratio);
+            
+            const width = displayWidth;
+            const height = displayHeight;
+            
+            // Clear canvas
+            ctx.fillStyle = 'rgba(0,0,0,0.1)';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Chart data with months (2 per year)
+            const data = [10, 8, 13, 16, 20, 25, 20, 22, 18, 32, 100];
+            const labels = ['Aug 2020', 'Feb 2021', 'Aug 2021', 'Feb 2022', 'Aug 2022', 'Feb 2023', 'Aug 2023', 'Feb 2024', 'Aug 2024', 'May 2025', 'Aug 2025'];
+            
+            // Chart dimensions
+            const margin = 60;
+            const chartWidth = width - 2 * margin;
+            const chartHeight = height - 2 * margin - 40;
+            
+            // Draw title
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 22px -apple-system, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('The Rise of Citizen Developers', width / 2, 35);
+            
+            // Draw subtitle
+            ctx.fillStyle = '#999999';
+            ctx.font = '12px -apple-system, sans-serif';
+            ctx.fillText('Google Trends: "citizen developer" search popularity', width / 2, 55);
+            
+            // Calculate points
+            const maxValue = Math.max(...data);
+            const points = data.map((value, index) => ({
+                x: margin + (index * chartWidth) / (data.length - 1),
+                y: height - margin - 20 - (value / maxValue) * chartHeight
+            }));
+            
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = height - margin - 20 - (i * chartHeight / 5);
+                ctx.beginPath();
+                ctx.moveTo(margin, y);
+                ctx.lineTo(width - margin, y);
+                ctx.stroke();
+                
+                // Y-axis labels
+                ctx.fillStyle = '#cccccc';
+                ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText((i * 20).toString(), margin - 10, y + 3);
+            }
+            
+            // Draw area fill
+            ctx.fillStyle = 'rgba(78, 255, 159, 0.1)';
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, height - margin - 20);
+            points.forEach(point => ctx.lineTo(point.x, point.y));
+            ctx.lineTo(points[points.length - 1].x, height - margin - 20);
+            ctx.closePath();
+            ctx.fill();
+            
+            // Draw line
+            ctx.strokeStyle = '#4eff9f';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
+            points.forEach(point => ctx.lineTo(point.x, point.y));
+            ctx.stroke();
+            
+            // Draw points
+            points.forEach((point, index) => {
+                ctx.fillStyle = '#4eff9f';
+                ctx.beginPath();
+                ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // X-axis labels (stacked: month over year)
+                ctx.fillStyle = '#cccccc';
+                ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
+                ctx.textAlign = 'center';
+                
+                // Split label into month and year
+                const [month, year] = labels[index].split(' ');
+                
+                // Draw month on top
+                ctx.fillText(month, point.x, height - margin + 12);
+                // Draw year below
+                ctx.fillText(year, point.x, height - margin + 25);
+            });
+            
+            // Draw axes
+            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.lineWidth = 2;
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(margin, margin);
+            ctx.lineTo(margin, height - margin - 20);
+            ctx.stroke();
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(margin, height - margin - 20);
+            ctx.lineTo(width - margin, height - margin - 20);
+            ctx.stroke();
+        }
+    </script>
+    
     <script type="module">
         // Import Perlin background functionality
         import { initPerlinBackgrounds, handlePerlinResize } from './perlin-background.js';
@@ -699,12 +829,268 @@
         // Initialize Perlin backgrounds on load
         window.addEventListener('load', () => {
             initPerlinBackgrounds();
+            setTimeout(() => {
+                initChart();
+            }, 100);
         });
         
-        // Handle resize for Perlin backgrounds
+        // Handle resize for Perlin backgrounds  
         window.addEventListener('resize', () => {
             handlePerlinResize();
         });
+        
+        function initChart() {
+            // Try Chart.js first, fallback to canvas if it fails
+            if (typeof Chart !== 'undefined') {
+                initChartJS();
+            } else {
+                console.log('Chart.js not available, using fallback');
+                drawFallbackChart();
+            }
+        }
+        
+        function initChartJS() {
+            const canvas = document.getElementById('citizenDeveloperChart');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [
+                        ['Aug', '2020'], ['Feb', '2021'], ['Aug', '2021'], ['Feb', '2022'], 
+                        ['Aug', '2022'], ['Feb', '2023'], ['Aug', '2023'], ['Feb', '2024'], 
+                        ['Aug', '2024'], ['May', '2025'], ['Aug', '2025']
+                    ],
+                    datasets: [{
+                        label: 'Search Interest',
+                        data: [10, 8, 13, 16, 20, 25, 20, 22, 18, 32, 100],
+                        borderColor: '#4eff9f',
+                        backgroundColor: 'rgba(78, 255, 159, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#4eff9f',
+                        pointBorderColor: '#4eff9f',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'The Rise of Citizen Developers',
+                            color: '#ffffff',
+                            font: { size: 22, weight: '600' },
+                            padding: 20
+                        },
+                        subtitle: {
+                            display: true,
+                            text: 'Google Trends: "citizen developer" search popularity',
+                            color: '#999999',
+                            font: { size: 12 },
+                            padding: 10
+                        },
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Time Period', color: '#999999' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            ticks: { 
+                                color: '#cccccc',
+                                maxRotation: 0,
+                                minRotation: 0,
+                                font: { size: 11 }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 105,
+                            title: { display: true, text: 'Search Interest (0-100)', color: '#999999' },
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#cccccc', stepSize: 20, font: { size: 12 } }
+                        }
+                    },
+                    animation: { duration: 2000, easing: 'easeInOutQuart' }
+                }
+            });
+        }
+    </script>
+    
+    <script>
+        // Tab switching functionality
+
+            
+            // Parse the data
+            const lines = csvData.trim().split('\n');
+            const data = lines.map(line => {
+                const [date, value] = line.split(',');
+                return { x: new Date(date), y: parseInt(value) };
+            });
+            
+            // Filter to show only every 4th point to reduce clutter (quarterly view)
+            const filteredData = data.filter((_, index) => index % 4 === 0);
+            
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: 'Search Interest',
+                        data: filteredData,
+                        borderColor: '#4eff9f',
+                        backgroundColor: 'rgba(78, 255, 159, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#4eff9f',
+                        pointBorderColor: '#4eff9f',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: '#ffffff',
+                        pointHoverBorderColor: '#4eff9f',
+                        pointHoverBorderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'The Rise of Citizen Developers',
+                            color: '#ffffff',
+                            font: {
+                                size: 24,
+                                weight: '600',
+                                family: '-apple-system, BlinkMacSystemFont, \'Segoe UI\', \'Helvetica Neue\', Arial, sans-serif'
+                            },
+                            padding: 20
+                        },
+                        subtitle: {
+                            display: true,
+                            text: 'Google Trends: "citizen developer" search popularity (2020-2025)',
+                            color: '#999999',
+                            font: {
+                                size: 14,
+                                family: '-apple-system, BlinkMacSystemFont, \'Segoe UI\', \'Helvetica Neue\', Arial, sans-serif'
+                            },
+                            padding: 10
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                            titleColor: '#4eff9f',
+                            bodyColor: '#ffffff',
+                            borderColor: '#4eff9f',
+                            borderWidth: 1,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            titleFont: {
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                size: 13
+                            },
+                            callbacks: {
+                                title: function(tooltipItems) {
+                                    const date = new Date(tooltipItems[0].parsed.x);
+                                    return date.toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'short', 
+                                        day: 'numeric' 
+                                    });
+                                },
+                                label: function(context) {
+                                    return `Search Interest: ${context.parsed.y}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'year',
+                                displayFormats: {
+                                    year: 'YYYY'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Year',
+                                color: '#999999',
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)',
+                                borderColor: 'rgba(255, 255, 255, 0.2)'
+                            },
+                            ticks: {
+                                color: '#cccccc',
+                                font: {
+                                    size: 11
+                                },
+                                maxTicksLimit: 6
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            max: 105,
+                            title: {
+                                display: true,
+                                text: 'Search Interest (0-100)',
+                                color: '#999999',
+                                font: {
+                                    size: 12,
+                                    weight: '500'
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.05)',
+                                borderColor: 'rgba(255, 255, 255, 0.2)'
+                            },
+                            ticks: {
+                                color: '#cccccc',
+                                font: {
+                                    size: 11
+                                },
+                                stepSize: 20
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            hoverRadius: 8
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+            
+            // Add some sparkle to the chart
+            chart.options.onHover = (event, activeElements) => {
+                event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
+            };
     </script>
     
     <script>
