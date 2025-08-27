@@ -1,6 +1,9 @@
 Hero Section: The Revolution Has Already Started
 There's been a fundamental shift in how software gets built, and most people haven't noticed yet.
-For decades, creating software required years of specialized training. Companies hired consultants for $400 an hour to learn their problems and then solve them. It made sense—coding was the hard part. But that equation has flipped completely. Today, creating software, be it through writing code with A.I. assistance or using a low-code platform is so easy that understanding the problem deeply is the true differentiator. The people who live with these problems every day, who understand every nuance and edge case, who feel the friction—these are the people who should be building solutions in the age of A.I.
+For decades, creating software required years of specialized training. Companies hired consultants for $400 an hour to learn their problems and then solve them. It made sense—coding was the hard part. But that equation has flipped completely. Today, creating software, be it through writing code with A.I. assistance or using a low-code platform is so easy that understanding the problem deeply is the true differentiator. The people who live with these problems every day, who understand every nuance and edge case, who feel the friction—these are the people who should be building solutions in the age of A.I. The change is already happening, with more than ___ citizen developers equipped with tools A.I. are the future of software. 
+
+[insert graph]
+
 That's exactly what we're going to teach in this course.
 
 Welcome to A.I. Automation for Non-Coders, where we're empowering the real experts—the ones who actually understand the problems—to solve them directly.
