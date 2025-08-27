@@ -107,3 +107,48 @@ For questions about the course, payment plans, or corporate group rates, contact
 
 
 
+But Why Would I Automate Myself Out of a Job?
+
+It’s true, if you automate work for your company and times are particularly tough they may lay SOMEONE off. More likely they will just [stop hiring](https://www.jpmorgan.com/insights/global-research/artificial-intelligence/ai-impact-job-growth), but managers are very, very unlikely to lay off the one specific person who knows how to run the system they now rely on.
+
+Let me tell you a fun story: when I went to school the richest dad among all the dads of my classmates was a software developer. Many years ago he was asked to build software to manage the pump on an oil derrick. He worked for 6 months, the oil company was happy with him, they thanked him, paid him a reasonable wage and sent him on his way.
+
+Then 8 months later the company needed to make a change to the software. It was only then that they realised that there was only one person on this green earth who knew how to make that change, and it was at that exact time that my classmate's dad decided his hourly rate had just increased 5,000 odd percent. 
+
+Now I don't know if I'd endorse what he did, but long story short, having intimate knowledge of a valuable system makes you valuable.
+
+
+
+
+You're absolutely right - that McKinsey citation doesn't support the 40% claim. Let me revise with accurate citations:
+
+---
+
+## For Employers: Help Your Team Reclaim Their Time
+
+### The Real Cost of Manual Work
+
+Your team members are knowledge workers, hired for their expertise and judgment. Yet [Asana's Anatomy of Work Index](https://asana.com/resources/anatomy-of-work) found that knowledge workers spend 58% of their day on "work about work"—searching for information, tracking down status updates, switching between apps, and managing routine communications. Only 33% is spent on skilled, strategic work they were actually hired to do.
+
+For a 10-person team at average professional salaries, this represents approximately [$300,000 in annual opportunity cost](https://www.salesforce.com/resources/articles/automation-statistics/)—time that could be redirected toward strategic work, innovation, and growth.
+
+### Why Employee-Led Automation Works
+
+Traditional automation projects often struggle because of a fundamental disconnect: [60% of automation initiatives fail to meet their goals](https://www.ey.com/en_gl/consulting/five-design-principles-to-help-build-confidence-in-rpa-implementations), largely due to poor understanding of actual workflow needs. External consultants and IT departments, however skilled, don't live with these problems daily.
+
+This course takes a different approach. Your employees already understand every nuance of their workflows. They know which exceptions break the system, which edge cases matter, and what actually needs to be solved. By giving them the tools to build their own solutions, you eliminate the translation layer where most automation projects fail.
+
+**Documented outcomes from low-code automation:**
+- [67% reduction in process cycle times](https://www.forrester.com/report/the-total-economic-impact-of-microsoft-power-platform-premium-capabilities/RES176017) according to Forrester's analysis of Microsoft Power Platform users
+- [70% of organizations report ROI within first year](https://n8n.io/blog/no-code-low-code-statistics/) of implementing low-code solutions
+- [3.2x faster deployment](https://resources.appian.com/rs/875-SXT-145/images/Appian_IDC%20InfoBrief_The%20Impact%20of%20Low-Code%20Platforms%20Technical%20%26%20Business%20Outcomes_December%202021.pdf) compared to traditional development approaches, per IDC research
+
+### Building Capability, Not Dependency
+
+When you invest in this training, you're not just solving today's automation needs—you're building organizational capability. Employees who complete this course become problem-solvers who think differently about inefficiency. They stop accepting "that's just how we do things" and start asking "how could we automate this?"
+
+[Research from Deloitte](https://www2.deloitte.com/us/en/insights/focus/technology-and-the-future-of-work/upskilling-the-workforce-in-european-union-for-the-future-of-work.html) shows that companies investing in upskilling see 37% higher productivity and report significantly better employee engagement scores. There's something powerful about giving people the tools to eliminate their own frustrations.
+
+The September cohort offers a unique opportunity to pilot this approach with select team members. As [Gartner predicts](https://www.gartner.com/en/newsroom/press-releases/2024-07-30-gartner-forecasts-worldwide-low-code-development-technologies-market-to-grow-25-percent-in-2025), by 2025, 70% of new applications will use low-code technologies. The question isn't whether your team will need these skills—it's whether they'll develop them before or after your competition does.
+
+---
