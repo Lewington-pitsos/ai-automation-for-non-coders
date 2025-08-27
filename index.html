@@ -116,54 +116,331 @@
         </div>
     </section>
 
-    <!-- Success Stories Section with Canvas -->
     <section class="features canvas-section" id="success">
         <canvas class="canvas-bg" id="featuresCanvas"></canvas>
         <div class="container">
             <div class="section-header">
                 <h2>What You'll Actually Build</h2>
-                <p>Software development used to mean a 4 year degree, but that was before A.I. Here are some real-world examples of what non-technical specialists have automated with low-code tools:</p>
+                <p>Software automation used to mean a 4-year degree, but that was before AI. Here are real-world examples of what non-technical professionals have automated with low-code tools:</p>
             </div>
             <div class="features-grid">
-                <div class="feature-item">
-                    <div class="feature-visual">
-                        <img src="https://via.placeholder.com/400x300/111111/666666?text=[DELIVERY+HERO+LOGO]" alt="Delivery Hero Case Study">
-                    </div>
-                    <div class="feature-content">
-                        <h3>Account Recovery Workflows</h3>
-                        <p>Delivery Hero's  saved IT automation that reduced employee lockout time from 35 to 20 minutes, freeing up thousands of work hours annually.</p>
-                    </div>
+                <div class="feature-item" onclick="window.open('https://blog.n8n.io/how-a-digital-strategist-uses-n8n-for-online-marketing/', '_blank')">
+                    <h3 class="feature-title">WordPress to CRM Pipeline</h3>
+                    <p class="feature-description">Gustavo Salvador automated his digital marketing agency's entire lead generation process—capturing WordPress form submissions via webhooks, instantly creating Trello cards for each affiliate, and transforming their board into a full CRM system.</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-content">
-                        <h3>Invoice Processing Automation</h3>
-                        <p>Transform 3-day tasks into 45 minutes—Rich Nasser automated his friend's entire invoicing workflow using Power Automate's AI over a single weekend, extracting data from PDFs automatically.</p>
-                    </div>
-                    <div class="feature-visual">
-                        <img src="https://via.placeholder.com/400x300/111111/666666?text=[INVOICE+AUTOMATION]" alt="Invoice Automation">
-                    </div>
+                <div class="feature-item" onclick="window.open('https://www.linkedin.com/pulse/how-i-automated-friends-invoicing-process-one-weekend-rich-nasser', '_blank')">
+                    <h3 class="feature-title">Invoice Processing in 45 Minutes</h3>
+                    <p class="feature-description">Rich Nasser transformed his friend's 3-day invoicing nightmare into a 45-minute task over a single weekend using Power Automate's AI—automatically extracting data from PDFs, matching correct emails from Excel, and sending personalized invoices.</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-visual">
-                        <img src="https://via.placeholder.com/400x300/111111/666666?text=[BORDR+CASE]" alt="Bordr Case Study">
-                    </div>
-                    <div class="feature-content">
-                        <h3>Contract Automation</h3>
-                        <p>Scale six-figure businesses—Bordr's relocation services went from side project to thriving business by automating PDF contract generation, client communications, and payment processing.</p>
-                    </div>
+                <div class="feature-item" onclick="window.open('https://n8n.io/case-studies/bordr/', '_blank')">
+                    <h3 class="feature-title">Six-Figure Relocation Business</h3>
+                    <p class="feature-description">Richard and Kathleen's Bordr went from side project to six-figure business by automating Portuguese tax ID processing—generating power of attorney PDFs instantly, updating clients automatically, and scaling without hiring a support team.</p>
                 </div>
-                <div class="feature-item">
-                    <div class="feature-content">
-                        <h3>Release Notes Generation</h3>
-                        <p>Eliminate hours of manual work—developers are automating Jira-to-Slack release communications, pulling ticket data, formatting updates, and posting to team channels automatically.</p>
-                    </div>
-                    <div class="feature-visual">
-                        <img src="https://via.placeholder.com/400x300/111111/666666?text=[RELEASE+AUTOMATION]" alt="Release Notes Automation">
-                    </div>
+                <div class="feature-item" onclick="window.open('https://medium.com/@syrom_85473/a-practical-n8n-workflow-example-from-a-to-z-part-1-use-case-learning-journey-and-setup-1f4efcfb81b1', '_blank')">
+                    <h3 class="feature-title">Newsletter to LinkedIn Pipeline</h3>
+                    <p class="feature-description">An automation enthusiast built a workflow that reads AI newsletters, summarizes them with LLMs, translates the content to German, and automatically publishes polished LinkedIn posts—turning hours of manual curation into a fully automated content pipeline.</p>
                 </div>
             </div>
         </div>
     </section>
+
+    <style>
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .feature-item {
+            background: #111;
+            border: 1px solid #333;
+            padding: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .feature-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #fff;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-item:hover::before {
+            transform: translateX(0);
+        }
+        
+        .feature-item:hover {
+            border-color: #666;
+            background: #1a1a1a;
+        }
+        
+        .feature-title {
+            font-size: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .feature-description {
+            color: #999;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Enhanced FAQ Styles */
+        .faq-section {
+            background: #000;
+            padding: 80px 0;
+        }
+        
+        .faq-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .faq-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #999;
+            font-size: 0.9rem;
+        }
+        
+        .stat-number {
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+        
+        .faq-item {
+            background: rgba(17, 17, 17, 0.8);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+        
+        .faq-item.technical {
+            border-left-color: #666;
+        }
+        
+        .faq-item.support {
+            border-left-color: #666;
+        }
+        
+        .faq-item.cost {
+            border-left-color: #666;
+        }
+        
+        .faq-item.roi {
+            border-left-color: #666;
+        }
+        
+        .faq-item:hover {
+            background: rgba(17, 17, 17, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            border-left-color: #fff;
+        }
+        
+        .faq-item.active {
+            border-left-color: #fff;
+        }
+        
+        .faq-header {
+            display: flex;
+            align-items: center;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-icon {
+            font-size: 2rem;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .faq-question-wrapper {
+            flex: 1;
+        }
+        
+        .faq-question {
+            color: #fff;
+            margin: 0 0 8px 0;
+            font-size: 1.2rem;
+            line-height: 1.4;
+            font-weight: 600;
+        }
+        
+        .faq-category {
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .faq-toggle {
+            margin-left: 20px;
+            flex-shrink: 0;
+        }
+        
+        .faq-arrow {
+            width: 24px;
+            height: 24px;
+            color: #999;
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-arrow {
+            transform: rotate(180deg);
+            color: #fff;
+        }
+        
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .faq-item.active .faq-content {
+            max-height: 400px;
+        }
+        
+        .faq-answer {
+            padding: 0 25px 25px 85px;
+            color: #ccc;
+        }
+        
+        .faq-answer p {
+            margin: 0 0 15px 0;
+            line-height: 1.6;
+        }
+        
+        .faq-answer p:last-of-type {
+            margin-bottom: 20px;
+        }
+        
+        .faq-reassurance {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .reassurance-badge {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .roi-badge {
+            background: rgba(102, 102, 102, 0.1);
+            color: #ccc;
+        }
+        
+        .roi-calculation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            flex-wrap: wrap;
+        }
+        
+        .roi-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .roi-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            display: block;
+        }
+        
+        .roi-label {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .roi-operator {
+            font-size: 1.2rem;
+            color: #666;
+            font-weight: bold;
+        }
+        
+        .roi-result .roi-number {
+            color: #ccc;
+            font-size: 1.8rem;
+        }
+        
+        @media (max-width: 768px) {
+            .faq-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .faq-header {
+                padding: 20px;
+            }
+            
+            .faq-answer {
+                padding: 0 20px 20px 70px;
+            }
+            
+            .faq-icon {
+                font-size: 1.5rem;
+                margin-right: 15px;
+            }
+            
+            .faq-question {
+                font-size: 1.1rem;
+            }
+            
+            .roi-calculation {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .roi-operator {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
 
     <!-- Instructor Section -->
     <section class="testimonials" id="instructor">
@@ -202,28 +479,126 @@
     </section>
 
     <!-- FAQ Section -->
-    <section class="testimonials" id="faq">
+    <section class="faq-section" id="faq">
         <div class="container">
             <div class="section-header">
-                <h2>Frequently Asked Questions</h2>
-                <p>Get answers to common questions about the course.</p>
+                <h2>FAQ</h2>
             </div>
-            <div class="testimonials-grid">
-                <div class="testimonial">
-                    <h4 class="faq-question">"I'm genuinely not technical at all—I barely understand Excel. Can I really do this?"</h4>
-                    <p class="testimonial-quote">Absolutely. We assume zero coding knowledge. There are thousands of examples online of non-coders building automations that save hours of work each day. If you can use a web browser and describe a problem clearly, you have all the prerequisites you need.</p>
+            
+            <div class="faq-container">
+                <div class="faq-item technical" data-category="technical">
+                    <div class="faq-header" onclick="toggleFAQ(this)">
+                        <div class="faq-icon">💡</div>
+                        <div class="faq-question-wrapper">
+                            <h4 class="faq-question">"I'm genuinely not technical at all—I barely understand Excel. Can I really do this?"</h4>
+                            <span class="faq-category">Technical Concern</span>
+                        </div>
+                        <div class="faq-toggle">
+                            <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6,9 12,15 18,9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-answer">
+                            <p><strong>Absolutely.</strong> We assume zero coding knowledge. There are thousands of examples online of non-coders building automations that save hours of work each day.</p>
+                            <p>If you can use a web browser and describe a problem clearly, you have all the prerequisites you need. Our teaching approach breaks down complex concepts into digestible steps—no technical background required.</p>
+                            <div class="faq-reassurance">
+                                <span class="reassurance-badge">✓ Beginner-Friendly</span>
+                                <span class="reassurance-badge">✓ No Coding Required</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="testimonial">
-                    <h4 class="faq-question">"What if I get stuck after the course ends?"</h4>
-                    <p class="testimonial-quote">You won't be on your own. Every cohort has a dedicated support group that remains active indefinitely. Plus, you gain access to our growing alumni network.</p>
+
+                <div class="faq-item support" data-category="support">
+                    <div class="faq-header" onclick="toggleFAQ(this)">
+                        <div class="faq-icon">🤝</div>
+                        <div class="faq-question-wrapper">
+                            <h4 class="faq-question">"What if I get stuck after the course ends?"</h4>
+                            <span class="faq-category">Support & Community</span>
+                        </div>
+                        <div class="faq-toggle">
+                            <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6,9 12,15 18,9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-answer">
+                            <p><strong>You won't be on your own.</strong> Every cohort has a dedicated support group that remains active indefinitely. Plus, you gain access to our growing alumni network.</p>
+                            <p>Our community has helped members solve everything from complex API integrations to workflow optimizations months after graduation. The collective knowledge keeps growing with each cohort.</p>
+                            <div class="faq-reassurance">
+                                <span class="reassurance-badge">✓ Lifetime Access</span>
+                                <span class="reassurance-badge">✓ Active Community</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="testimonial">
-                    <h4 class="faq-question">"What software costs are involved after the course?"</h4>
-                    <p class="testimonial-quote">The tools we teach (primarily n8n) have generous free tiers that cover most small business needs. If you scale up, paid plans start at around $20/month—a fraction of what you'll save in time.</p>
+
+                <div class="faq-item cost" data-category="cost">
+                    <div class="faq-header" onclick="toggleFAQ(this)">
+                        <div class="faq-icon">💰</div>
+                        <div class="faq-question-wrapper">
+                            <h4 class="faq-question">"What software costs are involved after the course?"</h4>
+                            <span class="faq-category">Cost & Investment</span>
+                        </div>
+                        <div class="faq-toggle">
+                            <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6,9 12,15 18,9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-answer">
+                            <p><strong>The tools we teach cost only $20 USD per month.</strong> All your tool usage during the course is included in the ticket price.</p>
+                            <p>Most automation platforms offer generous free tiers that cover small business needs. When you scale up, you're looking at roughly the cost of a Netflix subscription—a fraction of what you'll save in time during your first week.</p>
+                            <div class="faq-reassurance">
+                                <span class="reassurance-badge">✓ Course Tools Included</span>
+                                <span class="reassurance-badge">✓ Free Tiers Available</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="testimonial">
-                    <h4 class="faq-question">"How quickly will I see ROI on this investment?"</h4>
-                    <p class="testimonial-quote">It's reasonable to expect that you can automate 3+ hours of work each week after taking this course. At typical professional rates, you'll recoup your investment in under a month.</p>
+
+                <div class="faq-item roi" data-category="roi">
+                    <div class="faq-header" onclick="toggleFAQ(this)">
+                        <div class="faq-icon">⚡</div>
+                        <div class="faq-question-wrapper">
+                            <h4 class="faq-question">"How quickly will I see ROI on this investment?"</h4>
+                            <span class="faq-category">Return on Investment</span>
+                        </div>
+                        <div class="faq-toggle">
+                            <svg class="faq-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6,9 12,15 18,9"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="faq-content">
+                        <div class="faq-answer">
+                            <p><strong>It's reasonable to expect automation of 3+ hours weekly after this course.</strong> At typical professional rates, you'll recoup your investment in under a month.</p>
+                            <div class="roi-calculation">
+                                <div class="roi-item">
+                                    <span class="roi-number">3</span>
+                                    <span class="roi-label">Hours Saved/Week</span>
+                                </div>
+                                <div class="roi-operator">×</div>
+                                <div class="roi-item">
+                                    <span class="roi-number">$50</span>
+                                    <span class="roi-label">Hourly Rate</span>
+                                </div>
+                                <div class="roi-operator">=</div>
+                                <div class="roi-item roi-result">
+                                    <span class="roi-number">$150</span>
+                                    <span class="roi-label">Weekly Value</span>
+                                </div>
+                            </div>
+                            <div class="faq-reassurance">
+                                <span class="reassurance-badge roi-badge">✓ <30 Day Payback</span>
+                                <span class="reassurance-badge roi-badge">✓ Compound Returns</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -257,11 +632,6 @@
                             <li><a href="https://n8n.io/blog/no-code-low-code-statistics/" class="link-blue">70% of organizations report ROI within first year</a> of implementing low-code solutions</li>
                             <li><a href="https://resources.appian.com/rs/875-SXT-145/images/Appian_IDC%20InfoBrief_The%20Impact%20of%20Low-Code%20Platforms%20Technical%20%26%20Business%20Outcomes_December%202021.pdf" class="link-blue">3.2x faster deployment</a> compared to traditional development approaches, per IDC research</li>
                         </ul>
-                        
-                        <h3 class="section-heading">Building Capability, Not Dependency</h3>
-                        <p class="body-text">When you invest in this training, you're not just solving today's automation needs—you're building organizational capability. Employees who complete this course become problem-solvers who think differently about inefficiency. They stop accepting "that's just how we do things" and start asking "how could we automate this?"</p>
-                        <p class="body-text"><a href="https://www2.deloitte.com/us/en/insights/focus/technology-and-the-future-of-work/upskilling-the-workforce-in-european-union-for-the-future-of-work.html" class="link-blue">Research from Deloitte</a> shows that companies investing in upskilling see 37% higher productivity and report significantly better employee engagement scores. There's something powerful about giving people the tools to eliminate their own frustrations.</p>
-                        <p class="body-text">The September cohort offers a unique opportunity to pilot this approach with select team members. As <a href="https://www.gartner.com/en/newsroom/press-releases/2024-07-30-gartner-forecasts-worldwide-low-code-development-technologies-market-to-grow-25-percent-in-2025" class="link-blue">Gartner predicts</a>, by 2025, 70% of new applications will use low-code technologies. The question isn't whether your team will need these skills—it's whether they'll develop them before or after your competition does.</p>
                     </div>
                 </div>
                 
@@ -316,9 +686,8 @@
                     <li><a href="mailto:courses@fairdinkumsystems.com">Contact</a></li>
                     <li><a href="#faq">FAQ</a></li>
                     <li><a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0">LinkedIn</a></li>
-                    <li><a href="https://fairdinkumsystems.com/">Fair Dinkum Systems</a></li>
                 </ul>
-                <p class="copyright">© 2025 A.I. Automation for Non-Coders. For questions about the course, payment plans, or corporate group rates, contact courses@fairdinkumsystems.com</p>
+                <p class="copyright">© 2025 A.I. Automation for Non-Coders.</p>
             </div>
         </div>
     </footer>
@@ -356,6 +725,26 @@
             
             // Activate corresponding button
             event.target.classList.add('active');
+        }
+
+        // FAQ Accordion functionality
+        function toggleFAQ(header) {
+            const faqItem = header.parentElement;
+            const isActive = faqItem.classList.contains('active');
+            
+            // Close all other FAQ items
+            document.querySelectorAll('.faq-item.active').forEach(item => {
+                if (item !== faqItem) {
+                    item.classList.remove('active');
+                }
+            });
+            
+            // Toggle current item
+            if (isActive) {
+                faqItem.classList.remove('active');
+            } else {
+                faqItem.classList.add('active');
+            }
         }
 
         // Smooth scroll for navigation links
