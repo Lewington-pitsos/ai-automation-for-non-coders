@@ -1356,3 +1356,464 @@ a:hover {
         transform: rotate(90deg);
     }
 }
+
+/* Persona Section - Stunning Vertical Design */
+.persona-container {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 0;
+}
+
+.persona-timeline {
+    position: absolute;
+    left: 60px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    z-index: 1;
+}
+
+.persona-line {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to bottom, #4eff9f 0%, #4eff9f 80%, transparent 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(78, 255, 159, 0.4);
+    transition: height 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.persona-line.animate {
+    height: 100%;
+}
+
+.persona-list {
+    position: relative;
+    z-index: 2;
+}
+
+.persona-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 80px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.persona-item:nth-child(even) {
+    transform: translateX(100px);
+}
+
+.persona-item.animate {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.persona-marker {
+    position: absolute;
+    left: 47px;
+    top: 20px;
+    width: 27px;
+    height: 27px;
+    background: #4eff9f;
+    border: 5px solid #000;
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 0 0 3px #4eff9f, 0 0 20px rgba(78, 255, 159, 0.3);
+    transition: all 0.3s ease;
+}
+
+.persona-item:hover .persona-marker {
+    background: #fff;
+    box-shadow: 0 0 0 6px #4eff9f, 0 0 30px rgba(78, 255, 159, 0.6);
+    transform: scale(1.2);
+}
+
+.persona-content {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 0;
+    padding: 30px;
+    margin-left: 100px;
+    position: relative;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    overflow: hidden;
+    width: 100%;
+    max-width: 600px;
+}
+
+.persona-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background: linear-gradient(90deg, #4eff9f, #33d477);
+    transition: height 0.4s ease;
+    z-index: 1;
+}
+
+.persona-item:hover .persona-content::before {
+    height: 3px;
+}
+
+.persona-content::after {
+    content: '';
+    position: absolute;
+    top: 30px;
+    left: -15px;
+    width: 0;
+    height: 0;
+    border: 15px solid;
+    border-color: transparent #1a1a1a transparent transparent;
+    z-index: 2;
+}
+
+.persona-item:hover .persona-content {
+    background: #222;
+    border-color: #555;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.persona-icon {
+    position: absolute;
+    top: -5px;
+    right: 20px;
+    font-size: 3rem;
+    opacity: 0.1;
+    transition: all 0.4s ease;
+    z-index: 1;
+}
+
+.persona-item:hover .persona-icon {
+    opacity: 0.3;
+    transform: rotate(5deg) scale(1.1);
+}
+
+.persona-text {
+    position: relative;
+    z-index: 2;
+}
+
+.persona-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+    transition: color 0.3s ease;
+}
+
+.persona-item:hover .persona-title {
+    color: #4eff9f;
+}
+
+.persona-description {
+    color: #999;
+    line-height: 1.7;
+    font-size: 16px;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.persona-item:hover .persona-description {
+    color: #ccc;
+}
+
+/* Pulse Animation for Markers */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(78, 255, 159, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 20px rgba(78, 255, 159, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(78, 255, 159, 0);
+    }
+}
+
+.persona-marker.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Responsive Design for Personas */
+@media (max-width: 768px) {
+    .persona-container {
+        padding: 40px 20px;
+    }
+    
+    .persona-timeline {
+        left: 20px;
+    }
+    
+    .persona-marker {
+        left: 7px;
+        width: 23px;
+        height: 23px;
+    }
+    
+    .persona-content {
+        margin-left: 60px;
+        padding: 20px;
+    }
+    
+    .persona-content::after {
+        left: -15px;
+    }
+    
+    .persona-icon {
+        font-size: 2rem;
+        top: -5px;
+        right: 15px;
+    }
+    
+    .persona-title {
+        font-size: 20px;
+    }
+    
+    .persona-description {
+        font-size: 15px;
+    }
+    
+    .persona-item {
+        margin-bottom: 60px;
+    }
+}
+
+/* Course Timeline - Same Style as Persona Section */
+.course-timeline-container {
+    position: relative;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 0;
+}
+
+.course-timeline-track {
+    position: absolute;
+    left: 60px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    z-index: 1;
+}
+
+.course-timeline-line {
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to bottom, #4eff9f 0%, #4eff9f 80%, transparent 100%);
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(78, 255, 159, 0.4);
+    transition: height 2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.course-timeline-line.animate {
+    height: 100%;
+}
+
+.course-timeline-list {
+    position: relative;
+    z-index: 2;
+}
+
+.course-timeline-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 80px;
+    position: relative;
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.course-timeline-item:nth-child(even) {
+    transform: translateX(100px);
+}
+
+.course-timeline-item.animate {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.course-timeline-marker {
+    position: absolute;
+    left: 47px;
+    top: 30px;
+    width: 27px;
+    height: 27px;
+    background: #4eff9f;
+    border: 5px solid #000;
+    border-radius: 50%;
+    z-index: 3;
+    box-shadow: 0 0 0 3px #4eff9f, 0 0 20px rgba(78, 255, 159, 0.3);
+    transition: all 0.3s ease;
+}
+
+.course-timeline-item:hover .course-timeline-marker {
+    background: #fff;
+    box-shadow: 0 0 0 6px #4eff9f, 0 0 30px rgba(78, 255, 159, 0.6);
+    transform: scale(1.2);
+}
+
+.course-timeline-content {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 0;
+    padding: 35px;
+    margin-left: 100px;
+    position: relative;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    overflow: hidden;
+    width: 100%;
+    max-width: 700px;
+}
+
+.course-timeline-content::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background: linear-gradient(90deg, #4eff9f, #33d477);
+    transition: height 0.4s ease;
+    z-index: 1;
+}
+
+.course-timeline-item:hover .course-timeline-content::before {
+    height: 3px;
+}
+
+.course-timeline-content::after {
+    content: '';
+    position: absolute;
+    top: 40px;
+    left: -15px;
+    width: 0;
+    height: 0;
+    border: 15px solid;
+    border-color: transparent #1a1a1a transparent transparent;
+    z-index: 2;
+}
+
+.course-timeline-item:hover .course-timeline-content {
+    background: #222;
+    border-color: #555;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.course-timeline-icon {
+    position: absolute;
+    top: 10px;
+    right: 25px;
+    font-size: 3.5rem;
+    opacity: 0.1;
+    transition: all 0.4s ease;
+    z-index: 1;
+}
+
+.course-timeline-item:hover .course-timeline-icon {
+    opacity: 0.3;
+    transform: rotate(5deg) scale(1.1);
+}
+
+.course-timeline-text {
+    position: relative;
+    z-index: 2;
+}
+
+.course-timeline-date {
+    font-size: 12px;
+    color: #4eff9f;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.8;
+}
+
+.course-timeline-title {
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+    transition: color 0.3s ease;
+}
+
+.course-timeline-item:hover .course-timeline-title {
+    color: #4eff9f;
+}
+
+.course-timeline-description {
+    color: #999;
+    line-height: 1.7;
+    font-size: 16px;
+    margin: 0;
+    transition: color 0.3s ease;
+}
+
+.course-timeline-item:hover .course-timeline-description {
+    color: #ccc;
+}
+
+.course-timeline-marker.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Responsive Design for Course Timeline */
+@media (max-width: 768px) {
+    .course-timeline-container {
+        padding: 40px 20px;
+    }
+    
+    .course-timeline-track {
+        left: 20px;
+    }
+    
+    .course-timeline-marker {
+        left: 7px;
+        width: 23px;
+        height: 23px;
+        top: 25px;
+    }
+    
+    .course-timeline-content {
+        margin-left: 60px;
+        padding: 25px 20px;
+    }
+    
+    .course-timeline-content::after {
+        left: -15px;
+        top: 35px;
+    }
+    
+    .course-timeline-icon {
+        font-size: 2.5rem;
+        top: 10px;
+        right: 15px;
+    }
+    
+    .course-timeline-title {
+        font-size: 22px;
+    }
+    
+    .course-timeline-description {
+        font-size: 15px;
+    }
+    
+    .course-timeline-date {
+        font-size: 11px;
+    }
+    
+    .course-timeline-item {
+        margin-bottom: 60px;
+    }
+}
