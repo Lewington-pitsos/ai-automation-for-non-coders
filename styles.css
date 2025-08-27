@@ -610,6 +610,9 @@ footer {
     z-index: 1;
 }
 
+.white {
+    color: white
+}
 .timeline-right {
     left: 50%;
     text-align: left;
