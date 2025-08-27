@@ -274,14 +274,13 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Persona Section Animation System
-function initPersonaAnimations() {
-    const personaContainer = document.querySelector('.persona-container');
-    const personaLine = document.querySelector('.persona-line');
-    const personaItems = document.querySelectorAll('.persona-item');
-    const personaMarkers = document.querySelectorAll('.persona-marker');
+// Terminal Section Animation System
+function initTerminalAnimations() {
+    const terminalContainer = document.querySelector('.terminal-container');
+    const terminalLines = document.querySelectorAll('.terminal-line');
+    const personaEntries = document.querySelectorAll('.persona-entry');
     
-    if (!personaContainer || !personaLine || personaItems.length === 0) {
+    if (!terminalContainer || terminalLines.length === 0) {
         return;
     }
 
@@ -291,41 +290,33 @@ function initPersonaAnimations() {
         entries.forEach(entry => {
             if (entry.isIntersecting && !animationTriggered) {
                 animationTriggered = true;
-                startPersonaAnimation();
+                startTerminalAnimation();
             }
         });
     }, {
-        threshold: 0.2,
-        rootMargin: '-50px 0px'
+        threshold: 0.1,
+        rootMargin: '-30px 0px'
     });
 
-    observer.observe(personaContainer);
+    observer.observe(terminalContainer);
 
-    function startPersonaAnimation() {
-        // Animate the timeline line first
-        personaLine.classList.add('animate');
-        
-        // Animate each persona item with progressive delays
-        personaItems.forEach((item, index) => {
-            const delay = parseInt(item.dataset.delay) || (index * 200);
+    function startTerminalAnimation() {
+        // Animate terminal lines with staggered delays
+        terminalLines.forEach((line, index) => {
+            const delay = parseInt(line.dataset.delay) || 0;
             
             setTimeout(() => {
-                item.classList.add('animate');
-                
-                // Add pulse animation to marker after item appears
-                setTimeout(() => {
-                    const marker = item.querySelector('.persona-marker');
-                    if (marker) {
-                        marker.classList.add('pulse');
-                        
-                        // Remove pulse after 4 seconds
-                        setTimeout(() => {
-                            marker.classList.remove('pulse');
-                        }, 4000);
-                    }
-                }, 600);
-                
-            }, delay + 300); // Extra delay to let line animation start
+                line.classList.add('visible');
+            }, delay);
+        });
+
+        // Animate persona entries separately
+        personaEntries.forEach((entry, index) => {
+            const delay = parseInt(entry.dataset.delay) || 0;
+            
+            setTimeout(() => {
+                entry.classList.add('visible');
+            }, delay);
         });
     }
 }
@@ -387,7 +378,7 @@ function initCourseTimelineAnimations() {
 
 // Initialize animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    initPersonaAnimations();
+    initTerminalAnimations();
     initCourseTimelineAnimations();
 });
 
