@@ -119,21 +119,139 @@ nav {
     max-width: 600px;
 }
 
+/* Outstanding CTA Button Animation */
 .cta-button {
     display: inline-block;
-    padding: 16px 32px;
+    padding: 18px 36px;
     background: #fff;
     color: #000;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 700;
     font-size: 16px;
-    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
     border: 2px solid #fff;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 0 30px rgba(78, 255, 159, 0.3), inset 0 0 30px rgba(78, 255, 159, 0.1);
+    animation: ctaPulse 3s ease-in-out infinite;
+    z-index: 1;
 }
 
+/* Pulsing glow animation */
+@keyframes ctaPulse {
+    0%, 100% {
+        box-shadow: 0 0 30px rgba(78, 255, 159, 0.3), inset 0 0 30px rgba(78, 255, 159, 0.1);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 60px rgba(78, 255, 159, 0.6), inset 0 0 40px rgba(78, 255, 159, 0.2);
+        transform: scale(1.02);
+    }
+}
+
+/* Scanning line effect */
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(78, 255, 159, 0.4), transparent);
+    animation: ctaScan 2.5s ease-in-out infinite;
+    z-index: -1;
+}
+
+@keyframes ctaScan {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+}
+
+/* Matrix-style data streams */
+.cta-button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #4eff9f, transparent);
+    animation: ctaDataStream 1.8s linear infinite;
+    opacity: 0.7;
+}
+
+@keyframes ctaDataStream {
+    0% { height: 0%; top: 50%; opacity: 0; }
+    50% { height: 100%; top: 0%; opacity: 0.7; }
+    100% { height: 0%; top: 50%; opacity: 0; }
+}
+
+/* Enhanced hover state with glitch effect */
 .cta-button:hover {
-    background: transparent;
-    color: #fff;
+    background: #000;
+    color: #4eff9f;
+    border-color: #4eff9f;
+    text-shadow: 0 0 10px #4eff9f;
+    animation: ctaGlitch 0.3s ease-in-out infinite alternate;
+    box-shadow: 0 0 80px rgba(78, 255, 159, 0.8), inset 0 0 50px rgba(78, 255, 159, 0.2);
+    transform: scale(1.05);
+}
+
+@keyframes ctaGlitch {
+    0% { 
+        text-shadow: 0 0 10px #4eff9f, 2px 0 #ff0040;
+        transform: scale(1.05) skew(0deg); 
+    }
+    25% { 
+        text-shadow: 0 0 15px #4eff9f, -2px 0 #00ff40;
+        transform: scale(1.05) skew(1deg); 
+    }
+    50% { 
+        text-shadow: 0 0 20px #4eff9f, 1px 0 #4000ff;
+        transform: scale(1.05) skew(-1deg); 
+    }
+    75% { 
+        text-shadow: 0 0 15px #4eff9f, -1px 0 #ff0040;
+        transform: scale(1.05) skew(0.5deg); 
+    }
+    100% { 
+        text-shadow: 0 0 10px #4eff9f, 2px 0 #00ff40;
+        transform: scale(1.05) skew(0deg); 
+    }
+}
+
+/* Particle effect on hover */
+.cta-button:hover::before {
+    background: linear-gradient(90deg, transparent, rgba(78, 255, 159, 0.8), transparent);
+    animation: ctaParticleStorm 0.8s ease-out infinite;
+}
+
+@keyframes ctaParticleStorm {
+    0% { 
+        left: -100%; 
+        background: linear-gradient(90deg, transparent, rgba(78, 255, 159, 0.8), transparent);
+    }
+    100% { 
+        left: 100%; 
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    }
+}
+
+/* Active/pressed state */
+.cta-button:active {
+    transform: scale(0.98);
+    box-shadow: 0 0 40px rgba(78, 255, 159, 1), inset 0 0 30px rgba(78, 255, 159, 0.5);
+    animation: none;
+}
+
+/* Focus state for accessibility */
+.cta-button:focus {
+    outline: 2px solid #4eff9f;
+    outline-offset: 4px;
 }
 
 .hero-visual {

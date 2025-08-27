@@ -1,1 +1,24 @@
-the timeline in the "the system" section is perfect but it should only fade in once. once it has been made visible once it must stay visible.
+the register page will collect the following info:
+
+- name
+- email
+- phone number
+- coding experience, all experience levels encouraged (none, vibe coding only, only coded hobby projects, have coded professionally)
+- company (optional)
+- job title (optional)
+- how did you hear about us? single select, options:
+  - linkedin
+  - facebook
+  - instagram
+  - friend
+  - google search
+  - A.I. model recommendation
+  - MLAI
+  - other
+- are you thinking of automating anything in particular? text area
+
+
+
+it must also have a terms and conditions scroll box that must be scrolled to the bottom before the user can click the submit button.
+
+for now make the terms and conditions text just lorem ipsum.

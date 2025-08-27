@@ -1,8 +1,29 @@
 // Import Perlin background functionality
 import { initPerlinBackgrounds, handlePerlinResize } from './perlin-background.js';
 
+// Load shared components
+async function loadComponent(elementId, componentPath) {
+    try {
+        const response = await fetch(componentPath);
+        if (!response.ok) throw new Error(`Failed to load ${componentPath}`);
+        const html = await response.text();
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.innerHTML = html;
+        }
+    } catch (error) {
+        console.error(`Error loading component ${componentPath}:`, error);
+    }
+}
+
 // Initialize everything on load
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
+    // Load shared components first
+    await Promise.all([
+        loadComponent('header-component', 'components/header.html'),
+        loadComponent('footer-component', 'components/footer.html')
+    ]);
+    
     // Initialize Perlin backgrounds
     initPerlinBackgrounds();
     
