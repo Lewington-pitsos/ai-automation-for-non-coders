@@ -448,10 +448,208 @@
     <!-- Load Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js"></script>
     
-    <!-- Main initialization script -->
-    <script type="module">
-        // Import Perlin background functionality
-        import { initPerlinBackgrounds, handlePerlinResize } from './perlin-background.js';
+    <!-- Inline Perlin background functionality -->
+    <script>
+        // Perlin Noise Flow Field Implementation (inlined to avoid CORS issues)
+        class PerlinNoise {
+            constructor() {
+                this.permutation = [];
+                for (let i = 0; i < 256; i++) {
+                    this.permutation[i] = Math.floor(Math.random() * 256);
+                }
+                for (let i = 0; i < 256; i++) {
+                    this.permutation[256 + i] = this.permutation[i];
+                }
+            }
+            
+            fade(t) {
+                return t * t * t * (t * (t * 6 - 15) + 10);
+            }
+            
+            lerp(t, a, b) {
+                return a + t * (b - a);
+            }
+            
+            grad(hash, x, y) {
+                const h = hash & 3;
+                const u = h < 2 ? x : y;
+                const v = h < 2 ? y : x;
+                return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+            }
+            
+            noise(x, y) {
+                const X = Math.floor(x) & 255;
+                const Y = Math.floor(y) & 255;
+                
+                x -= Math.floor(x);
+                y -= Math.floor(y);
+                
+                const u = this.fade(x);
+                const v = this.fade(y);
+                
+                const a = this.permutation[X] + Y;
+                const aa = this.permutation[a];
+                const ab = this.permutation[a + 1];
+                const b = this.permutation[X + 1] + Y;
+                const ba = this.permutation[b];
+                const bb = this.permutation[b + 1];
+                
+                return this.lerp(v, 
+                    this.lerp(u, this.grad(this.permutation[aa], x, y), 
+                                 this.grad(this.permutation[ba], x - 1, y)),
+                    this.lerp(u, this.grad(this.permutation[ab], x, y - 1),
+                                 this.grad(this.permutation[bb], x - 1, y - 1))
+                );
+            }
+        }
+
+        class GridAngle {
+            constructor(x, y, r, angle) {
+                this.x = x;
+                this.y = y;
+                this.r = r;
+                this.angle = angle;
+                this.vx = x + r * Math.cos(angle);
+                this.vy = y + r * Math.sin(angle);
+            }
+        }
+
+        class Particle {
+            constructor(canvas) {
+                this.canvas = canvas;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * 10;
+                this.prevX = this.x;
+                this.prevY = this.y;
+                this.age = 0;
+                this.maxAge = 200 + Math.random() * 800;
+                this.hue = 90 + Math.random() * 60;
+                this.speed = 0.5 + Math.random() * 2.5;
+            }
+            
+            update(grid, spacing) {
+                this.prevX = this.x;
+                this.prevY = this.y;
+                
+                const gridX = Math.floor(this.x / spacing);
+                const gridY = Math.floor(this.y / spacing);
+                
+                if (gridX >= 0 && gridX < grid.length && 
+                    gridY >= 0 && gridY < grid[0].length) {
+                    const angle = grid[gridX][gridY].angle;
+                    this.x += Math.cos(angle) * this.speed;
+                    this.y += Math.sin(angle) * this.speed;
+                    this.age++;
+                } else {
+                    this.age = this.maxAge;
+                }
+            }
+            
+            draw(ctx) {
+                if (this.age > 0) {
+                    const alpha = Math.max(0, 1 - this.age / this.maxAge) * 0.8;
+                    ctx.strokeStyle = `hsla(${this.hue}, 90%, 80%, ${alpha})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(this.prevX, this.prevY);
+                    ctx.lineTo(this.x, this.y);
+                    ctx.stroke();
+                }
+            }
+            
+            isDead() {
+                return this.age >= this.maxAge || this.y > this.canvas.height;
+            }
+        }
+
+        // Create flow field for each canvas
+        function createFlowField(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.parentElement.getBoundingClientRect();
+            
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            
+            const spacing = 15;
+            const rez = 0.1;
+            const grid = [];
+            const perlin = new PerlinNoise();
+            
+            // Create grid
+            for (let x = 0; x < canvas.width; x += spacing) {
+                const row = [];
+                for (let y = 0; y < canvas.height; y += spacing) {
+                    const noiseValue = (perlin.noise(x * rez, y * rez) + 1) * 0.5;
+                    const angle = noiseValue * Math.PI * 2;
+                    const biasedAngle = angle * 0.5;
+                    row.push(new GridAngle(x, y, spacing / 2, biasedAngle));
+                }
+                grid.push(row);
+            }
+            
+            let particles = [];
+            let particleLimit = 120;
+            let frameCount = 0;
+            
+            function animate() {
+                frameCount++;
+                
+                if (frameCount % 2 === 0) {
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Add new particles
+                    if (particles.length < particleLimit) {
+                        const spawnCount = Math.min(3, particleLimit - particles.length);
+                        for (let i = 0; i < spawnCount; i++) {
+                            particles.push(new Particle(canvas));
+                        }
+                    }
+                    
+                    // Update and draw particles
+                    for (let i = particles.length - 1; i >= 0; i--) {
+                        particles[i].update(grid, spacing);
+                        particles[i].draw(ctx);
+                        
+                        if (particles[i].isDead()) {
+                            particles.splice(i, 1);
+                        }
+                    }
+                }
+                
+                requestAnimationFrame(animate);
+            }
+            
+            // Clear canvas initially
+            ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Start animation
+            animate();
+        }
+
+        // Initialize all canvas elements
+        function initPerlinBackgrounds() {
+            createFlowField('heroCanvas');
+            createFlowField('featuresCanvas');
+            createFlowField('ctaCanvas');
+        }
+
+        // Handle resize
+        function handlePerlinResize() {
+            const canvases = ['heroCanvas', 'featuresCanvas', 'ctaCanvas'];
+            canvases.forEach(id => {
+                const canvas = document.getElementById(id);
+                if (canvas && canvas.parentElement) {
+                    const rect = canvas.parentElement.getBoundingClientRect();
+                    canvas.width = rect.width;
+                    canvas.height = rect.height;
+                }
+            });
+        }
         
         // Initialize everything on load
         window.addEventListener('load', () => {
