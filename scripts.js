@@ -403,6 +403,246 @@ document.addEventListener('DOMContentLoaded', function() {
     initCourseTimelineAnimations();
 });
 
+// Registration Form Handling
+function initRegistrationForm() {
+    const form = document.getElementById('registrationForm');
+    if (!form) return;
+    
+    form.addEventListener('submit', handleFormSubmission);
+    
+    // Add real-time validation
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        field.addEventListener('blur', validateField);
+        field.addEventListener('input', clearFieldError);
+    });
+}
+
+function handleFormSubmission(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Convert form data to object
+    const registrationData = {};
+    for (let [key, value] of formData.entries()) {
+        registrationData[key] = value.trim();
+    }
+    
+    // Validate form
+    if (!validateForm(registrationData)) {
+        return;
+    }
+    
+    // Disable submit button and show loading state
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'PROCESSING...';
+    
+    // Simulate form submission (replace with actual submission logic)
+    setTimeout(() => {
+        showSuccessMessage();
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+        
+        // Log the registration data (replace with actual submission to server)
+        console.log('Registration Data:', registrationData);
+    }, 2000);
+}
+
+function validateForm(data) {
+    const errors = [];
+    
+    // Required field validation
+    if (!data.name) errors.push('Full name is required');
+    if (!data.email) errors.push('Email address is required');
+    if (!data.phone) errors.push('Phone number is required');
+    if (!data.experience) errors.push('Coding experience level is required');
+    if (!data.referralSource) errors.push('Please tell us how you heard about us');
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (data.email && !emailRegex.test(data.email)) {
+        errors.push('Please enter a valid email address');
+    }
+    
+    // Phone validation (basic)
+    const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+    if (data.phone && !phoneRegex.test(data.phone)) {
+        errors.push('Please enter a valid phone number');
+    }
+    
+    if (errors.length > 0) {
+        showFormErrors(errors);
+        return false;
+    }
+    
+    clearFormErrors();
+    return true;
+}
+
+function validateField(event) {
+    const field = event.target;
+    const value = field.value.trim();
+    
+    // Remove any existing error styling
+    clearFieldError(event);
+    
+    if (field.hasAttribute('required') && !value) {
+        showFieldError(field, 'This field is required');
+        return false;
+    }
+    
+    // Specific field validations
+    if (field.type === 'email' && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+            showFieldError(field, 'Please enter a valid email address');
+            return false;
+        }
+    }
+    
+    if (field.type === 'tel' && value) {
+        const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+        if (!phoneRegex.test(value)) {
+            showFieldError(field, 'Please enter a valid phone number');
+            return false;
+        }
+    }
+    
+    return true;
+}
+
+function showFieldError(field, message) {
+    field.style.borderColor = '#ff4444';
+    
+    // Remove existing error message
+    const existingError = field.parentNode.querySelector('.field-error');
+    if (existingError) {
+        existingError.remove();
+    }
+    
+    // Add error message
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'field-error';
+    errorDiv.style.color = '#ff4444';
+    errorDiv.style.fontSize = '12px';
+    errorDiv.style.marginTop = '4px';
+    errorDiv.textContent = message;
+    
+    field.parentNode.appendChild(errorDiv);
+}
+
+function clearFieldError(event) {
+    const field = event.target;
+    field.style.borderColor = '';
+    
+    const errorDiv = field.parentNode.querySelector('.field-error');
+    if (errorDiv) {
+        errorDiv.remove();
+    }
+}
+
+function showFormErrors(errors) {
+    // Remove existing error container
+    const existingErrors = document.querySelector('.form-errors');
+    if (existingErrors) {
+        existingErrors.remove();
+    }
+    
+    // Create error container
+    const errorContainer = document.createElement('div');
+    errorContainer.className = 'form-errors';
+    errorContainer.style.cssText = `
+        background: rgba(255, 68, 68, 0.1);
+        border: 1px solid #ff4444;
+        color: #ff4444;
+        padding: 16px;
+        margin-bottom: 24px;
+        font-size: 14px;
+    `;
+    
+    const errorList = document.createElement('ul');
+    errorList.style.margin = '0';
+    errorList.style.paddingLeft = '20px';
+    
+    errors.forEach(error => {
+        const li = document.createElement('li');
+        li.textContent = error;
+        li.style.marginBottom = '4px';
+        errorList.appendChild(li);
+    });
+    
+    errorContainer.appendChild(errorList);
+    
+    // Insert at the top of the form
+    const form = document.getElementById('registrationForm');
+    form.insertBefore(errorContainer, form.firstChild);
+    
+    // Scroll to errors
+    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function clearFormErrors() {
+    const errorContainer = document.querySelector('.form-errors');
+    if (errorContainer) {
+        errorContainer.remove();
+    }
+}
+
+function showSuccessMessage() {
+    // Remove existing success message
+    const existingSuccess = document.querySelector('.form-success');
+    if (existingSuccess) {
+        existingSuccess.remove();
+    }
+    
+    // Create success message
+    const successContainer = document.createElement('div');
+    successContainer.className = 'form-success';
+    successContainer.style.cssText = `
+        background: rgba(78, 255, 159, 0.1);
+        border: 1px solid #4eff9f;
+        color: #4eff9f;
+        padding: 24px;
+        margin-bottom: 24px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+    `;
+    
+    successContainer.innerHTML = `
+        <div style="font-size: 24px; margin-bottom: 8px;">✓</div>
+        <div>Registration Successful!</div>
+        <div style="font-size: 14px; margin-top: 8px; font-weight: normal; color: #ccc;">
+            We'll be in touch soon with payment details and course information.
+        </div>
+    `;
+    
+    // Insert at the top of the form
+    const form = document.getElementById('registrationForm');
+    form.insertBefore(successContainer, form.firstChild);
+    
+    // Scroll to success message
+    successContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (successContainer.parentNode) {
+            successContainer.remove();
+        }
+    }, 10000);
+}
+
+// Initialize registration form when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    initTerminalAnimations();
+    initCourseTimelineAnimations();
+    initRegistrationForm();
+});
+
 // Make functions globally available for inline event handlers
 window.switchTab = switchTab;
 window.toggleFAQ = toggleFAQ;

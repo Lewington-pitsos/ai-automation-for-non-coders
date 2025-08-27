@@ -9,7 +9,119 @@
 <body>
     <div id="header-component"></div>
 
-    <!-- Registration content will go here -->
+    <!-- Registration Form -->
+    <section class="registration-section">
+        <div class="container">
+            <div class="registration-content">
+                <div class="section-header">
+                    <h1>Register for AI Automation Mastery</h1>
+                    <p>Join the revolution. Transform your workflow in 8 days.</p>
+                </div>
+                
+                <form id="registrationForm" class="registration-form">
+                    <div class="form-grid">
+                        <!-- Personal Information -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Personal Information</h3>
+                            
+                            <div class="form-group">
+                                <label for="firstName">First Name *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lastName">Last Name *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Professional Information -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Professional Background</h3>
+                            
+                            <div class="form-group">
+                                <label for="experience">Coding Experience *</label>
+                                <select id="experience" name="experience" required>
+                                    <option value="">Select your experience level</option>
+                                    <option value="none">None - I'm completely new to coding</option>
+                                    <option value="vibe">Vibe coding only - I dabble occasionally</option>
+                                    <option value="hobby">Only coded hobby projects</option>
+                                    <option value="professional">Have coded professionally</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="company">Company (Optional)</label>
+                                <input type="text" id="company" name="company">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="jobTitle">Job Title (Optional)</label>
+                                <input type="text" id="jobTitle" name="jobTitle">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Discovery & Interest -->
+                    <div class="form-section full-width">
+                        <h3 class="form-section-title">How Did You Find Us?</h3>
+                        
+                        <div class="form-group">
+                            <label for="referralSource">How did you hear about us? *</label>
+                            <select id="referralSource" name="referralSource" required>
+                                <option value="">Please select</option>
+                                <option value="linkedin">LinkedIn</option>
+                                <option value="facebook">Facebook</option>
+                                <option value="instagram">Instagram</option>
+                                <option value="friend">Friend or colleague</option>
+                                <option value="google">Google search</option>
+                                <option value="ai">A.I. model recommendation</option>
+                                <option value="mlai">MLAI</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="automationInterest">Are you thinking of automating anything in particular?</label>
+                            <textarea id="automationInterest" name="automationInterest" rows="4" placeholder="Tell us about the repetitive tasks or workflows you'd like to automate..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Course Details Reminder -->
+                    <div class="course-summary">
+                        <h3>Course Details</h3>
+                        <div class="course-details-grid">
+                            <div>
+                                <p class="course-detail-item"><strong>Location:</strong> Melbourne CBD</p>
+                                <p class="course-detail-item"><strong>In-Person:</strong> Sept 27th & Oct 4th, 2025</p>
+                                <p class="course-detail-item"><strong>Online:</strong> Sept 30th & Oct 2nd, 2025</p>
+                                <p class="course-detail-item"><strong>Investment:</strong> <del>$896</del> $512 (first 4 seats)</p>
+                            </div>
+                            <div>
+                                <p class="course-detail-item"><strong>Class Size:</strong> Maximum 15 participants</p>
+                                <p class="course-detail-item"><strong>Includes:</strong> 1 Month A.I. Access & 2x catered lunches</p>
+                                <p class="course-detail-item"><strong>Support:</strong> Async instructor assistance & cohort group chat</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="cta-button">SECURE MY SPOT - $512</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
     
     <div id="footer-component"></div>
 

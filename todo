@@ -1,24 +1,26 @@
-the register page will collect the following info:
+--- 
 
-- name
-- email
-- phone number
-- coding experience, all experience levels encouraged (none, vibe coding only, only coded hobby projects, have coded professionally)
-- company (optional)
-- job title (optional)
-- how did you hear about us? single select, options:
-  - linkedin
-  - facebook
-  - instagram
-  - friend
-  - google search
-  - A.I. model recommendation
-  - MLAI
-  - other
-- are you thinking of automating anything in particular? text area
+when a user registers for the course they will be taken to a stripe payment page to pay for the course
+
+once they have paid successfully an email will be sent from gday@fairdinkumsystems.com to their email with a welcome message thanking them and letting them know they will receive another email with their login details within 24 hours.
+
+it will also tell them that if they want to get started right away they should watch this fun 9 minute video which captures on a high level how A.I.s learn https://www.youtube.com/watch?v=R9OHn5ZF4Uo&ab_channel=CGPGrey and this one on how to user N8n https://www.youtube.com/watch?v=Fy1UCBcgF2o&ab_channel=CharlieChang
+
+it should also tell them to arrive 10 minutes early for the 2 in person sessions on the 27th and 4th of october as we kick off at 1000 sharp and they will need to be let into the building.
+
+Also tell them that the exact address will be sent shortly and that they need to bring:
+
+- a laptop
+- a charger
+- no lunch since it will be catered
+
+their data once they have paid must be added to a dynamodb database table called "course_registrations"
+
+an email should also be sent to lewingtonpitsos@gmail.com
+
+describe the AWS architecture needed to make this happen
 
 
 
-it must also have a terms and conditions scroll box that must be scrolled to the bottom before the user can click the submit button.
+---
 
-for now make the terms and conditions text just lorem ipsum.
