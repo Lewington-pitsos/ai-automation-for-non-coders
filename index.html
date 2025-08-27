@@ -8,15 +8,14 @@
         body {
             margin: 0;
             padding: 0;
-            overflow: hidden;
             background-color: #000;
             width: 100vw;
-            height: 100vh;
+            min-height: 400vh;
         }
         canvas {
             display: block;
             width: 100vw;
-            height: 100vh;
+            height: 400vh;
             position: relative;
             top: -12px;
         }
@@ -29,7 +28,7 @@
         const ctx = canvas.getContext('2d');
         
         canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvas.height = window.innerHeight * 4;
         
         const spacing = 15;
         const xOff = 0;
@@ -156,7 +155,7 @@
         
         let frameCount = 0;
         let particles = [];
-        let particleLimit = 10;
+        let particleLimit = 3;
         
         class Particle {
             constructor() {
@@ -213,7 +212,7 @@
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
                 // Random walk for particle limit
-                const change = Math.floor(Math.random() * 9) - 4; // -4 to +5
+                const change = Math.floor(Math.random() * 5) - 2; // -2 to +3
                 particleLimit = Math.max(5, Math.min(900, particleLimit + change));
                 
                 // Add new particles only if below limit
@@ -251,7 +250,7 @@
         // Handle resize
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            canvas.height = window.innerHeight * 4;
             grid.length = 0;
             createGrid();
         });
