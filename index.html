@@ -156,6 +156,7 @@
         
         let frameCount = 0;
         let particles = [];
+        let particleLimit = 10;
         
         class Particle {
             constructor() {
@@ -211,9 +212,16 @@
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 
-                // Add new particles
-                while (particles.length < 500) {
-                    particles.push(new Particle());
+                // Random walk for particle limit
+                const change = Math.floor(Math.random() * 9) - 4; // -4 to +5
+                particleLimit = Math.max(5, Math.min(900, particleLimit + change));
+                
+                // Add new particles only if below limit
+                if (particles.length < particleLimit) {
+                    const spawnCount = Math.min(5, particleLimit - particles.length);
+                    for (let i = 0; i < spawnCount; i++) {
+                        particles.push(new Particle());
+                    }
                 }
                 
                 // Update and draw all particles
