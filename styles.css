@@ -2275,19 +2275,56 @@ a:hover {
     box-shadow: none;
     border-radius: 0;
 }
-.terms-label {
-    font-size: 14px;
+.terms-box {
+    max-height: 405px; /* 1.5x previous height */
+    min-height: 120px;
+    overflow-y: auto;
+    background: #000;
+    border: 1px solid #333;
     color: #ccc;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 4px;
+    font-family: inherit;
+    font-size: 15px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: none;
+    border-radius: 0;
+    line-height: 1.7;
+    transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-@media (max-width: 480px) {
-    .registration-section {
-        padding: 80px 0;
-    }
+.terms-box.expanded {
+    max-height: 800px;
+}
+
+/* Custom scrollbar styles for dark background */
+.terms-box::-webkit-scrollbar {
+    width: 10px;
+    background: #222;
+}
+.terms-box::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 6px;
+}
+.terms-box::-webkit-scrollbar-track {
+    background: #222;
+}
+
+.terms-box p {
+    margin-bottom: 14px;
+    margin-top: 0;
+}
+
+.terms-box ul,
+.terms-box ol {
+    margin-left: 24px;
+    margin-bottom: 14px;
+    padding-left: 20px;
+}
+
+.terms-box li {
+    margin-bottom: 8px;
+    list-style-position: inside;
+}
     
     .registration-form {
         padding: 30px 15px;

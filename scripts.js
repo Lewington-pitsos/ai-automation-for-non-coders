@@ -1,5 +1,4 @@
-// Import Perlin background functionality
-import { initPerlinBackgrounds, handlePerlinResize } from './perlin-background.js';
+// Perlin background functionality is loaded from perlin-background.js
 
 // Load shared components
 async function loadComponent(elementId, componentPath) {
@@ -16,6 +15,16 @@ async function loadComponent(elementId, componentPath) {
     }
 }
 
+// Fix footer link cursors after dynamic loading
+function fixFooterCursors() {
+    const footerLinks = document.querySelectorAll('.footer-links a');
+    footerLinks.forEach(link => {
+        link.style.cursor = 'pointer';
+        // Force override any inherited cursor styles
+        link.style.setProperty('cursor', 'pointer', 'important');
+    });
+}
+
 // Initialize everything on load
 window.addEventListener('load', async () => {
     // Load shared components first
@@ -23,6 +32,9 @@ window.addEventListener('load', async () => {
         loadComponent('header-component', 'components/header.html'),
         loadComponent('footer-component', 'components/footer.html')
     ]);
+    
+    // Fix footer link cursors after components are loaded
+    fixFooterCursors();
     
     // Initialize Perlin backgrounds
     initPerlinBackgrounds();

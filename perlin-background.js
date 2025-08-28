@@ -199,5 +199,4 @@ function handlePerlinResize() {
     });
 }
 
-// Export functions for use in HTML
-export { initPerlinBackgrounds, handlePerlinResize };
+// Functions are available globally
