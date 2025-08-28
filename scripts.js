@@ -55,13 +55,6 @@ function initChart() {
     const canvas = document.getElementById('citizenDeveloperChart');
     if (!canvas) return;
     
-    // Check if Chart.js is available
-    if (typeof Chart === 'undefined') {
-        console.log('Chart.js not loaded, using fallback');
-        drawFallbackChart();
-        return;
-    }
-    
     const ctx = canvas.getContext('2d');
     
     const chart = new Chart(ctx, {
@@ -129,129 +122,6 @@ function initChart() {
             animation: { duration: 2000, easing: 'easeInOutQuart' }
         }
     });
-}
-
-// Fallback chart function if Chart.js fails
-function drawFallbackChart() {
-    const canvas = document.getElementById('citizenDeveloperChart');
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    
-    // High-DPI support
-    const ratio = window.devicePixelRatio || 1;
-    const displayWidth = 560;
-    const displayHeight = 460;
-    
-    canvas.width = displayWidth * ratio;
-    canvas.height = displayHeight * ratio;
-    canvas.style.width = displayWidth + 'px';
-    canvas.style.height = displayHeight + 'px';
-    
-    ctx.scale(ratio, ratio);
-    
-    const width = displayWidth;
-    const height = displayHeight;
-    
-    // Clear canvas
-    ctx.fillStyle = 'rgba(0,0,0,0.1)';
-    ctx.fillRect(0, 0, width, height);
-    
-    // Chart data with months (2 per year)
-    const data = [10, 8, 13, 16, 20, 25, 20, 22, 18, 32, 100];
-    const labels = ['Aug 2020', 'Feb 2021', 'Aug 2021', 'Feb 2022', 'Aug 2022', 'Feb 2023', 'Aug 2023', 'Feb 2024', 'Aug 2024', 'May 2025', 'Aug 2025'];
-    
-    // Chart dimensions
-    const margin = 60;
-    const chartWidth = width - 2 * margin;
-    const chartHeight = height - 2 * margin - 40;
-    
-    // Draw title
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 22px -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('The Rise of Citizen Developers', width / 2, 35);
-    
-    // Draw subtitle
-    ctx.fillStyle = '#999999';
-    ctx.font = '12px -apple-system, sans-serif';
-    ctx.fillText('Google Trends: "citizen developer" search popularity', width / 2, 55);
-    
-    // Calculate points
-    const maxValue = Math.max(...data);
-    const points = data.map((value, index) => ({
-        x: margin + (index * chartWidth) / (data.length - 1),
-        y: height - margin - 20 - (value / maxValue) * chartHeight
-    }));
-    
-    // Draw grid lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 5; i++) {
-        const y = height - margin - 20 - (i * chartHeight / 5);
-        ctx.beginPath();
-        ctx.moveTo(margin, y);
-        ctx.lineTo(width - margin, y);
-        ctx.stroke();
-        
-        // Y-axis labels
-        ctx.fillStyle = '#cccccc';
-        ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
-        ctx.textAlign = 'right';
-        ctx.fillText((i * 20).toString(), margin - 10, y + 3);
-    }
-    
-    // Draw area fill
-    ctx.fillStyle = 'rgba(78, 255, 159, 0.1)';
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, height - margin - 20);
-    points.forEach(point => ctx.lineTo(point.x, point.y));
-    ctx.lineTo(points[points.length - 1].x, height - margin - 20);
-    ctx.closePath();
-    ctx.fill();
-    
-    // Draw line
-    ctx.strokeStyle = '#4eff9f';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
-    points.forEach(point => ctx.lineTo(point.x, point.y));
-    ctx.stroke();
-    
-    // Draw points
-    points.forEach((point, index) => {
-        ctx.fillStyle = '#4eff9f';
-        ctx.beginPath();
-        ctx.arc(point.x, point.y, 4, 0, 2 * Math.PI);
-        ctx.fill();
-        
-        // X-axis labels (stacked: month over year)
-        ctx.fillStyle = '#cccccc';
-        ctx.font = '11px -apple-system, BlinkMacSystemFont, sans-serif';
-        ctx.textAlign = 'center';
-        
-        // Split label into month and year
-        const [month, year] = labels[index].split(' ');
-        
-        // Draw month on top
-        ctx.fillText(month, point.x, height - margin + 12);
-        // Draw year below
-        ctx.fillText(year, point.x, height - margin + 25);
-    });
-    
-    // Draw axes
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
-    ctx.lineWidth = 2;
-    // Y-axis
-    ctx.beginPath();
-    ctx.moveTo(margin, margin);
-    ctx.lineTo(margin, height - margin - 20);
-    ctx.stroke();
-    // X-axis
-    ctx.beginPath();
-    ctx.moveTo(margin, height - margin - 20);
-    ctx.lineTo(width - margin, height - margin - 20);
-    ctx.stroke();
 }
 
 // Tab switching functionality
@@ -502,15 +372,14 @@ function handleFormSubmission(event) {
     submitButton.disabled = true;
     submitButton.textContent = 'PROCESSING...';
     
-    // Simulate form submission (replace with actual submission logic)
+    // Redirect to Stripe payment link after capturing registration details
     setTimeout(() => {
-        showSuccessMessage();
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
+        // Store registration data in sessionStorage to potentially use later
+        sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
         
-        // Log the registration data (replace with actual submission to server)
-        console.log('Registration Data:', registrationData);
-    }, 2000);
+        // Redirect to Stripe payment page
+        window.location.href = 'https://buy.stripe.com/14AaEZe6l0tA2kF3Hv9MY00';
+    }, 1500);
 }
 
 function validateForm(data) {
