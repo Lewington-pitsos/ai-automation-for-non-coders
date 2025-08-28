@@ -410,12 +410,61 @@ function initRegistrationForm() {
     
     form.addEventListener('submit', handleFormSubmission);
     
+    // Get submit button and make it disabled initially
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
+    
     // Add real-time validation
     const requiredFields = form.querySelectorAll('[required]');
     requiredFields.forEach(field => {
         field.addEventListener('blur', validateField);
-        field.addEventListener('input', clearFieldError);
+        field.addEventListener('input', function(event) {
+            clearFieldError(event);
+            checkFormValidity();
+        });
+        field.addEventListener('change', checkFormValidity);
     });
+    
+    // Initial form validity check
+    checkFormValidity();
+}
+
+function checkFormValidity() {
+    const form = document.getElementById('registrationForm');
+    if (!form) return;
+    
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (!submitButton) return;
+    
+    // Get all required fields
+    const firstName = form.querySelector('#firstName');
+    const lastName = form.querySelector('#lastName');
+    const email = form.querySelector('#email');
+    const phone = form.querySelector('#phone');
+    const experience = form.querySelector('#experience');
+    const referralSource = form.querySelector('#referralSource');
+    const termsCheckbox = form.querySelector('#terms');
+    
+    // Check if all required fields are filled and terms are checked
+    const isValid = firstName.value.trim() !== '' &&
+                   lastName.value.trim() !== '' &&
+                   email.value.trim() !== '' &&
+                   phone.value.trim() !== '' &&
+                   experience.value !== '' &&
+                   referralSource.value !== '' &&
+                   termsCheckbox.checked;
+    
+    // Enable/disable button based on validity
+    if (isValid) {
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
+    } else {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
 }
 
 function handleFormSubmission(event) {
@@ -456,7 +505,8 @@ function validateForm(data) {
     const errors = [];
     
     // Required field validation
-    if (!data.name) errors.push('Full name is required');
+    if (!data.firstName) errors.push('First name is required');
+    if (!data.lastName) errors.push('Last name is required');
     if (!data.email) errors.push('Email address is required');
     if (!data.phone) errors.push('Phone number is required');
     if (!data.experience) errors.push('Coding experience level is required');
@@ -636,11 +686,173 @@ function showSuccessMessage() {
     }, 10000);
 }
 
+// Contact Form Handling
+function initContactForm() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+    
+    form.addEventListener('submit', handleContactFormSubmission);
+    
+    // Get submit button and make it disabled initially
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
+    
+    // Add real-time validation
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        field.addEventListener('blur', validateField);
+        field.addEventListener('input', function(event) {
+            clearFieldError(event);
+            checkContactFormValidity();
+        });
+        field.addEventListener('change', checkContactFormValidity);
+    });
+    
+    // Initial form validity check
+    checkContactFormValidity();
+}
+
+function checkContactFormValidity() {
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+    
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (!submitButton) return;
+    
+    // Get all required fields
+    const name = form.querySelector('#name');
+    const email = form.querySelector('#email');
+    const message = form.querySelector('#message');
+    
+    // Check if all required fields are filled
+    const isValid = name.value.trim() !== '' &&
+                   email.value.trim() !== '' &&
+                   message.value.trim() !== '';
+    
+    // Enable/disable button based on validity
+    if (isValid) {
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
+    } else {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
+}
+
+function handleContactFormSubmission(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Convert form data to object
+    const contactData = {};
+    for (let [key, value] of formData.entries()) {
+        contactData[key] = value.trim();
+    }
+    
+    // Validate form
+    if (!validateContactForm(contactData)) {
+        return;
+    }
+    
+    // Disable submit button and show loading state
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'SENDING...';
+    
+    // Simulate form submission (replace with actual submission logic)
+    setTimeout(() => {
+        showContactSuccessMessage();
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+        
+        // Log the contact data (replace with actual submission to server)
+        console.log('Contact Data:', contactData);
+        
+        // Reset form after successful submission
+        form.reset();
+        checkContactFormValidity();
+    }, 2000);
+}
+
+function validateContactForm(data) {
+    const errors = [];
+    
+    // Required field validation
+    if (!data.name) errors.push('Name is required');
+    if (!data.email) errors.push('Email address is required');
+    if (!data.message) errors.push('Message is required');
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (data.email && !emailRegex.test(data.email)) {
+        errors.push('Please enter a valid email address');
+    }
+    
+    if (errors.length > 0) {
+        showFormErrors(errors);
+        return false;
+    }
+    
+    clearFormErrors();
+    return true;
+}
+
+function showContactSuccessMessage() {
+    // Remove existing success message
+    const existingSuccess = document.querySelector('.form-success');
+    if (existingSuccess) {
+        existingSuccess.remove();
+    }
+    
+    // Create success message
+    const successContainer = document.createElement('div');
+    successContainer.className = 'form-success';
+    successContainer.style.cssText = `
+        background: rgba(78, 255, 159, 0.1);
+        border: 1px solid #4eff9f;
+        color: #4eff9f;
+        padding: 24px;
+        margin-bottom: 24px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 600;
+    `;
+    
+    successContainer.innerHTML = `
+        <div style="font-size: 24px; margin-bottom: 8px;">✓</div>
+        <div>Message Sent Successfully!</div>
+        <div style="font-size: 14px; margin-top: 8px; font-weight: normal; color: #ccc;">
+            We'll get back to you as soon as possible.
+        </div>
+    `;
+    
+    // Insert at the top of the form
+    const form = document.getElementById('contactForm');
+    form.insertBefore(successContainer, form.firstChild);
+    
+    // Scroll to success message
+    successContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Auto-remove after 10 seconds
+    setTimeout(() => {
+        if (successContainer.parentNode) {
+            successContainer.remove();
+        }
+    }, 10000);
+}
+
 // Initialize registration form when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initTerminalAnimations();
     initCourseTimelineAnimations();
     initRegistrationForm();
+    initContactForm();
 });
 
 // Make functions globally available for inline event handlers
