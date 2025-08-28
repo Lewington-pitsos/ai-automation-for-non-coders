@@ -26,7 +26,7 @@ Edit `config.js` and replace `YOUR_API_GATEWAY_URL` with the actual URL from ste
 ```javascript
 const API_CONFIG = {
     API_URL: 'https://xxxxx.execute-api.us-east-1.amazonaws.com/prod',
-    STRIPE_PAYMENT_LINK: 'https://buy.stripe.com/8x2fZj1jz6RY0cx6TH9MY01'
+    STRIPE_PAYMENT_LINK: 'https://buy.stripe.com/xxxxxxxxx'
 };
 ```
 

@@ -402,8 +402,6 @@ function handleFormSubmission(event) {
             
             // Append registration_id and email to Stripe URL as client reference
             const stripeUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.STRIPE_PAYMENT_LINK
-                ? API_CONFIG.STRIPE_PAYMENT_LINK
-                : 'https://buy.stripe.com/8x2fZj1jz6RY0cx6TH9MY01';
             const email = encodeURIComponent(registrationData.email);
             // Note: Payment Links don't support custom parameters, but we can use prefilled email
             window.location.href = `${stripeUrl}?prefilled_email=${email}`;

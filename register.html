@@ -54,11 +54,26 @@
                                     <option value="professional">Have coded professionally</option>
                                 </select>
                             </div>
+
+                            <div class="form-group">
+                                <label for="referralSource">How did you hear about us? *</label>
+                                <select id="referralSource" name="referralSource" required>
+                                    <option value="">Please select</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="instagram">Instagram</option>
+                                    <option value="friend">Friend or colleague</option>
+                                    <option value="google">Google search</option>
+                                    <option value="ai">A.I. model recommendation</option>
+                                    <option value="mlai">MLAI</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
                         </div>
                         
                         <!-- Professional Information -->
                         <div class="form-section">
-                            <h3 class="form-section-title">Professional Background</h3>
+                            <h3 class="form-section-title">About You</h3>
                             
   
                             
@@ -71,33 +86,17 @@
                                 <label for="jobTitle">Job Title (Optional)</label>
                                 <input type="text" id="jobTitle" name="jobTitle">
                             </div>
+
+                            <div class="form-group">
+                                <label for="automationInterest">Anything you're looking to automate? (Optional)</label>
+                                <textarea id="automationInterest" name="automationInterest" rows="4" placeholder="Tell us about the repetitive tasks or workflows you'd like to automate..."></textarea>
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- Discovery & Interest -->
+                    <hr style="border: none; height: 1px; background-color: #333; margin: 40px 0;">
+                    
                     <div class="form-section full-width">
-                        <h3 class="form-section-title">How Did You Find Us?</h3>
-                        
-                        <div class="form-group">
-                            <label for="referralSource">How did you hear about us? *</label>
-                            <select id="referralSource" name="referralSource" required>
-                                <option value="">Please select</option>
-                                <option value="linkedin">LinkedIn</option>
-                                <option value="facebook">Facebook</option>
-                                <option value="instagram">Instagram</option>
-                                <option value="friend">Friend or colleague</option>
-                                <option value="google">Google search</option>
-                                <option value="ai">A.I. model recommendation</option>
-                                <option value="mlai">MLAI</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="automationInterest">Are you thinking of automating anything in particular?</label>
-                            <textarea id="automationInterest" name="automationInterest" rows="4" placeholder="Tell us about the repetitive tasks or workflows you'd like to automate..."></textarea>
-                        </div>
-
                         <div class="form-group">
                             <!-- Terms and Conditions Scroll Box -->
                             <label for="termsBox" class="terms-label">Terms and Conditions *</label>
