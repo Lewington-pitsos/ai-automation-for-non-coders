@@ -33,3 +33,9 @@ variable "stripe_webhook_secret" {
   type        = string
   sensitive   = true
 }
+
+variable "stripe_api_key" {
+  description = "Stripe API key"
+  type        = string
+  sensitive   = true
+}
