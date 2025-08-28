@@ -3,12 +3,14 @@ import boto3
 import uuid
 from datetime import datetime
 import logging
+import os
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table("${table_name}")
+table_name = os.environ.get("TABLE_NAME", "course_registrations")
+table = dynamodb.Table(table_name)
 
 def lambda_handler(event, context):
     try:

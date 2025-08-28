@@ -349,7 +349,7 @@ function checkFormValidity() {
     }
 }
 
-function handleFormSubmission(event) {
+async function handleFormSubmission(event) {
     event.preventDefault();
     
     const form = event.target;
@@ -372,8 +372,13 @@ function handleFormSubmission(event) {
     submitButton.disabled = true;
     submitButton.textContent = 'PROCESSING...';
     
+    // Wait for config to load if needed
+    if (typeof configPromise !== 'undefined') {
+        await configPromise;
+    }
+    
     // Call registration API first
-    const apiUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL !== 'YOUR_API_GATEWAY_URL' 
+    const apiUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL 
         ? `${API_CONFIG.API_URL}/register`
         : 'https://YOUR_API_GATEWAY_URL/prod/register';
     
