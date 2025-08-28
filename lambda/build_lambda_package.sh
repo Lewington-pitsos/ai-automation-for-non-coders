@@ -6,6 +6,19 @@ set -e
 
 echo "Building Lambda deployment packages..."
 
+# Cache directory for pip dependencies
+CACHE_DIR="/tmp/lambda-deps-cache"
+mkdir -p ${CACHE_DIR}
+
+# Function to get checksum of requirements file
+get_requirements_checksum() {
+    if [ -f requirements.txt ]; then
+        sha256sum requirements.txt | cut -d' ' -f1
+    else
+        echo "no-requirements"
+    fi
+}
+
 # Function to build a Lambda package
 build_lambda() {
     local function_name=$1
@@ -17,9 +30,24 @@ build_lambda() {
     rm -rf /tmp/${function_name}
     mkdir -p /tmp/${function_name}
     
-    # Install dependencies if requirements.txt exists
+    # Check if requirements.txt exists and handle caching
     if [ -f requirements.txt ]; then
-        pip install -r requirements.txt -t /tmp/${function_name}/ --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.11
+        local req_checksum=$(get_requirements_checksum)
+        local cache_path="${CACHE_DIR}/${function_name}-${req_checksum}"
+        
+        if [ -d "${cache_path}" ]; then
+            echo "  Using cached dependencies from ${cache_path}"
+            cp -r ${cache_path}/* /tmp/${function_name}/
+        else
+            echo "  Installing dependencies (requirements changed or first run)..."
+            pip install -r requirements.txt -t /tmp/${function_name}/ --platform manylinux2014_x86_64 --only-binary=:all: --python-version 3.11
+            
+            # Cache the installed dependencies
+            echo "  Caching dependencies to ${cache_path}"
+            rm -rf ${cache_path}
+            mkdir -p ${cache_path}
+            cp -r /tmp/${function_name}/* ${cache_path}/
+        fi
     fi
     
     # Copy the Lambda function code
