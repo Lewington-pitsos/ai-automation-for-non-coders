@@ -25,6 +25,50 @@ resource "aws_api_gateway_method" "register_post" {
   authorization = "NONE"
 }
 
+resource "aws_api_gateway_method" "register_options" {
+  rest_api_id   = aws_api_gateway_rest_api.course_api.id
+  resource_id   = aws_api_gateway_resource.register.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "register_options" {
+  rest_api_id = aws_api_gateway_rest_api.course_api.id
+  resource_id = aws_api_gateway_resource.register.id
+  http_method = aws_api_gateway_method.register_options.http_method
+  type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "register_options" {
+  rest_api_id = aws_api_gateway_rest_api.course_api.id
+  resource_id = aws_api_gateway_resource.register.id
+  http_method = aws_api_gateway_method.register_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "register_options" {
+  rest_api_id = aws_api_gateway_rest_api.course_api.id
+  resource_id = aws_api_gateway_resource.register.id
+  http_method = aws_api_gateway_method.register_options.http_method
+  status_code = aws_api_gateway_method_response.register_options.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+}
+
 resource "aws_api_gateway_integration" "register_integration" {
   rest_api_id             = aws_api_gateway_rest_api.course_api.id
   resource_id             = aws_api_gateway_resource.register.id
@@ -34,16 +78,10 @@ resource "aws_api_gateway_integration" "register_integration" {
   uri                     = aws_lambda_function.registration_handler.invoke_arn
 }
 
-resource "aws_api_gateway_resource" "webhook" {
-  rest_api_id = aws_api_gateway_rest_api.course_api.id
-  parent_id   = aws_api_gateway_rest_api.course_api.root_resource_id
-  path_part   = "webhook"
-}
-
 resource "aws_api_gateway_resource" "stripe_webhook" {
   rest_api_id = aws_api_gateway_rest_api.course_api.id
-  parent_id   = aws_api_gateway_resource.webhook.id
-  path_part   = "stripe"
+  parent_id   = aws_api_gateway_rest_api.course_api.root_resource_id
+  path_part   = "stripe-webhook"
 }
 
 resource "aws_api_gateway_method" "stripe_webhook_post" {
@@ -65,6 +103,7 @@ resource "aws_api_gateway_integration" "stripe_webhook_integration" {
 resource "aws_api_gateway_deployment" "course_api" {
   depends_on = [
     aws_api_gateway_integration.register_integration,
+    aws_api_gateway_integration.register_options,
     aws_api_gateway_integration.stripe_webhook_integration
   ]
 

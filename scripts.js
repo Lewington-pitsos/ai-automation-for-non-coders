@@ -372,14 +372,51 @@ function handleFormSubmission(event) {
     submitButton.disabled = true;
     submitButton.textContent = 'PROCESSING...';
     
-    // Redirect to Stripe payment link after capturing registration details
-    setTimeout(() => {
-        // Store registration data in sessionStorage to potentially use later
-        sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
-        
-        // Redirect to Stripe payment page
-        window.location.href = 'https://buy.stripe.com/14AaEZe6l0tA2kF3Hv9MY00';
-    }, 1500);
+    // Call registration API first
+    const apiUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL !== 'YOUR_API_GATEWAY_URL' 
+        ? `${API_CONFIG.API_URL}/register`
+        : 'https://YOUR_API_GATEWAY_URL/prod/register';
+    
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: registrationData.email,
+            name: `${registrationData.firstName} ${registrationData.lastName}`,
+            phone: registrationData.phone,
+            company: registrationData.company || '',
+            job_title: registrationData.jobTitle || '',
+            experience: registrationData.experience,
+            referral_source: registrationData.referralSource,
+            automation_interest: registrationData.automationInterest || ''
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.registration_id) {
+            // Store registration ID for later use
+            sessionStorage.setItem('registrationId', data.registration_id);
+            sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
+            
+            // Append registration_id and email to Stripe URL as client reference
+            const stripeUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.STRIPE_PAYMENT_LINK
+                ? API_CONFIG.STRIPE_PAYMENT_LINK
+                : 'https://buy.stripe.com/8x2fZj1jz6RY0cx6TH9MY01';
+            const email = encodeURIComponent(registrationData.email);
+            // Note: Payment Links don't support custom parameters, but we can use prefilled email
+            window.location.href = `${stripeUrl}?prefilled_email=${email}`;
+        } else {
+            throw new Error('Registration failed');
+        }
+    })
+    .catch(error => {
+        console.error('Registration error:', error);
+        showErrorMessages(['Registration failed. Please try again or contact support.']);
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+    });
 }
 
 function validateForm(data) {
