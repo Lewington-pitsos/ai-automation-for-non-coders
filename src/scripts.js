@@ -116,7 +116,14 @@ function initChart() {
                     max: 105,
                     title: { display: true, text: 'Search Interest (0-100)', color: '#999999' },
                     grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                    ticks: { color: '#cccccc', stepSize: 20, font: { size: 12 } }
+                    ticks: { 
+                        color: '#cccccc', 
+                        stepSize: 20, 
+                        font: { size: 12 },
+                        callback: function(value, index, values) {
+                            return [0, 20, 40, 60, 80, 100].includes(value) ? value : '';
+                        }
+                    }
                 }
             },
             animation: { duration: 2000, easing: 'easeInOutQuart' }

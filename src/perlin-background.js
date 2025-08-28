@@ -141,8 +141,12 @@ function createFlowField(canvasId) {
     let particles = [];
     let particleLimit = 120;
     let frameCount = 0;
+    let animationId = null;
+    let isAnimating = false;
     
     function animate() {
+        if (!isAnimating) return;
+        
         frameCount++;
         
         if (frameCount % 2 === 0) {
@@ -168,22 +172,68 @@ function createFlowField(canvasId) {
             }
         }
         
-        requestAnimationFrame(animate);
+        animationId = requestAnimationFrame(animate);
     }
     
     // Clear canvas initially
     ctx.fillStyle = 'rgba(0, 0, 0, 0)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
-    // Start animation
-    animate();
+    // Return control functions
+    return {
+        start: function() {
+            if (!isAnimating) {
+                isAnimating = true;
+                animate();
+            }
+        },
+        stop: function() {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+    };
 }
 
-// Initialize all canvas elements
+// Store active canvas instances
+const canvasInstances = new Map();
+
+// Initialize all canvas elements with Intersection Observer
 function initPerlinBackgrounds() {
-    createFlowField('heroCanvas');
-    createFlowField('featuresCanvas');
-    createFlowField('ctaCanvas');
+    const canvasIds = ['heroCanvas', 'featuresCanvas', 'ctaCanvas'];
+    
+    // Create intersection observer
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const canvas = entry.target;
+            const canvasId = canvas.id;
+            
+            if (entry.isIntersecting) {
+                // Canvas is visible, start animation if not already running
+                if (!canvasInstances.has(canvasId)) {
+                    const instance = createFlowField(canvasId);
+                    if (instance) {
+                        canvasInstances.set(canvasId, instance);
+                        instance.start();
+                    }
+                }
+            }
+            // Note: We don't stop animations once started, as requested
+        });
+    }, {
+        threshold: 0.1, // Start when 10% of canvas is visible
+        rootMargin: '50px 0px' // Start slightly before canvas enters viewport
+    });
+    
+    // Observe all canvas elements
+    canvasIds.forEach(id => {
+        const canvas = document.getElementById(id);
+        if (canvas) {
+            observer.observe(canvas);
+        }
+    });
 }
 
 // Handle resize
