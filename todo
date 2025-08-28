@@ -7,3 +7,7 @@ the code is messily laid out. put all the website frontend code (around index.ht
 ---
 
 favicon
+
+---
+
+when we are in mobile mode alter the timeline so that the green bar and the associated dots no longer show. instead the cards take up the whole screen width
