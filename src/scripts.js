@@ -1017,7 +1017,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Store original transition
         const originalTransition = window.getComputedStyle(button).transition;
         
+        // Skip effects for buttons with no-effects class
+        const skipEffects = button.classList.contains('no-effects');
+        
         button.addEventListener('mouseenter', function() {
+            if (skipEffects) return;
+            
             // Only play audio if unlocked
             if (audioUnlocked) {
                 // Stop and reset audio before playing
@@ -1065,6 +1070,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         button.addEventListener('mouseleave', function() {
+            if (skipEffects) return;
+            
             hoverAudio.pause();
             hoverAudio.currentTime = 0;
             

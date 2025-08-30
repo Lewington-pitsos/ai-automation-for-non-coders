@@ -7,17 +7,13 @@ let API_CONFIG = {
     isLoaded: false
 };
 
-// Load terraform outputs dynamicallyg
+// Load terraform outputs dynamically
 async function loadConfig() {
-    try {
-        const response = await fetch('/assets/terraform-outputs.json');
-        const terraformOutputs = await response.json();
-        API_CONFIG.API_URL = terraformOutputs.api_gateway_invoke_url.value;
-        API_CONFIG.isLoaded = true;
-    } catch (error) {
-        console.error('Failed to load terraform outputs:', error);
-        API_CONFIG.isLoaded = true; // Mark as loaded even on error to prevent infinite waiting
-    }
+    let response = await fetch('./terraform-outputs.json');
+    const terraformOutputs = await response.json();
+    API_CONFIG.API_URL = terraformOutputs.api_gateway_invoke_url.value;
+    API_CONFIG.isLoaded = true;
+
 }
 
 // Load config on initialization and export promise

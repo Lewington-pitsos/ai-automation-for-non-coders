@@ -1,4 +1,4 @@
-aws logs tail /aws/lambda/ai-automation-course-registration-handler--follow
+aws logs tail /aws/lambda/ai-automation-course-registration-handler --since 10m
 
 
 aws logs tail /aws/lambda/ai-automation-course-payment-webhook
