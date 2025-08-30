@@ -13,3 +13,9 @@ aws logs tail "/aws/lambda/ai-automation-course-payment-webhook" --since 48h --f
 
 
 ppp  pytest test/integration/test_lambda_health.py -v   
+
+
+aws dynamodb scan \
+--table-name course_registrations \
+--query "Items[*]" \
+--output table

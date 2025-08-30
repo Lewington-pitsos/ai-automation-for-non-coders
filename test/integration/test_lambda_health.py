@@ -53,11 +53,29 @@ class TestLambdaHealth:
         # Test POST request with minimal valid data
         test_data = {
             "email": "test@example.com",
-            "name": "Test User"
+            "name": "Test User",
+            "course_id": "test-course"  # Use test course ID for testing
         }
         response = requests.post(f"{api_url}/register", json=test_data, timeout=30)
         assert response.status_code in [200, 201, 400], f"Registration endpoint failed: {response.status_code}, {response.text}"
 
+    def test_invalid_course_id_rejected(self, terraform_outputs):
+        """Test that invalid course IDs are rejected"""
+        api_url = terraform_outputs["api_gateway_invoke_url"]["value"]
+        
+        # Test with invalid course ID
+        test_data = {
+            "email": "test2@example.com",
+            "name": "Test User",
+            "course_id": "invalid-course-id"
+        }
+        response = requests.post(f"{api_url}/register", json=test_data, timeout=30)
+        assert response.status_code == 400, f"Expected 400 for invalid course ID: {response.status_code}"
+        
+        # Check error message
+        response_data = response.json()
+        assert response_data.get("error") == "invalid_course_id", f"Expected invalid_course_id error: {response_data}"
+    
     def test_stripe_webhook_health(self, terraform_outputs, test_credentials):
         """Test stripe webhook endpoint health"""
         webhook_url = terraform_outputs["stripe_webhook_url"]["value"]

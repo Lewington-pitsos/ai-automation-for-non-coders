@@ -3,6 +3,7 @@
 let API_CONFIG = {
     API_URL: '',
     STRIPE_PAYMENT_LINK: 'https://buy.stripe.com/8x2fZj1jz6RY0cx6TH9MY01',
+    COURSE_ID: '01_ai_automation_for_non_coders', // Default course ID
     isLoaded: false
 };
 

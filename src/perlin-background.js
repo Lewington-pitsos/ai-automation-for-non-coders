@@ -139,7 +139,7 @@ function createFlowField(canvasId) {
     }
     
     let particles = [];
-    let particleLimit = 120;
+    let particleLimit = window.innerWidth <= 768 ? 25 : 120;
     let frameCount = 0;
     let animationId = null;
     let isAnimating = false;

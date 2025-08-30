@@ -1,10 +1,11 @@
 resource "aws_dynamodb_table" "course_registrations" {
   name           = "course_registrations"
   billing_mode   = "PAY_PER_REQUEST"
-  hash_key       = "registration_id"
+  hash_key       = "course_id"
+  range_key      = "email"
 
   attribute {
-    name = "registration_id"
+    name = "course_id"
     type = "S"
   }
 
@@ -13,13 +14,16 @@ resource "aws_dynamodb_table" "course_registrations" {
     type = "S"
   }
 
-
-  global_secondary_index {
-    name            = "email-index"
-    hash_key        = "email"
-    projection_type = "ALL"
+  attribute {
+    name = "registration_id"
+    type = "S"
   }
 
+  global_secondary_index {
+    name            = "registration-id-index"
+    hash_key        = "registration_id"
+    projection_type = "ALL"
+  }
 
   tags = {
     Name        = "${var.project_name}-registrations"

@@ -184,51 +184,100 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Terminal Section Animation System
-function initTerminalAnimations() {
-    const terminalContainer = document.querySelector('.terminal-container');
-    const terminalLines = document.querySelectorAll('.terminal-line');
-    const personaEntries = document.querySelectorAll('.persona-entry');
+// Persona Cards Animation System
+function initPersonaCards() {
+    const cardsContainer = document.querySelector('.persona-cards-container');
+    const cards = document.querySelectorAll('.persona-card');
     
-    if (!terminalContainer || terminalLines.length === 0) {
+    if (!cardsContainer || cards.length === 0) {
         return;
     }
 
     let animationTriggered = false;
 
+    // Intersection observer for initial animation
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting && !animationTriggered) {
                 animationTriggered = true;
-                startTerminalAnimation();
+                animateCardsIn();
             }
         });
     }, {
-        threshold: 0.5,
-        rootMargin: '-100px 0px'
+        threshold: 0.3,
+        rootMargin: '-50px 0px'
     });
 
-    observer.observe(terminalContainer);
+    observer.observe(cardsContainer);
 
-    function startTerminalAnimation() {
-        // Animate terminal lines with staggered delays
-        terminalLines.forEach((line, index) => {
-            const delay = parseInt(line.dataset.delay) || 0;
-            
+    function animateCardsIn() {
+        cards.forEach((card) => {
+            const delay = parseInt(card.dataset.delay) || 0;
             setTimeout(() => {
-                line.classList.add('visible');
-            }, delay);
-        });
-
-        // Animate persona entries separately
-        personaEntries.forEach((entry, index) => {
-            const delay = parseInt(entry.dataset.delay) || 0;
-            
-            setTimeout(() => {
-                entry.classList.add('visible');
+                card.classList.add('visible');
             }, delay);
         });
     }
+
+    // Mouse movement for spotlight effect and 3D tilt
+    cards.forEach(card => {
+        const spotlight = card.querySelector('.card-spotlight');
+        
+        card.addEventListener('mouseenter', (e) => {
+            // Slide the card to the right on hover
+            if (!card.classList.contains('selected')) {
+                card.style.transform = 'translateX(20px)';
+            } else {
+                // If selected, maintain the position but prepare for 3D
+                card.style.transform = 'translateX(20px)';
+            }
+        });
+        
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Always move spotlight to cursor position
+            spotlight.style.left = x + 'px';
+            spotlight.style.top = y + 'px';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            if (card.classList.contains('selected')) {
+                card.style.transform = 'translateX(20px)';
+            } else {
+                card.style.transform = '';
+            }
+        });
+        
+        // Click effect with ripple
+        card.addEventListener('click', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // Set CSS variables for click position
+            card.style.setProperty('--click-x', x + 'px');
+            card.style.setProperty('--click-y', y + 'px');
+            
+            // Toggle selected state
+            card.classList.toggle('selected');
+            
+            // Update transform based on new selected state
+            if (card.classList.contains('selected')) {
+                card.style.transform = 'translateX(20px)';
+            } else {
+                card.style.transform = 'translateX(20px)'; // Keep it shifted if still hovered
+            }
+            
+            // Trigger ripple animation
+            card.classList.add('clicked');
+            setTimeout(() => {
+                card.classList.remove('clicked');
+            }, 600);
+        });
+    });
 }
 
 // Course Timeline Animation System (same as persona but for course timeline)
@@ -288,7 +337,7 @@ function initCourseTimelineAnimations() {
 
 // Initialize animations when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    initTerminalAnimations();
+    initPersonaCards();
     initCourseTimelineAnimations();
 });
 
@@ -402,28 +451,43 @@ async function handleFormSubmission(event) {
             job_title: registrationData.jobTitle || '',
             experience: registrationData.experience,
             referral_source: registrationData.referralSource,
-            automation_interest: registrationData.automationInterest || ''
+            automation_interest: registrationData.automationInterest || '',
+            course_id: API_CONFIG.COURSE_ID || '01_ai_automation_for_non_coders'
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw data;
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.registration_id) {
             // Store registration ID for later use
             sessionStorage.setItem('registrationId', data.registration_id);
             sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
             
-            // Append registration_id and email to Stripe URL as client reference
+            // Append registration_id and email to Stripe URL
             const stripeUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.STRIPE_PAYMENT_LINK
             const email = encodeURIComponent(registrationData.email);
-            // Note: Payment Links don't support custom parameters, but we can use prefilled email
-            window.location.href = `${stripeUrl}?prefilled_email=${email}`;
+            // Pass registration_id as client_reference_id and prefill email
+            window.location.href = `${stripeUrl}?client_reference_id=${data.registration_id}&prefilled_email=${email}`;
         } else {
             throw new Error('Registration failed');
         }
     })
     .catch(error => {
         console.error('Registration error:', error);
-        showErrorMessages(['Registration failed. Please try again or contact support.']);
+        
+        // Check for specific error types
+        if (error.error === 'email_already_registered') {
+            showFormErrors(['This email has already been registered for this course. Please use a different email address or contact support if you need assistance.']);
+        } else {
+            showFormErrors(['Registration failed. Please try again or contact support.']);
+        }
+        
         submitButton.disabled = false;
         submitButton.textContent = originalText;
     });
@@ -864,7 +928,7 @@ function initDetailCardAnimations() {
 
 // Initialize registration form when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    initTerminalAnimations();
+    initPersonaCards();
     initCourseTimelineAnimations();
     initRegistrationForm();
     initContactForm();

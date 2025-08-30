@@ -2124,203 +2124,212 @@ a:hover {
 }
 
 
-/* Terminal Section - Command Line Interface Style */
-.terminal-container {
+/* Remove margin below section-header for this specific section */
+.modules .section-header {
+    margin-bottom: 0;
+}
+
+/* Remove margin above intro-text for this specific section */
+.modules .intro-text {
+    margin-top: 0;
+}
+
+/* Persona Cards - Magnetic Depth Effect with Spotlight */
+.persona-cards-container {
     max-width: 900px;
-    margin: 0 auto;
-    padding: 60px 0;
-}
-
-.terminal-window {
-    background: #0d1117;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
-}
-
-.terminal-header {
-    background: #21262d;
-    padding: 12px 16px;
+    margin: 0;
+    padding: 30px 0;
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 12px;
-    border-bottom: 1px solid #30363d;
+    align-items: flex-start;
+    width: 100%;
 }
 
-.terminal-controls {
-    display: flex;
-    gap: 6px;
-}
-
-.terminal-button {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+.persona-card {
+    position: relative;
+    background: #0a0a0a;
+    border: 1px solid #333;
+    padding: 8px 32px;
     cursor: pointer;
-}
-
-.terminal-button.close {
-    background: #ff5f57;
-}
-
-.terminal-button.minimize {
-    background: #ffbd2e;
-}
-
-.terminal-button.maximize {
-    background: #28ca42;
-}
-
-.terminal-title {
-    color: #8b949e;
-    font-size: 13px;
-    font-weight: 500;
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
-}
-
-.terminal-content {
-    padding: 20px;
-    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 400px;
-}
-
-.terminal-line {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
     opacity: 0;
-    margin-bottom: 4px;
-    transform: translateY(10px);
+    transform: translateY(20px);
+    overflow: hidden;
+    width: 700px;
+    max-width: 100%;
+}
+
+.persona-card.visible:not(:hover):not(.selected) {
+    animation: shiver 0.8s linear infinite;
+}
+
+@keyframes shiver {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); }
+    8% { transform: translateX(-2px) translateY(1px) rotate(0.3deg); }
+    16% { transform: translateX(1px) translateY(-3px) rotate(-0.2deg); }
+    24% { transform: translateX(3px) translateY(2px) rotate(0.4deg); }
+    32% { transform: translateX(-1px) translateY(-2px) rotate(-0.3deg); }
+    40% { transform: translateX(2px) translateY(3px) rotate(0.2deg); }
+    48% { transform: translateX(-3px) translateY(-1px) rotate(-0.4deg); }
+    56% { transform: translateX(1px) translateY(2px) rotate(0.3deg); }
+    64% { transform: translateX(2px) translateY(-3px) rotate(-0.2deg); }
+    72% { transform: translateX(-2px) translateY(1px) rotate(0.4deg); }
+    80% { transform: translateX(3px) translateY(-2px) rotate(-0.3deg); }
+    88% { transform: translateX(-1px) translateY(3px) rotate(0.2deg); }
+    96% { transform: translateX(1px) translateY(-1px) rotate(-0.4deg); }
+    100% { transform: translateX(0) translateY(0) rotate(0deg); }
+}
+
+.persona-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.persona-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255, 255, 255, 0.02) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.persona-card:hover::before {
+    opacity: 1;
+}
+
+.card-spotlight {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.persona-card:hover .card-spotlight {
+    opacity: 1;
+}
+
+.card-content {
+    position: relative;
+    z-index: 2;
+}
+
+.card-title {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
     transition: all 0.3s ease;
 }
 
-.terminal-line.visible {
-    opacity: 1;
-    transform: translateY(0);
+.card-description {
+    color: #999;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    transition: all 0.3s ease;
 }
 
-.terminal-line.blank {
-    height: 20px;
+.persona-card:hover {
+    border-color: #555;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
-.prompt {
-    color: #4eff9f;
-    margin-right: 8px;
-    font-weight: 600;
+.persona-card:hover .card-title {
+    color: #fff;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
 }
 
-.command {
-    color: #58a6ff;
-    font-weight: 500;
+.persona-card:hover .card-description {
+    color: #ccc;
 }
 
-.output {
-    color: #f0f6fc;
+/* Other cards dim when one is hovered */
+.persona-cards-container:hover .persona-card:not(:hover) {
+    transform: scale(0.98);
+    opacity: 0.7;
 }
 
-.success {
-    color: #4eff9f;
-}
-
-.cursor {
-    color: #4eff9f;
-    animation: blink 1.2s infinite;
-}
-
-@keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-}
-
-.persona-list {
-    margin: 16px 0;
-}
-
-.persona-entry {
+/* Click effect - ripple and color inversion */
+.persona-card::after {
+    content: '';
+    position: absolute;
+    top: var(--click-y, 50%);
+    left: var(--click-x, 50%);
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
     opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.4s ease;
-    margin-bottom: 16px;
+    pointer-events: none;
+    mix-blend-mode: difference;
 }
 
-.persona-entry.visible {
+.persona-card.clicked::after {
+    width: 400px;
+    height: 400px;
+    opacity: 0;
+}
+
+/* Selected state indicator */
+.card-selected-indicator {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    background: #4ade80;
+    border-radius: 50%;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #4ade80;
+}
+
+.persona-card.selected .card-selected-indicator {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
 }
 
-.persona-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 2px;
+.persona-card.selected {
+    border-color: #4ade80;
+    background: linear-gradient(135deg, #0a0a0a 0%, #0d1a0d 100%);
+    transform: translateX(20px);
 }
 
-.persona-marker {
-    color: #4eff9f;
-    font-weight: 600;
-    min-width: 32px;
-}
-
-.persona-title {
-    color: #f0f6fc;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.persona-detail {
-    display: flex;
-    align-items: flex-start;
-    gap: 4px;
-    margin-left: 4px;
-    padding-left: 28px;
-}
-
-.detail-prefix {
-    color: #8b949e;
-    font-weight: 400;
-    min-width: 28px;
-    margin-top: 2px;
-}
-
-.detail-text {
-    color: #8b949e;
-    line-height: 1.5;
-    flex: 1;
-}
-
-/* Typewriter effect for terminal lines */
-.terminal-line .command,
-.terminal-line .output,
-.terminal-line .success {
-    border-right: 2px solid transparent;
-}
-
-.terminal-line.typing .command,
-.terminal-line.typing .output,
-.terminal-line.typing .success {
-    border-right-color: #4eff9f;
-    animation: blink 1s infinite;
-}
-
-/* Responsive Design for Terminal */
+/* Responsive Design for Persona Cards */
 @media (max-width: 768px) {
-    .terminal-container {
-        padding: 40px 20px;
-        max-width: 100%;
+    .persona-cards-container {
+        padding: 20px 20px;
+        gap: 10px;
     }
     
-    .terminal-content {
-        padding: 16px;
+    .persona-card {
+        padding: 16px 20px;
+    }
+    
+    .card-title {
         font-size: 12px;
     }
     
-    .terminal-title {
-        font-size: 11px;
-    }
-    
-    .persona-detail {
-        padding-left: 24px;
+    .card-description {
+        font-size: 13px;
     }
     
     .detail-prefix {

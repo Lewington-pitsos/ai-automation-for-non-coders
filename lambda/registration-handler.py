@@ -16,12 +16,59 @@ def lambda_handler(event, context):
     try:
         body = json.loads(event["body"])
         
+        email = body["email"].lower()  # Store email in lowercase for consistent matching
+        course_id = body.get("course_id")
+        
+        # Validate course_id - only accept specific values
+        valid_course_ids = ["01_ai_automation_for_non_coders", "test-course"]
+        if not course_id or course_id not in valid_course_ids:
+            logger.error(f"Invalid course_id: {course_id}")
+            return {
+                "statusCode": 400,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS"
+                },
+                "body": json.dumps({
+                    "error": "invalid_course_id",
+                    "message": "Invalid course ID provided"
+                })
+            }
+        
+        # Check if registration already exists for this email and course
+        try:
+            existing_item = table.get_item(
+                Key={
+                    "course_id": course_id,
+                    "email": email
+                }
+            )
+            
+            if "Item" in existing_item:
+                logger.info(f"Duplicate registration attempt for email: {email}, course: {course_id}")
+                return {
+                    "statusCode": 400,
+                    "headers": {
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Methods": "POST, OPTIONS"
+                    },
+                    "body": json.dumps({
+                        "error": "email_already_registered",
+                        "message": "This email has already been registered for this course"
+                    })
+                }
+        except Exception as e:
+            logger.error(f"Error checking existing registration: {str(e)}")
+        
         registration_id = str(uuid.uuid4())
         timestamp = datetime.utcnow().isoformat()
         
         item = {
+            "course_id": course_id,
+            "email": email,
             "registration_id": registration_id,
-            "email": body["email"].lower(),  # Store email in lowercase for consistent matching
             "name": body["name"],
             "phone": body.get("phone", ""),
             "company": body.get("company", ""),
@@ -36,7 +83,7 @@ def lambda_handler(event, context):
         
         table.put_item(Item=item)
         
-        logger.info(f"Registration created: {registration_id}")
+        logger.info(f"Registration created: {registration_id} for email: {email}, course: {course_id}")
         
         return {
             "statusCode": 200,
