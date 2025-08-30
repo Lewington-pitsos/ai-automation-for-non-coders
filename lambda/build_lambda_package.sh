@@ -53,6 +53,11 @@ build_lambda() {
     # Copy the Lambda function code
     cp ${source_file} /tmp/${function_name}/lambda_function.py
     
+    # Copy email_templates.py if it exists
+    if [ -f email_templates.py ]; then
+        cp email_templates.py /tmp/${function_name}/
+    fi
+    
     # Create the zip file
     cd /tmp/${function_name}
     zip -r9 ${OLDPWD}/${function_name}.zip .

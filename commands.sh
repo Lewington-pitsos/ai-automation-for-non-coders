@@ -18,4 +18,22 @@ aws dynamodb scan --table-name course_registrations --attributes-to-get "id" --q
 
 ppp  pytest test/integration/test_lambda_health.py -v   
 
+
+ppp  pytest test/integration/test_lambda_health.py -v
+
 aws dynamodb scan --table-name course_registrations --query "Items[*].{Name:name.S, Email:email.S, PaymentStatus:payment_status.S}" --output table  
+
+
+
+
+
+
+
+
+
+
+
+
+
+aws dynamodb scan --table-name course_registrations --projection-expression "course_id,email" --no-cli-pager | jq -r '.Items[] | "aws dynamodb delete-item --table-name course_registrations --key \"{\\\"course_id\\\":{\\\"S\\\":\\\"" 
+  + .course_id.S + "\\\"},\\\"email\\\":{\\\"S\\\":\\\"" + .email.S + "\\\"}}\""' | bash

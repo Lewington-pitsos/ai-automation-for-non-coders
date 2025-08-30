@@ -355,8 +355,8 @@ function initCourseTimelineAnimations() {
             }
         });
     }, {
-        threshold: 0.2,
-        rootMargin: '-50px 0px'
+        threshold: window.innerWidth <= 768 ? 0.05 : 0.2,
+        rootMargin: window.innerWidth <= 768 ? '100px 0px' : '-50px 0px'
     });
 
     observer.observe(courseContainer);

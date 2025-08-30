@@ -19,6 +19,37 @@ def lambda_handler(event, context):
         email = body["email"].lower()  # Store email in lowercase for consistent matching
         course_id = body.get("course_id")
         
+        # Validate required fields
+        if not body.get("referral_source"):
+            logger.error("Missing required field: referral_source")
+            return {
+                "statusCode": 400,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS"
+                },
+                "body": json.dumps({
+                    "error": "missing_required_field",
+                    "message": "referral_source is required"
+                })
+            }
+        
+        if not body.get("dietary_requirements"):
+            logger.error("Missing required field: dietary_requirements")
+            return {
+                "statusCode": 400,
+                "headers": {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                    "Access-Control-Allow-Methods": "POST, OPTIONS"
+                },
+                "body": json.dumps({
+                    "error": "missing_required_field",
+                    "message": "dietary_requirements is required"
+                })
+            }
+        
         # Validate course_id - only accept specific values
         valid_course_ids = ["01_ai_automation_for_non_coders", "test-course"]
         if not course_id or course_id not in valid_course_ids:
@@ -74,9 +105,9 @@ def lambda_handler(event, context):
             "company": body.get("company", ""),
             "job_title": body.get("job_title", ""),
             "experience": body.get("experience", ""),
-            "referral_source": body.get("referral_source", ""),
+            "referral_source": body["referral_source"],
             "automation_interest": body.get("automation_interest", ""),
-            "dietary_requirements": body.get("dietary_requirements", ""),
+            "dietary_requirements": body["dietary_requirements"],
             "payment_status": "pending",
             "registration_date": timestamp,
             "stripe_session_id": "",  # Will be populated by webhook

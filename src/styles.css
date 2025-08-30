@@ -613,7 +613,7 @@ nav {
 }
 
 .feature-item.visible:not(:hover) {
-    animation: shiver 16s linear infinite;
+    animation: waver1 8s linear infinite;
 }
 
 .feature-item::before {
@@ -1908,7 +1908,7 @@ a:hover {
 }
 
 .feature-item.visible:not(:hover) {
-    animation: shiver 16s linear infinite;
+    animation: waver1 8s linear infinite;
 }
 
 .feature-item::before {
@@ -2182,18 +2182,18 @@ a:hover {
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform-style: preserve-3d;
-    opacity: 0;
-    transform: translateY(20px);
+    opacity: 1;
+    transform: translateY(0);
     overflow: hidden;
     width: 700px;
     max-width: 100%;
 }
 
-.persona-card.visible:not(:hover):not(.selected) {
-    animation: shiver 16s linear infinite;
+.persona-card:not(:hover):not(.selected) {
+    animation: shiver 1s linear infinite;
 }
 
-@keyframes shiver {
+@keyframes waver1 {
     0% { transform: translateX(0) translateY(0) rotate(0deg); }
     8% { transform: translateX(-2px) translateY(1px) rotate(0.3deg); }
     16% { transform: translateX(1px) translateY(-7px) rotate(-0.2deg); }
@@ -2206,6 +2206,61 @@ a:hover {
     72% { transform: translateX(-2px) translateY(1px) rotate(0.4deg); }
     80% { transform: translateX(7px) translateY(-2px) rotate(-0.3deg); }
     88% { transform: translateX(-1px) translateY(7px) rotate(0.2deg); }
+    96% { transform: translateX(1px) translateY(-1px) rotate(-0.4deg); }
+    100% { transform: translateX(0) translateY(0) rotate(0deg); }
+}
+
+@keyframes waver2 {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); }
+    10% { transform: translateX(3px) translateY(-2px) rotate(-0.2deg); }
+    20% { transform: translateX(-5px) translateY(3px) rotate(0.3deg); }
+    30% { transform: translateX(2px) translateY(-6px) rotate(-0.4deg); }
+    40% { transform: translateX(-7px) translateY(1px) rotate(0.2deg); }
+    50% { transform: translateX(4px) translateY(5px) rotate(-0.3deg); }
+    60% { transform: translateX(-2px) translateY(-4px) rotate(0.4deg); }
+    70% { transform: translateX(6px) translateY(2px) rotate(-0.2deg); }
+    80% { transform: translateX(-3px) translateY(-5px) rotate(0.3deg); }
+    90% { transform: translateX(1px) translateY(3px) rotate(-0.4deg); }
+    100% { transform: translateX(0) translateY(0) rotate(0deg); }
+}
+
+@keyframes waver3 {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); }
+    12% { transform: translateX(5px) translateY(4px) rotate(0.4deg); }
+    25% { transform: translateX(-3px) translateY(-5px) rotate(-0.3deg); }
+    37% { transform: translateX(-6px) translateY(3px) rotate(0.2deg); }
+    50% { transform: translateX(2px) translateY(-7px) rotate(-0.4deg); }
+    62% { transform: translateX(7px) translateY(-2px) rotate(0.3deg); }
+    75% { transform: translateX(-4px) translateY(6px) rotate(-0.2deg); }
+    87% { transform: translateX(3px) translateY(-3px) rotate(0.4deg); }
+    100% { transform: translateX(0) translateY(0) rotate(0deg); }
+}
+
+@keyframes waver4 {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); }
+    15% { transform: translateX(-4px) translateY(-3px) rotate(-0.3deg); }
+    28% { transform: translateX(6px) translateY(-5px) rotate(0.2deg); }
+    42% { transform: translateX(3px) translateY(6px) rotate(-0.4deg); }
+    55% { transform: translateX(-7px) translateY(2px) rotate(0.3deg); }
+    68% { transform: translateX(-2px) translateY(-6px) rotate(-0.2deg); }
+    82% { transform: translateX(5px) translateY(4px) rotate(0.4deg); }
+    95% { transform: translateX(-1px) translateY(-2px) rotate(-0.3deg); }
+    100% { transform: translateX(0) translateY(0) rotate(0deg); }
+}
+
+@keyframes shiver {
+    0% { transform: translateX(0) translateY(0) rotate(0deg); }
+    8% { transform: translateX(-2px) translateY(1px) rotate(0.3deg); }
+    16% { transform: translateX(1px) translateY(-3px) rotate(-0.2deg); }
+    24% { transform: translateX(3px) translateY(2px) rotate(0.4deg); }
+    32% { transform: translateX(-1px) translateY(-2px) rotate(-0.3deg); }
+    40% { transform: translateX(2px) translateY(3px) rotate(0.2deg); }
+    48% { transform: translateX(-3px) translateY(-1px) rotate(-0.4deg); }
+    56% { transform: translateX(1px) translateY(2px) rotate(0.3deg); }
+    64% { transform: translateX(2px) translateY(-3px) rotate(-0.2deg); }
+    72% { transform: translateX(-2px) translateY(1px) rotate(0.4deg); }
+    80% { transform: translateX(3px) translateY(-2px) rotate(-0.3deg); }
+    88% { transform: translateX(-1px) translateY(3px) rotate(0.2deg); }
     96% { transform: translateX(1px) translateY(-1px) rotate(-0.4deg); }
     100% { transform: translateX(0) translateY(0) rotate(0deg); }
 }
@@ -2993,42 +3048,34 @@ a:hover {
 
 /* Stagger the shiver animation so feature items don't all shake at the same time */
 .feature-item:nth-child(1).visible:not(:hover) {
-    animation-delay: 0s;
+    animation: waver1 8s linear infinite;
 }
 
 .feature-item:nth-child(2).visible:not(:hover) {
-    animation-delay: 4s;
+    animation: waver2 11s linear infinite;
 }
 
 .feature-item:nth-child(3).visible:not(:hover) {
-    animation-delay: 8s;
+    animation: waver3 9s linear infinite;
 }
 
 .feature-item:nth-child(4).visible:not(:hover) {
-    animation-delay: 12s;
+    animation: waver4 12s linear infinite;
+}
+/* 
+.persona-card:nth-child(1):not(:hover):not(.selected) {
+    animation-delay: 0.00s;
+} */
+
+.persona-card:nth-child(2):not(:hover):not(.selected) {
+    animation-delay: 0.05s;
 }
 
-/* Also stagger persona cards */
-.persona-card:nth-child(1).visible:not(:hover):not(.selected) {
-    animation-delay: 1s;
+.persona-card:nth-child(3):not(:hover):not(.selected) {
+    animation-delay: 0.1s;
 }
 
-.persona-card:nth-child(2).visible:not(:hover):not(.selected) {
-    animation-delay: 5s;
+.persona-card:nth-child(4):not(:hover):not(.selected) {
+    animation-delay: 0.15s;
 }
 
-.persona-card:nth-child(3).visible:not(:hover):not(.selected) {
-    animation-delay: 9s;
-}
-
-.persona-card:nth-child(4).visible:not(:hover):not(.selected) {
-    animation-delay: 13s;
-}
-
-.persona-card:nth-child(5).visible:not(:hover):not(.selected) {
-    animation-delay: 2s;
-}
-
-.persona-card:nth-child(6).visible:not(:hover):not(.selected) {
-    animation-delay: 6s;
-}

@@ -29,6 +29,6 @@ IMPORTANT INFORMATION:
 We're excited to have you join us!
 
 Best regards,
-The A.I. Automation Team"""
+- Louka"""
     
     return subject, body

@@ -124,7 +124,9 @@ class TestLambdaHealth:
         test_data = {
             "email": test_email,
             "name": "Test User",
-            "course_id": "test-course"  # Use test course ID for testing
+            "course_id": "test-course",  # Use test course ID for testing
+            "referral_source": "test",
+            "dietary_requirements": "none"
         }
         
         # Track item for cleanup
@@ -141,7 +143,9 @@ class TestLambdaHealth:
         test_data = {
             "email": "test_invalid@example.com",
             "name": "Test User",
-            "course_id": "invalid-course-id"
+            "course_id": "invalid-course-id",
+            "referral_source": "test",
+            "dietary_requirements": "none"
         }
         response = requests.post(f"{api_url}/register", json=test_data, timeout=30)
         assert response.status_code == 400, f"Expected 400 for invalid course ID: {response.status_code}"
@@ -209,7 +213,9 @@ class TestLambdaHealth:
             "email": test_email,
             "name": "E2E Test User",
             "phone": "+1234567890",
-            "course_id": "test-course"
+            "course_id": "test-course",
+            "referral_source": "test",
+            "dietary_requirements": "none"
         }
         
         # Track for cleanup
