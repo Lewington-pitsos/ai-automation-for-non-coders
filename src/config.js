@@ -2,12 +2,12 @@
 // Initialize with defaults
 let API_CONFIG = {
     API_URL: '',
-    STRIPE_PAYMENT_LINK: 'https://buy.stripe.com/8x2fZj1jz6RY0cx6TH9MY01',
+    STRIPE_PAYMENT_LINK: 'https://buy.stripe.com/14AaEZe6l0tA2kF3Hv9MY00',
     COURSE_ID: '01_ai_automation_for_non_coders', // Default course ID
     isLoaded: false
 };
 
-// Load terraform outputs dynamically
+// Load terraform outputs dynamicallyg
 async function loadConfig() {
     try {
         const response = await fetch('/assets/terraform-outputs.json');

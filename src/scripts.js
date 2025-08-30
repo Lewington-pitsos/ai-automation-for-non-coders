@@ -977,19 +977,64 @@ document.addEventListener('DOMContentLoaded', function() {
     const hoverAudio = new Audio('assets/audio/621849__welvynzportersamples__slow-building-synth-riser-uplifter.wav');
     hoverAudio.volume = 0.2;
     hoverAudio.loop = false;
+    hoverAudio.preload = 'auto';
+    
+    // Ensure audio is loaded
+    hoverAudio.load();
+    
+    // Track if audio context is unlocked
+    let audioUnlocked = false;
+    
+    // Function to unlock audio on user interaction
+    const unlockAudio = () => {
+        if (!audioUnlocked) {
+            // Create a temporary silent audio to unlock the context
+            const silentAudio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+DyvmwhBjiS1/LNeSsFJHfH8N+PQAoUXrTp66hVFApGn+Dyvmw=');
+            silentAudio.volume = 0.01;
+            silentAudio.play().then(() => {
+                audioUnlocked = true;
+                silentAudio.pause();
+                // Now preload the actual audio
+                hoverAudio.load();
+            }).catch(() => {
+                // Still locked, will try again on next interaction
+            });
+        }
+    };
+    
+    // Try to unlock on any click or key press (more reliable than mousemove)
+    document.addEventListener('click', unlockAudio);
+    document.addEventListener('keydown', unlockAudio);
+    document.addEventListener('touchstart', unlockAudio);
     
     const ctaButtons = document.querySelectorAll('.cta-button');
     
     ctaButtons.forEach(button => {
         let shakeInterval;
         let shakeStartTime;
+        let isShaking = false;
         
         // Store original transition
         const originalTransition = window.getComputedStyle(button).transition;
         
         button.addEventListener('mouseenter', function() {
-            hoverAudio.currentTime = 0;
-            hoverAudio.play().catch(e => {});
+            // Only play audio if unlocked
+            if (audioUnlocked) {
+                // Stop and reset audio before playing
+                hoverAudio.pause();
+                hoverAudio.currentTime = 0;
+                
+                // Play with promise handling
+                const playPromise = hoverAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        // Silently fail - audio might still be loading
+                    });
+                }
+            } else {
+                // Try to unlock audio context on hover
+                unlockAudio();
+            }
             
             // Disable transitions for shaking
             button.style.transition = 'none';
