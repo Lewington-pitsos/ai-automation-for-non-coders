@@ -4,6 +4,7 @@ import os
 import stripe
 import logging
 from datetime import datetime
+from decimal import Decimal
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -46,7 +47,7 @@ def lambda_handler(event, context):
                         ":status": "paid",
                         ":date": datetime.utcnow().isoformat(),
                         ":session_id": session.get("id", ""),
-                        ":amount": session.get("amount_total", 0) / 100  # Convert from cents to dollars
+                        ":amount": Decimal(str(session.get("amount_total", 0))) / Decimal("100")  # Convert from cents to dollars
                     }
                 )
                 

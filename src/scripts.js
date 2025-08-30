@@ -775,12 +775,101 @@ function showContactSuccessMessage() {
     }, 10000);
 }
 
+// Animate numbers in the course details section
+function animateNumbers() {
+    const statNumbers = document.querySelectorAll('.stat-number');
+    const totalNumber = document.querySelector('.total-number');
+    
+    // Set up intersection observer to trigger animation when section comes into view
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Animate stat numbers
+                statNumbers.forEach((numberEl, index) => {
+                    const targetNumber = parseInt(numberEl.textContent);
+                    numberEl.textContent = '0';
+                    
+                    setTimeout(() => {
+                        animateCounter(numberEl, 0, targetNumber, 1000);
+                    }, index * 200);
+                });
+                
+                // Animate total number
+                if (totalNumber) {
+                    setTimeout(() => {
+                        animateCounter(totalNumber, 0, 14.5, 1500, true);
+                    }, 600);
+                }
+                
+                observer.disconnect();
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    const courseDetails = document.querySelector('.sessions-highlight');
+    if (courseDetails) {
+        observer.observe(courseDetails);
+    }
+}
+
+function animateCounter(element, start, end, duration, isDecimal = false) {
+    const startTime = performance.now();
+    
+    function updateCounter(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function for smooth animation
+        const easeOut = 1 - Math.pow(1 - progress, 3);
+        const current = start + (end - start) * easeOut;
+        
+        if (isDecimal) {
+            element.textContent = current.toFixed(1);
+        } else {
+            element.textContent = Math.floor(current);
+        }
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateCounter);
+        } else {
+            element.textContent = isDecimal ? end.toFixed(1) : end;
+        }
+    }
+    
+    requestAnimationFrame(updateCounter);
+}
+
+// Stagger animation for detail cards
+function initDetailCardAnimations() {
+    const cards = document.querySelectorAll('.detail-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+}
+
 // Initialize registration form when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     initTerminalAnimations();
     initCourseTimelineAnimations();
     initRegistrationForm();
     initContactForm();
+    animateNumbers();
+    initDetailCardAnimations();
 });
 
 // Make functions globally available for inline event handlers
