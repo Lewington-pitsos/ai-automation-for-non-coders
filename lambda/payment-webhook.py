@@ -5,6 +5,7 @@ import stripe
 import logging
 from datetime import datetime
 from decimal import Decimal
+from email_templates import get_user_confirmation_email
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -119,21 +120,17 @@ def lambda_handler(event, context):
             )
             
             # Send confirmation email to user
+            amount_paid = session.get("amount_total", 0) / 100
+            subject, email_body = get_user_confirmation_email(item["name"], registration_id, amount_paid)
+            
             ses_client.send_email(
                 Source=from_email,
                 Destination={"ToAddresses": [item["email"]]},
                 Message={
-                    "Subject": {"Data": "Course Registration Confirmed"},
+                    "Subject": {"Data": subject},
                     "Body": {
                         "Text": {
-                            "Data": f"""Hi {item["name"]},
-
-Your payment has been processed successfully!
-
-Registration ID: {registration_id}
-Amount Paid: $${session.get("amount_total", 0) / 100:.2f}
-
-Thank you for registering!"""
+                            "Data": email_body
                         }
                     }
                 }

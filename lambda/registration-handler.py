@@ -76,6 +76,7 @@ def lambda_handler(event, context):
             "experience": body.get("experience", ""),
             "referral_source": body.get("referral_source", ""),
             "automation_interest": body.get("automation_interest", ""),
+            "dietary_requirements": body.get("dietary_requirements", ""),
             "payment_status": "pending",
             "registration_date": timestamp,
             "stripe_session_id": "",  # Will be populated by webhook

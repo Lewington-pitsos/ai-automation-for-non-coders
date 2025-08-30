@@ -439,6 +439,7 @@ function checkFormValidity() {
     const phone = form.querySelector('#phone');
     const experience = form.querySelector('#experience');
     const referralSource = form.querySelector('#referralSource');
+    const dietaryRequirements = form.querySelector('#dietaryRequirements');
     const termsCheckbox = form.querySelector('#terms');
     
     // Check if all required fields are filled and terms are checked
@@ -448,6 +449,7 @@ function checkFormValidity() {
                    phone.value.trim() !== '' &&
                    experience.value !== '' &&
                    referralSource.value !== '' &&
+                   dietaryRequirements.value.trim() !== '' &&
                    termsCheckbox.checked;
     
     // Enable/disable button based on validity
@@ -507,6 +509,7 @@ async function handleFormSubmission(event) {
             experience: registrationData.experience,
             referral_source: registrationData.referralSource,
             automation_interest: registrationData.automationInterest || '',
+            dietary_requirements: registrationData.dietaryRequirements,
             course_id: API_CONFIG.COURSE_ID || '01_ai_automation_for_non_coders'
         })
     })
@@ -558,6 +561,7 @@ function validateForm(data) {
     if (!data.phone) errors.push('Phone number is required');
     if (!data.experience) errors.push('Coding experience level is required');
     if (!data.referralSource) errors.push('Please tell us how you heard about us');
+    if (!data.dietaryRequirements) errors.push('Dietary requirements is required');
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
