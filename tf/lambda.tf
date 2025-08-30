@@ -1,16 +1,3 @@
-# Build Lambda packages with dependencies
-resource "null_resource" "lambda_build" {
-  triggers = {
-    requirements = filemd5("../lambda/requirements.txt")
-    payment_webhook = filemd5("../lambda/payment-webhook.py")
-    registration_handler = filemd5("../lambda/registration-handler.py")
-  }
-
-  provisioner "local-exec" {
-    command = "cd ../lambda && ./build_lambda_package.sh"
-  }
-}
-
 # Registration Handler Lambda
 resource "aws_lambda_function" "registration_handler" {
   filename         = "../lambda/registration-handler.zip"
@@ -27,7 +14,6 @@ resource "aws_lambda_function" "registration_handler" {
     }
   }
 
-  depends_on = [null_resource.lambda_build]
 
   tags = {
     Name        = "${var.project_name}-registration-handler"
@@ -55,7 +41,6 @@ resource "aws_lambda_function" "payment_webhook" {
     }
   }
 
-  depends_on = [null_resource.lambda_build]
 
   tags = {
     Name        = "${var.project_name}-payment-webhook"

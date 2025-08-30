@@ -13,7 +13,6 @@
     height: 22px;
     border: 2px solid #4eff9f;
     background: #000;
-    border-radius: 4px;
     position: relative;
     cursor: pointer;
     transition: border-color 0.2s;
@@ -893,7 +892,7 @@ footer {
 }
 
 .white {
-    color: white
+    color: white;
 }
 .timeline-right {
     left: 50%;
@@ -985,7 +984,12 @@ footer {
     
     /* Navigation responsive - increased padding for mobile */
     nav {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
         padding: 20px 0 30px 0;
+        z-index: 1000 !important;
     }
     
     .nav-container {
@@ -1231,17 +1235,9 @@ footer {
         padding: 20px;
     }
     
-    .faq-answer {
-        padding: 0 20px 20px 70px;
-    }
-    
     .faq-icon {
         font-size: 1.5rem;
         margin-right: 15px;
-    }
-    
-    .faq-question {
-        font-size: 1.1rem;
     }
     
     .roi-calculation {
@@ -1251,6 +1247,15 @@ footer {
     
     .roi-operator {
         transform: rotate(90deg);
+    }
+    
+    /* FAQ mobile overrides - must come at end to override later definitions */
+    .faq-question {
+        font-size: 1rem !important;
+    }
+    
+    .faq-answer {
+        padding: 0 20px 20px 40px !important;
     }
 }
 
@@ -1658,13 +1663,6 @@ a:hover {
     font-size: 1.8rem;
 }
 
-/* Features Grid Styles (moved from inline) */
-.features-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 40px;
-    margin-top: 60px;
-}
 
 .feature-item {
     background: #111;
@@ -2332,25 +2330,31 @@ a:hover {
         padding: 40px 20px;
     }
     
+    /* Hide green bar and track in mobile */
     .course-timeline-track {
-        left: 20px;
+        display: none;
     }
     
+    .course-timeline-line {
+        display: none;
+    }
+    
+    /* Hide green dots in mobile */
     .course-timeline-marker {
-        left: 7px;
-        width: 23px;
-        height: 23px;
-        top: 25px;
+        display: none;
     }
     
+    /* Make cards full width */
     .course-timeline-content {
-        margin-left: 60px;
+        margin-left: 0;
         padding: 25px 20px;
+        width: 100%;
+        max-width: none;
     }
     
+    /* Remove the arrow pointer since there's no green line */
     .course-timeline-content::after {
-        left: -15px;
-        top: 35px;
+        display: none;
     }
     
     .course-timeline-icon {
@@ -2536,20 +2540,7 @@ a:hover {
 
 /* Terms and Conditions Box Style */
 .terms-box {
-    max-height: 180px;
-    overflow-y: auto;
-    background: #000;
-    border: 1px solid #333;
-    color: #ccc;
-    font-family: inherit;
-    font-size: 15px;
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: none;
-    border-radius: 0;
-}
-.terms-box {
-    max-height: 405px; /* 1.5x previous height */
+    max-height: 405px;
     min-height: 120px;
     overflow-y: auto;
     background: #000;
@@ -2560,7 +2551,6 @@ a:hover {
     padding: 16px;
     margin-bottom: 12px;
     box-shadow: none;
-    border-radius: 0;
     line-height: 1.7;
     transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
@@ -2598,7 +2588,8 @@ a:hover {
     margin-bottom: 8px;
     list-style-position: inside;
 }
-    
+
+@media screen and (max-width: 480px) {
     .registration-form {
         padding: 30px 15px;
     }

@@ -9,7 +9,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table("${table_name}")
+table = dynamodb.Table(os.environ.get("TABLE_NAME", "course_registrations"))
 ses_client = boto3.client("ses")
 
 stripe.api_key = os.environ.get("STRIPE_API_KEY")

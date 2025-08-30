@@ -16,6 +16,8 @@ override.tf.json
 *_override.tf.json
 **/*.zip
 
+test/integration/.credentials.json
+
 
 **/__pycache__/
 **/.pytest_cache/
