@@ -976,18 +976,57 @@ document.addEventListener('DOMContentLoaded', function() {
     // Audio hover functionality for CTA buttons
     const hoverAudio = new Audio('assets/audio/621849__welvynzportersamples__slow-building-synth-riser-uplifter.wav');
     hoverAudio.volume = 0.2;
+    hoverAudio.loop = false;
     
     const ctaButtons = document.querySelectorAll('.cta-button');
     
     ctaButtons.forEach(button => {
+        let shakeInterval;
+        let shakeStartTime;
+        
+        // Store original transition
+        const originalTransition = window.getComputedStyle(button).transition;
+        
         button.addEventListener('mouseenter', function() {
             hoverAudio.currentTime = 0;
             hoverAudio.play().catch(e => {});
+            
+            // Disable transitions for shaking
+            button.style.transition = 'none';
+            
+            // Start shaking animation
+            shakeStartTime = Date.now();
+            shakeInterval = setInterval(() => {
+                const elapsed = (Date.now() - shakeStartTime) / 1000;
+                
+                // Stop shaking at 23.5 seconds
+                if (elapsed >= 23.5) {
+                    clearInterval(shakeInterval);
+                    button.style.setProperty('transform', '', '');
+                    return;
+                }
+                
+                // Exponential buildup: starts slow, gets intense near the end
+                // Using power function for more dramatic buildup
+                const progress = elapsed / 23.5; // 0 to 1 over 23.5 seconds
+                const intensity = Math.pow(progress, 2.5) * 30; // Exponential growth up to 30px
+                
+                const x = (Math.random() - 0.5) * intensity;
+                const y = (Math.random() - 0.5) * intensity;
+                const rotation = (Math.random() - 0.5) * intensity * 0.5; // Less rotation
+                
+                button.style.setProperty('transform', `translate(${x}px, ${y}px) rotate(${rotation}deg)`, 'important');
+            }, 20);
         });
         
         button.addEventListener('mouseleave', function() {
             hoverAudio.pause();
             hoverAudio.currentTime = 0;
+            
+            // Stop shaking and reset
+            clearInterval(shakeInterval);
+            button.style.setProperty('transform', '', '');
+            button.style.transition = originalTransition;
         });
     });
     
