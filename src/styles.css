@@ -1,10 +1,9 @@
 .terms-checkbox-wrapper {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     gap: 10px;
     margin-top: 8px;
-    width: 100%;
 }
 
 .terms-checkbox {
@@ -16,7 +15,6 @@
     position: relative;
     cursor: pointer;
     transition: border-color 0.2s;
-    flex-shrink: 0;
 }
 .terms-checkbox:checked {
     border-color: #33d477;
@@ -43,8 +41,6 @@
     font-weight: 500;
     cursor: pointer;
     user-select: none;
-    flex: 1;
-    line-height: 1.4;
 }
 * {
     margin: 0;
@@ -2653,7 +2649,7 @@ a:hover {
     letter-spacing: 0.5px;
 }
 
-.form-group input,
+.form-group input:not(.terms-checkbox),
 .form-group select,
 .form-group textarea {
     background: #000;
@@ -2665,7 +2661,7 @@ a:hover {
     font-family: inherit;
 }
 
-.form-group input:focus,
+.form-group input:not(.terms-checkbox):focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
@@ -2673,7 +2669,7 @@ a:hover {
     background: #0a0a0a;
 }
 
-.form-group input:hover,
+.form-group input:not(.terms-checkbox):hover,
 .form-group select:hover,
 .form-group textarea:hover {
     border-color: #555;
@@ -2723,7 +2719,7 @@ a:hover {
 /* Responsive Design for Registration Form */
 @media (max-width: 768px) {
     .registration-section {
-        padding: 80px 0;
+        padding: 160px 0 80px 0;
     }
     
     .registration-form {
@@ -2744,7 +2740,7 @@ a:hover {
         gap: 6px;
     }
     
-    .form-group input,
+    .form-group input:not(.terms-checkbox),
     .form-group select,
     .form-group textarea {
         padding: 12px;
@@ -2890,7 +2886,7 @@ a:hover {
 
 @media screen and (max-width: 480px) {
     .registration-section {
-        padding: 60px 0;
+        padding: 160px 0;
     }
     
     .registration-form {
@@ -2907,7 +2903,7 @@ a:hover {
         padding-bottom: 12px;
     }
     
-    .form-group input,
+    .form-group input:not(.terms-checkbox),
     .form-group select,
     .form-group textarea {
         padding: 10px;
@@ -2938,7 +2934,6 @@ a:hover {
     .terms-checkbox {
         width: 18px;
         height: 18px;
-        flex-shrink: 0;
     }
     
     .terms-checkbox-label {
