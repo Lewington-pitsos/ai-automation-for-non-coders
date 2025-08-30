@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Check for --frontend flag
+if [[ "$1" == "--frontend" ]]; then
+    echo "Deploying frontend only..."
+    cd frontend-tf && terraform apply -auto-approve; cd ..
+    exit 0
+fi
+
 # Check for --tfonly flag
 if [[ "$1" == "--tfonly" ]]; then
     echo "Skipping Python build (--tfonly flag detected)"

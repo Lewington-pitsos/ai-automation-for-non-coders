@@ -11,11 +11,6 @@ cd tf && terraform output -json > ../test/terraform-outputs.json && terraform ou
 aws logs tail "/aws/lambda/ai-automation-course-payment-webhook" --since 48h --follow
 
 
-
-aws dynamodb scan --table-name course_registrations --attributes-to-get "id" --query "Items[].id.S" --output text | tr '\t' '\n' | xargs -I {} aws dynamodb delete-item --table-name registration --key '{"id":{"S":"{}"}}'
-
-
-
 ppp  pytest test/integration/test_lambda_health.py -v   
 
 

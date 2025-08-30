@@ -2,11 +2,6 @@
 
 // Load shared components
 async function loadComponent(elementId, componentPath) {
-    console.log(`Loading component ${elementId} from ${componentPath}`);
-    const navContainer = document.querySelector('.nav-container');
-    if (navContainer) {
-        console.log(`Nav-container width before ${elementId} load:`, navContainer.offsetWidth);
-    }
     try {
         const response = await fetch(componentPath);
         if (!response.ok) throw new Error(`Failed to load ${componentPath}`);
@@ -14,28 +9,6 @@ async function loadComponent(elementId, componentPath) {
         const element = document.getElementById(elementId);
         if (element) {
             element.innerHTML = html;
-            console.log(`Component ${elementId} loaded`);
-            const navContainerAfter = document.querySelector('.nav-container');
-            const navHeader = document.querySelector('.nav-header');
-            const logo = document.querySelector('.logo');
-            if (navContainerAfter) {
-                console.log(`Nav-container width after ${elementId} load:`, navContainerAfter.offsetWidth);
-                console.log(`Nav-header width:`, navHeader ? navHeader.offsetWidth : 'not found');
-                console.log(`Logo width:`, logo ? logo.offsetWidth : 'not found');
-                console.log(`Nav-container computed styles:`, {
-                    width: getComputedStyle(navContainerAfter).width,
-                    maxWidth: getComputedStyle(navContainerAfter).maxWidth,
-                    padding: getComputedStyle(navContainerAfter).padding,
-                    boxSizing: getComputedStyle(navContainerAfter).boxSizing
-                });
-                if (navHeader) {
-                    console.log(`Nav-header computed styles:`, {
-                        width: getComputedStyle(navHeader).width,
-                        display: getComputedStyle(navHeader).display,
-                        justifyContent: getComputedStyle(navHeader).justifyContent
-                    });
-                }
-            }
         }
     } catch (error) {
         console.error(`Error loading component ${componentPath}:`, error);
@@ -54,13 +27,6 @@ function fixFooterCursors() {
 
 // Initialize everything on load
 window.addEventListener('load', async () => {
-    console.log('Page load event fired');
-    console.log('Window dimensions:', window.innerWidth, 'x', window.innerHeight);
-    console.log('Document body dimensions:', document.body.offsetWidth, 'x', document.body.offsetHeight);
-    const navContainer = document.querySelector('.nav-container');
-    if (navContainer) {
-        console.log('Nav-container width at page load:', navContainer.offsetWidth);
-    }
     
     // Load shared components first
     await Promise.all([
@@ -71,27 +37,13 @@ window.addEventListener('load', async () => {
     // Fix footer link cursors after components are loaded
     fixFooterCursors();
     
-    const navContainerAfterComponents = document.querySelector('.nav-container');
-    if (navContainerAfterComponents) {
-        console.log('Nav-container width after components loaded:', navContainerAfterComponents.offsetWidth);
-    }
     
     // Initialize Perlin backgrounds - DISABLED FOR TESTING
     initPerlinBackgrounds();
     
     // Initialize chart with a small delay to ensure Chart.js is loaded - DISABLED FOR TESTING
     setTimeout(() => {
-        const navContainer = document.querySelector('.nav-container');
-        if (navContainer) {
-            console.log('Nav-container width before Chart.js init:', navContainer.offsetWidth);
-        }
         initChart();
-        setTimeout(() => {
-            const navContainerAfter = document.querySelector('.nav-container');
-            if (navContainerAfter) {
-                console.log('Nav-container width after Chart.js init:', navContainerAfter.offsetWidth);
-            }
-        }, 50);
     }, 100);
 });
 
@@ -102,14 +54,10 @@ window.addEventListener('load', async () => {
 
 // Chart initialization function
 function initChart() {
-    console.log('Starting Chart.js initialization');
     const canvas = document.getElementById('citizenDeveloperChart');
     if (!canvas) {
-        console.log('No citizenDeveloperChart canvas found, skipping chart init');
         return;
     }
-    
-    console.log('Canvas found, creating Chart.js instance');
     const ctx = canvas.getContext('2d');
     
     const chart = new Chart(ctx, {
@@ -823,7 +771,6 @@ function handleContactFormSubmission(event) {
         submitButton.textContent = originalText;
         
         // Log the contact data (replace with actual submission to server)
-        console.log('Contact Data:', contactData);
         
         // Reset form after successful submission
         form.reset();
@@ -1026,6 +973,24 @@ function initFeatureCards() {
 
 // Initialize registration form when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
+    // Audio hover functionality for CTA buttons
+    const hoverAudio = new Audio('assets/audio/621849__welvynzportersamples__slow-building-synth-riser-uplifter.wav');
+    hoverAudio.volume = 0.2;
+    
+    const ctaButtons = document.querySelectorAll('.cta-button');
+    
+    ctaButtons.forEach(button => {
+        button.addEventListener('mouseenter', function() {
+            hoverAudio.currentTime = 0;
+            hoverAudio.play().catch(e => {});
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            hoverAudio.pause();
+            hoverAudio.currentTime = 0;
+        });
+    });
+    
     initPersonaCards();
     initCourseTimelineAnimations();
     initFeatureCards();

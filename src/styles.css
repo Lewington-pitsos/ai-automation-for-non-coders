@@ -3048,11 +3048,11 @@ a:hover {
 
 /* Stagger the shiver animation so feature items don't all shake at the same time */
 .feature-item:nth-child(1).visible:not(:hover) {
-    animation: waver1 8s linear infinite;
+    animation: waver1 9s linear infinite;
 }
 
 .feature-item:nth-child(2).visible:not(:hover) {
-    animation: waver2 11s linear infinite;
+    animation: waver2 9s linear infinite;
 }
 
 .feature-item:nth-child(3).visible:not(:hover) {
@@ -3060,7 +3060,7 @@ a:hover {
 }
 
 .feature-item:nth-child(4).visible:not(:hover) {
-    animation: waver4 12s linear infinite;
+    animation: waver4 9s linear infinite;
 }
 /* 
 .persona-card:nth-child(1):not(:hover):not(.selected) {

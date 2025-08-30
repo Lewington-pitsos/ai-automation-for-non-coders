@@ -121,7 +121,7 @@ def lambda_handler(event, context):
             
             # Send confirmation email to user
             amount_paid = session.get("amount_total", 0) / 100
-            subject, email_body = get_user_confirmation_email(item["name"], registration_id, amount_paid)
+            subject, html_body, text_body = get_user_confirmation_email(item["name"], registration_id, amount_paid)
             
             ses_client.send_email(
                 Source=from_email,
@@ -129,8 +129,11 @@ def lambda_handler(event, context):
                 Message={
                     "Subject": {"Data": subject},
                     "Body": {
+                        "Html": {
+                            "Data": html_body
+                        },
                         "Text": {
-                            "Data": email_body
+                            "Data": text_body
                         }
                     }
                 }
