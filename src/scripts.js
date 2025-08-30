@@ -76,17 +76,18 @@ window.addEventListener('load', async () => {
         console.log('Nav-container width after components loaded:', navContainerAfterComponents.offsetWidth);
     }
     
-    // Initialize Perlin backgrounds
-    console.log('Starting Perlin backgrounds initialization');
-    initPerlinBackgrounds();
+    // Initialize Perlin backgrounds - DISABLED FOR TESTING
+    console.log('Perlin backgrounds initialization DISABLED for testing');
+    // initPerlinBackgrounds();
     
-    // Initialize chart with a small delay to ensure Chart.js is loaded
+    // Initialize chart with a small delay to ensure Chart.js is loaded - DISABLED FOR TESTING
     setTimeout(() => {
         const navContainer = document.querySelector('.nav-container');
         if (navContainer) {
             console.log('Nav-container width before Chart.js init:', navContainer.offsetWidth);
         }
-        initChart();
+        console.log('Chart.js initialization DISABLED for testing');
+        // initChart();
         setTimeout(() => {
             const navContainerAfter = document.querySelector('.nav-container');
             if (navContainerAfter) {
@@ -96,10 +97,10 @@ window.addEventListener('load', async () => {
     }, 100);
 });
 
-// Handle resize for Perlin backgrounds  
-window.addEventListener('resize', () => {
-    handlePerlinResize();
-});
+// Handle resize for Perlin backgrounds - DISABLED FOR TESTING
+// window.addEventListener('resize', () => {
+//     handlePerlinResize();
+// });
 
 // Chart initialization function
 function initChart() {

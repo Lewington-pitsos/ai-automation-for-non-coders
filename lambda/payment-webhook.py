@@ -24,11 +24,11 @@ def lambda_handler(event, context):
         payload = event["body"]
         if event.get("isBase64Encoded", False):
             import base64
-            payload = base64.b64decode(payload)
+            payload = base64.b64decode(payload).decode('utf-8')
         
-        # Handle case-insensitive header lookup
-        headers = {k.lower(): v for k, v in event["headers"].items()}
-        sig_header = headers.get("stripe-signature")
+        # Get signature header (try both cases)
+        sig_header = (event["headers"].get("Stripe-Signature") or 
+                     event["headers"].get("stripe-signature"))
         
         if not sig_header:
             logger.error("Missing Stripe-Signature header")

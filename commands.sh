@@ -19,3 +19,9 @@ aws dynamodb scan \
 --table-name course_registrations \
 --query "Items[*]" \
 --output table
+
+
+aws dynamodb scan \                                                       
+--table-name course_registrations \
+--query "Items[*].{Name:name.S, Email:email.S, PaymentStatus:payment_status.S}" \
+--output table
