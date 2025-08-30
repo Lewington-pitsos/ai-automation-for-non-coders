@@ -2990,3 +2990,45 @@ a:hover {
         font-size: 14px;
     }
 }
+
+/* Stagger the shiver animation so feature items don't all shake at the same time */
+.feature-item:nth-child(1).visible:not(:hover) {
+    animation-delay: 0s;
+}
+
+.feature-item:nth-child(2).visible:not(:hover) {
+    animation-delay: 4s;
+}
+
+.feature-item:nth-child(3).visible:not(:hover) {
+    animation-delay: 8s;
+}
+
+.feature-item:nth-child(4).visible:not(:hover) {
+    animation-delay: 12s;
+}
+
+/* Also stagger persona cards */
+.persona-card:nth-child(1).visible:not(:hover):not(.selected) {
+    animation-delay: 1s;
+}
+
+.persona-card:nth-child(2).visible:not(:hover):not(.selected) {
+    animation-delay: 5s;
+}
+
+.persona-card:nth-child(3).visible:not(:hover):not(.selected) {
+    animation-delay: 9s;
+}
+
+.persona-card:nth-child(4).visible:not(:hover):not(.selected) {
+    animation-delay: 13s;
+}
+
+.persona-card:nth-child(5).visible:not(:hover):not(.selected) {
+    animation-delay: 2s;
+}
+
+.persona-card:nth-child(6).visible:not(:hover):not(.selected) {
+    animation-delay: 6s;
+}
