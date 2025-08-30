@@ -77,8 +77,7 @@ window.addEventListener('load', async () => {
     }
     
     // Initialize Perlin backgrounds - DISABLED FOR TESTING
-    console.log('Perlin backgrounds initialization DISABLED for testing');
-    // initPerlinBackgrounds();
+    initPerlinBackgrounds();
     
     // Initialize chart with a small delay to ensure Chart.js is loaded - DISABLED FOR TESTING
     setTimeout(() => {
@@ -86,8 +85,7 @@ window.addEventListener('load', async () => {
         if (navContainer) {
             console.log('Nav-container width before Chart.js init:', navContainer.offsetWidth);
         }
-        console.log('Chart.js initialization DISABLED for testing');
-        // initChart();
+        initChart();
         setTimeout(() => {
             const navContainerAfter = document.querySelector('.nav-container');
             if (navContainerAfter) {
