@@ -34,7 +34,10 @@ data "aws_iam_policy_document" "lambda_permissions" {
       "dynamodb:Query",
       "dynamodb:Scan"
     ]
-    resources = [aws_dynamodb_table.course_registrations.arn]
+    resources = [
+      aws_dynamodb_table.course_registrations.arn,
+      "${aws_dynamodb_table.course_registrations.arn}/index/registration-id-index"
+    ]
   }
 
   statement {

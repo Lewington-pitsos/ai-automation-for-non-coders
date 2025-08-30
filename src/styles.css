@@ -364,6 +364,12 @@ nav {
     max-height: 500px;
 }
 
+@media screen and (max-width: 768px) {
+    #citizenDeveloperChart {
+        max-width: 100%;
+    }
+}
+
 #chartContainer {
     width: 100%;
     height: 100%;
@@ -597,6 +603,17 @@ nav {
     position: relative;
     overflow: hidden;
     cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.feature-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feature-item.visible:not(:hover) {
+    animation: shiver 0.8s linear infinite;
 }
 
 .feature-item::before {
@@ -1881,6 +1898,17 @@ a:hover {
     position: relative;
     overflow: hidden;
     cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.feature-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.feature-item.visible:not(:hover) {
+    animation: shiver 0.8s linear infinite;
 }
 
 .feature-item::before {

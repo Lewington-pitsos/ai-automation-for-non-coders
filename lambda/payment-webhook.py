@@ -20,8 +20,22 @@ admin_email = os.environ.get("ADMIN_EMAIL")
 
 def lambda_handler(event, context):
     try:
+        # Handle base64 encoded body from API Gateway
         payload = event["body"]
-        sig_header = event["headers"].get("stripe-signature")
+        if event.get("isBase64Encoded", False):
+            import base64
+            payload = base64.b64decode(payload)
+        
+        # Handle case-insensitive header lookup
+        headers = {k.lower(): v for k, v in event["headers"].items()}
+        sig_header = headers.get("stripe-signature")
+        
+        if not sig_header:
+            logger.error("Missing Stripe-Signature header")
+            return {
+                "statusCode": 400,
+                "body": json.dumps({"error": "Missing signature header"})
+            }
         
         stripe_event = stripe.Webhook.construct_event(
             payload, sig_header, webhook_secret
@@ -88,7 +102,7 @@ def lambda_handler(event, context):
                         "statusCode": 500,
                         "body": json.dumps({"error": "Database query failed"})
                     }
-            
+
             # Update the registration with payment information
             table.update_item(
                 Key={

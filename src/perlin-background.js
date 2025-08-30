@@ -112,14 +112,26 @@ class Particle {
 
 // Create flow field for each canvas
 function createFlowField(canvasId) {
+    console.log(`Creating flow field for canvas: ${canvasId}`);
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
+    
+    const navContainer = document.querySelector('.nav-container');
+    if (navContainer) {
+        console.log(`Nav-container width before ${canvasId} sizing:`, navContainer.offsetWidth);
+    }
     
     const ctx = canvas.getContext('2d');
     const rect = canvas.parentElement.getBoundingClientRect();
     
+    console.log(`Setting ${canvasId} canvas dimensions:`, rect.width, 'x', rect.height);
     canvas.width = rect.width;
     canvas.height = rect.height;
+    
+    const navContainerAfter = document.querySelector('.nav-container');
+    if (navContainerAfter) {
+        console.log(`Nav-container width after ${canvasId} sizing:`, navContainerAfter.offsetWidth);
+    }
     
     const spacing = 15;
     const rez = 0.1;
@@ -127,13 +139,14 @@ function createFlowField(canvasId) {
     const perlin = new PerlinNoise();
     
     // Create grid
-    for (let x = 0; x < canvas.width; x += spacing) {
+    const radius = spacing / 2;
+    for (let x = 0; x < canvas.width - radius; x += spacing) {
         const row = [];
-        for (let y = 0; y < canvas.height; y += spacing) {
+        for (let y = 0; y < canvas.height - radius; y += spacing) {
             const noiseValue = (perlin.noise(x * rez, y * rez) + 1) * 0.5;
             const angle = noiseValue * Math.PI * 2;
             const biasedAngle = angle * 0.5;
-            row.push(new GridAngle(x, y, spacing / 2, biasedAngle));
+            row.push(new GridAngle(x, y, radius, biasedAngle));
         }
         grid.push(row);
     }
@@ -238,15 +251,27 @@ function initPerlinBackgrounds() {
 
 // Handle resize
 function handlePerlinResize() {
+    console.log('Handling Perlin resize');
+    const navContainer = document.querySelector('.nav-container');
+    if (navContainer) {
+        console.log('Nav-container width before resize:', navContainer.offsetWidth);
+    }
+    
     const canvases = ['heroCanvas', 'featuresCanvas', 'ctaCanvas'];
     canvases.forEach(id => {
         const canvas = document.getElementById(id);
         if (canvas && canvas.parentElement) {
             const rect = canvas.parentElement.getBoundingClientRect();
+            console.log(`Resizing ${id} to:`, rect.width, 'x', rect.height);
             canvas.width = rect.width;
             canvas.height = rect.height;
         }
     });
+    
+    const navContainerAfter = document.querySelector('.nav-container');
+    if (navContainerAfter) {
+        console.log('Nav-container width after resize:', navContainerAfter.offsetWidth);
+    }
 }
 
 // Functions are available globally
