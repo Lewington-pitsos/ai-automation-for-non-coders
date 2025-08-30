@@ -1740,6 +1740,9 @@ a:hover {
 .faq-item.roi {
     border-left-color: #666;
 }
+.faq-item.experience {
+    border-left-color: #666;
+}
 
 .faq-item:hover {
     background: rgba(17, 17, 17, 0.95);
@@ -1824,6 +1827,15 @@ a:hover {
 
 .faq-answer p:last-of-type {
     margin-bottom: 20px;
+}
+
+.faq-answer ul {
+    margin: 0 0 15px 0;
+    padding-left: 20px;
+}
+
+.faq-answer li {
+    margin: 0 0 8px 0;
 }
 
 .faq-reassurance {
@@ -2002,6 +2014,9 @@ a:hover {
 .faq-item.roi {
     border-left-color: #666;
 }
+.faq-item.experience {
+    border-left-color: #666;
+}
 
 .faq-item:hover {
     background: rgba(17, 17, 17, 0.95);
@@ -2086,6 +2101,15 @@ a:hover {
 
 .faq-answer p:last-of-type {
     margin-bottom: 20px;
+}
+
+.faq-answer ul {
+    margin: 0 0 15px 0;
+    padding-left: 20px;
+}
+
+.faq-answer li {
+    margin: 0 0 8px 0;
 }
 
 .faq-reassurance {
