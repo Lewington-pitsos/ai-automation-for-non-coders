@@ -9,6 +9,7 @@ import sys
 import json
 import argparse
 import hashlib
+import asyncio
 from typing import Optional, List, Dict, Any, Tuple
 from pathlib import Path
 from google import genai
@@ -249,7 +250,7 @@ class GeminiImageGenerator:
         if self.track_costs:
             self.tracker = MetadataTracker()
     
-    def generate_image(self, prompt: str, save_path: Optional[str] = None) -> Tuple[bytes, Dict]:
+    async def generate_image(self, prompt: str, save_path: Optional[str] = None) -> Tuple[bytes, Dict]:
         """
         Generate an image from a text prompt
         
@@ -263,7 +264,8 @@ class GeminiImageGenerator:
         print(f"🎨 Generating image with prompt: {prompt[:100]}...")
         
         try:
-            response = self.client.models.generate_content(
+            response = await asyncio.to_thread(
+                self.client.models.generate_content,
                 model=self.model,
                 contents=[prompt]
             )
@@ -295,7 +297,7 @@ class GeminiImageGenerator:
                         image_data = part.inline_data.data if isinstance(part.inline_data.data, bytes) else base64.b64decode(part.inline_data.data)
                         
                         if save_path:
-                            self._save_image(image_data, save_path)
+                            await self._save_image(image_data, save_path)
                         
                         # Track metadata and costs
                         metadata = {}
@@ -317,7 +319,7 @@ class GeminiImageGenerator:
             print(f"❌ Error generating image: {e}")
             raise
     
-    def edit_image(
+    async def edit_image(
         self, 
         image_path: str, 
         prompt: str, 
@@ -359,7 +361,8 @@ class GeminiImageGenerator:
                 }
             ]
             
-            response = self.client.models.generate_content(
+            response = await asyncio.to_thread(
+                self.client.models.generate_content,
                 model=self.model,
                 contents=contents
             )
@@ -369,6 +372,51 @@ class GeminiImageGenerator:
             if hasattr(response, 'usage_metadata'):
                 usage_metadata = response.usage_metadata
             
+            # Debug: Print detailed response structure
+            print(f"🔍 DEBUG: Response has candidates: {bool(response.candidates)}")
+            print(f"🔍 DEBUG: Response type: {type(response)}")
+            
+            if hasattr(response, 'prompt_feedback'):
+                print(f"🔍 DEBUG: Prompt feedback: {response.prompt_feedback}")
+            
+            if response.candidates:
+                print(f"🔍 DEBUG: Number of candidates: {len(response.candidates)}")
+                candidate = response.candidates[0]
+                print(f"🔍 DEBUG: First candidate type: {type(candidate)}")
+                print(f"🔍 DEBUG: First candidate has content: {bool(candidate.content)}")
+                
+                if hasattr(candidate, 'finish_reason'):
+                    print(f"🔍 DEBUG: Candidate finish reason: {candidate.finish_reason}")
+                
+                if candidate.content:
+                    print(f"🔍 DEBUG: Content type: {type(candidate.content)}")
+                    print(f"🔍 DEBUG: Content has parts: {bool(candidate.content.parts)}")
+                    if candidate.content.parts:
+                        print(f"🔍 DEBUG: Number of parts: {len(candidate.content.parts)}")
+                        for i, part in enumerate(candidate.content.parts):
+                            print(f"🔍 DEBUG: Part {i} type: {type(part)}")
+                            print(f"🔍 DEBUG: Part {i} attributes: {dir(part)}")
+                            print(f"🔍 DEBUG: Part {i} has inline_data: {hasattr(part, 'inline_data')}")
+                            if hasattr(part, 'inline_data'):
+                                print(f"🔍 DEBUG: Part {i} inline_data is not None: {part.inline_data is not None}")
+                                if part.inline_data:
+                                    print(f"🔍 DEBUG: Part {i} inline_data type: {type(part.inline_data)}")
+                                    print(f"🔍 DEBUG: Part {i} inline_data attributes: {dir(part.inline_data)}")
+                                    if hasattr(part.inline_data, 'mime_type'):
+                                        print(f"🔍 DEBUG: Part {i} mime_type: {part.inline_data.mime_type}")
+                                    if hasattr(part.inline_data, 'data'):
+                                        data_type = type(part.inline_data.data)
+                                        data_len = len(part.inline_data.data) if hasattr(part.inline_data.data, '__len__') else 'unknown'
+                                        print(f"🔍 DEBUG: Part {i} data type: {data_type}, length: {data_len}")
+                            if hasattr(part, 'text'):
+                                print(f"🔍 DEBUG: Part {i} has text: {bool(part.text)}")
+                                if part.text:
+                                    print(f"🔍 DEBUG: Part {i} text preview: {part.text[:100]}...")
+                else:
+                    print(f"🔍 DEBUG: Candidate content is None")
+            else:
+                print(f"🔍 DEBUG: No candidates in response")
+            
             # Extract edited image from response
             if response.candidates and response.candidates[0].content and response.candidates[0].content.parts:
                 for part in response.candidates[0].content.parts:
@@ -377,7 +425,7 @@ class GeminiImageGenerator:
                         edited_data = part.inline_data.data if isinstance(part.inline_data.data, bytes) else base64.b64decode(part.inline_data.data)
                         
                         if save_path:
-                            self._save_image(edited_data, save_path)
+                            await self._save_image(edited_data, save_path)
                         
                         # Track metadata and costs
                         metadata = {}
@@ -394,13 +442,14 @@ class GeminiImageGenerator:
                         
                         return edited_data, metadata
             
+            print("🔍 DEBUG: No edited image found in response structure")
             raise ValueError("No edited image in response")
             
         except Exception as e:
             print(f"❌ Error editing image: {e}")
             raise
     
-    def compose_images(
+    async def compose_images(
         self, 
         image_paths: List[str], 
         prompt: str, 
@@ -443,7 +492,8 @@ class GeminiImageGenerator:
             
             contents = [{"parts": parts}]
             
-            response = self.client.models.generate_content(
+            response = await asyncio.to_thread(
+                self.client.models.generate_content,
                 model=self.model,
                 contents=contents
             )
@@ -461,7 +511,7 @@ class GeminiImageGenerator:
                         composed_data = part.inline_data.data if isinstance(part.inline_data.data, bytes) else base64.b64decode(part.inline_data.data)
                         
                         if save_path:
-                            self._save_image(composed_data, save_path)
+                            await self._save_image(composed_data, save_path)
                         
                         # Track metadata and costs
                         metadata = {}
@@ -484,7 +534,7 @@ class GeminiImageGenerator:
             print(f"❌ Error composing images: {e}")
             raise
     
-    def refine_image(
+    async def refine_image(
         self, 
         image_path: str, 
         refinement_prompt: str, 
@@ -506,7 +556,7 @@ class GeminiImageGenerator:
         
         # Use edit_image with refinement-specific prompt
         refined_prompt = f"Refine this image with the following changes: {refinement_prompt}"
-        return self.edit_image(image_path, refined_prompt, save_path)
+        return await self.edit_image(image_path, refined_prompt, save_path)
     
     def get_session_stats(self) -> str:
         """Get current session statistics"""
@@ -526,7 +576,7 @@ class GeminiImageGenerator:
             return self.tracker.get_all_time_stats()
         return "Cost tracking is disabled"
     
-    def _save_image(self, image_data: bytes, path: str):
+    async def _save_image(self, image_data: bytes, path: str):
         """Save image data to file"""
         try:
             # Ensure directory exists
@@ -601,7 +651,7 @@ def show_cost_report(generator: GeminiImageGenerator, args):
     print("="*50)
 
 
-def main():
+async def main():
     """Main function to run the image generator"""
     parser = argparse.ArgumentParser(
         description='Generate and edit images using Google Gemini API with cost tracking',
@@ -671,25 +721,25 @@ def main():
         
         # Execute command
         if args.command == 'generate':
-            image_data, metadata = generator.generate_image(args.prompt, args.output)
+            image_data, metadata = await generator.generate_image(args.prompt, args.output)
             print(f"\n✅ Image generated successfully: {args.output}")
             if metadata:
                 print(f"📊 Generation ID: {metadata['generation_id']}")
             
         elif args.command == 'edit':
-            image_data, metadata = generator.edit_image(args.image, args.prompt, args.output)
+            image_data, metadata = await generator.edit_image(args.image, args.prompt, args.output)
             print(f"\n✅ Image edited successfully: {args.output}")
             if metadata:
                 print(f"📊 Generation ID: {metadata['generation_id']}")
             
         elif args.command == 'compose':
-            image_data, metadata = generator.compose_images(args.images, args.prompt, args.output)
+            image_data, metadata = await generator.compose_images(args.images, args.prompt, args.output)
             print(f"\n✅ Images composed successfully: {args.output}")
             if metadata:
                 print(f"📊 Generation ID: {metadata['generation_id']}")
             
         elif args.command == 'refine':
-            image_data, metadata = generator.refine_image(args.image, args.prompt, args.output)
+            image_data, metadata = await generator.refine_image(args.image, args.prompt, args.output)
             print(f"\n✅ Image refined successfully: {args.output}")
             if metadata:
                 print(f"📊 Generation ID: {metadata['generation_id']}")
@@ -708,4 +758,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
