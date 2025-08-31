@@ -100,7 +100,7 @@ class Particle {
     
     draw(ctx) {
         if (this.age > 0) {
-            const alpha = Math.max(0, 1 - this.age / this.maxAge) * 0.8;
+            const alpha = 0.8;
             ctx.strokeStyle = `hsla(${this.hue}, 90%, 80%, ${alpha})`;
             ctx.lineWidth = 2;
             ctx.beginPath();

@@ -4,6 +4,7 @@ aws logs tail /aws/lambda/ai-automation-course-registration-handler --since 10m
 aws logs tail /aws/lambda/ai-automation-course-payment-webhook
 
 
+aws logs tail /aws/lambda/ai-automation-course-contact-handler
 
 cd tf && terraform output -json > ../test/terraform-outputs.json && terraform output -json > ../src/terraform-outputs.json; cd ../
 

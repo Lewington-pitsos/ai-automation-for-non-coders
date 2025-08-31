@@ -77,19 +77,24 @@ def lambda_handler(event, context):
             )
             
             if "Item" in existing_item:
-                logger.info(f"Duplicate registration attempt for email: {email}, course: {course_id}")
-                return {
-                    "statusCode": 400,
-                    "headers": {
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Headers": "Content-Type",
-                        "Access-Control-Allow-Methods": "POST, OPTIONS"
-                    },
-                    "body": json.dumps({
-                        "error": "email_already_registered",
-                        "message": "This email has already been registered for this course"
-                    })
-                }
+                # Check if the existing registration is paid
+                if existing_item["Item"].get("payment_status") == "paid":
+                    logger.info(f"Duplicate registration attempt for paid user - email: {email}, course: {course_id}")
+                    return {
+                        "statusCode": 400,
+                        "headers": {
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Headers": "Content-Type",
+                            "Access-Control-Allow-Methods": "POST, OPTIONS"
+                        },
+                        "body": json.dumps({
+                            "error": "email_already_registered",
+                            "message": "This email has already been registered and paid for this course"
+                        })
+                    }
+                else:
+                    # If payment is pending, we'll overwrite the registration with new data
+                    logger.info(f"Overwriting pending registration for email: {email}, course: {course_id}")
         except Exception as e:
             logger.error(f"Error checking existing registration: {str(e)}")
         

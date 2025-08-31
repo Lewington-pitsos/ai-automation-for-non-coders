@@ -764,28 +764,48 @@ async function handleContactFormSubmission(event) {
     submitButton.disabled = true;
     submitButton.textContent = 'SENDING...';
     
-    // Simulate a delay for sending (for now we assume success)
-    // Simulate API call
-    setTimeout(() => {
-        // Always fail for testing
-        const shouldFail = true;
+    try {
+        // Wait for config to load if needed
+        if (typeof configPromise !== 'undefined') {
+            await configPromise;
+        }
         
-        if (shouldFail) {
-            // Show error popup
-            showContactErrorMessage();
-        } else {
+        // Build API URL
+        const apiUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL 
+            ? `${API_CONFIG.API_URL}/contact`
+            : 'https://YOUR_API_GATEWAY_URL/prod/contact';
+        
+        // Send contact form data to Lambda
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(contactData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
             // Show success toast
             showContactSuccessMessage();
             
             // Reset form after successful submission
             form.reset();
             checkContactFormValidity();
+        } else {
+            // Show error popup
+            showContactErrorMessage();
         }
-        
+    } catch (error) {
+        console.error('Contact form error:', error);
+        // Show error popup
+        showContactErrorMessage();
+    } finally {
         // Re-enable submit button
         submitButton.disabled = false;
         submitButton.textContent = originalText;
-    }, 0); // Instant for testing
+    }
 }
 
 function validateContactForm(data) {
