@@ -40,12 +40,12 @@ prompts = [
 ]
 
 def main():
-    uuid = str(uuid.uuid4())
+    id = str(uuid.uuid4())
     generator = GeminiImageGenerator()
     for i, prompt in enumerate(prompts):
         generator.generate_image(
             prompt=prompt,
-            save_path=f"outputs/prompt_{i}-{uuid[:8]}.png"
+            save_path=f"outputs/prompt_{i}-{id[:8]}.png"
         )
 
 def iterate():
