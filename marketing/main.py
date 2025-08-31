@@ -1,4 +1,6 @@
+import os
 from generate import GeminiImageGenerator
+from generate_gpt import GPTImageGenerator
 import uuid
 import asyncio
 
@@ -62,16 +64,17 @@ async def first_stage():
 async def generate_single_iteration(generator, i, id):
     async with semaphore:
         input_image = f"outputs/prompt_{i}-{id[:8]}.png"
-        await generator.refine_image(
-            image_path=input_image,
-            refinement_prompt="create a version of this sisyphus image which looks like an edited version of the same image. The new image should look like an 'after' version of the first image which should look like a 'before' image. in the new image the sisyphus figure is enjoying himself, having a good time, relaxing. He is no longer pushing the boulder and he has found a way to automate the boulder rolling task using some kind of robot. the robot always looks sleek and in control.",
-            save_path=f"outputs/prompt_{i}-{id[:8]}_automated.png"
-        )
+        if os.path.exists(input_image):
+            await generator.refine_image(
+                image_path=input_image,
+                refinement_prompt="create a version of this sisyphus image which looks like an edited version of the same image. The new image should look like an 'after' version of the first image which should look like a 'before' image. in the new image the sisyphus figure is enjoying himself, having a good time, relaxing. He is no longer pushing the boulder and he has found a way to automate the boulder rolling task using some kind of robot. the robot always looks sleek and in control.",
+                save_path=f"outputs/prompt_{i}-{id[:8]}_automated.png"
+            )
 
 async def iterate():
     generator = GeminiImageGenerator()
 
-    id = '9783acad'
+    id = 'ff0faaa7'
     tasks = []
     for i in range(len(prompts)):
         task = generate_single_iteration(generator, i, id)
@@ -82,12 +85,15 @@ async def iterate():
 
 async def add_text():
     image = 'outputs/prompt_1-9783acad.png'
-    generator = GeminiImageGenerator()
+    generator = GPTImageGenerator()
 
     await generator.refine_image(
         image_path=image,
-        refinement_prompt="'zoom out' from this image, adding more space around the central figures",
+        refinement_prompt="add some more blank space around the boarder of the image and shrink the content a little. the blank borders must blend with the edges of the image.",
         save_path='sys_with_text.png'
     )
 if __name__ == "__main__":
     asyncio.run(add_text())
+    # asyncio.run(first_stage())
+    # asyncio.run(iterate())
+
