@@ -63,15 +63,20 @@ class GridAngle {
 }
 
 class Particle {
-    constructor(canvas) {
+    constructor(canvas, config = {}) {
         this.canvas = canvas;
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * 10;
         this.prevX = this.x;
         this.prevY = this.y;
         this.age = 0;
-        this.maxAge = 200 + Math.random() * 800;
-        this.hue = 90 + Math.random() * 60;
+        this.maxAge = config.averageLifespan || (200 + Math.random() * 800); 
+        if (config.colorProfile === 'red') {
+            this.hue = Math.random() * 60; // Red/orange range: 0-60
+        } else {
+            this.hue = 90 + Math.random() * 60; // Green range: 90-150
+        }
+        
         this.speed = 0.5 + Math.random() * 2.5;
     }
     
@@ -111,10 +116,18 @@ class Particle {
 }
 
 // Create flow field for each canvas
-function createFlowField(canvasId) {
+function createFlowField(canvasId, config = {}) {
     console.log(`Creating flow field for canvas: ${canvasId}`);
     const canvas = document.getElementById(canvasId);
     if (!canvas) return;
+    
+    // Default configuration
+    const defaultConfig = {
+        colorProfile: 'green', // 'green' or 'red'
+        particleCount: window.innerWidth <= 768 ? 25 : 120,
+        averageLifespan: 500
+    };
+    const finalConfig = { ...defaultConfig, ...config };
     
     const navContainer = document.querySelector('.nav-container');
     if (navContainer) {
@@ -152,7 +165,7 @@ function createFlowField(canvasId) {
     }
     
     let particles = [];
-    let particleLimit = window.innerWidth <= 768 ? 25 : 120;
+    let particleLimit = finalConfig.particleCount;
     let frameCount = 0;
     let animationId = null;
     let isAnimating = false;
@@ -170,7 +183,7 @@ function createFlowField(canvasId) {
             if (particles.length < particleLimit) {
                 const spawnCount = Math.min(3, particleLimit - particles.length);
                 for (let i = 0; i < spawnCount; i++) {
-                    particles.push(new Particle(canvas));
+                    particles.push(new Particle(canvas, finalConfig));
                 }
             }
             

@@ -36,3 +36,5 @@ We also disable all the form fields on the registration page, the user cannot en
 ---
 
 now we need to implement logic if the message fails. this should be another popup which says "there was an error processing your query, please try again in 24 hours or reach out to louka on linkedin: https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/
+
+also make the perlin noise red

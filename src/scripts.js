@@ -765,18 +765,27 @@ async function handleContactFormSubmission(event) {
     submitButton.textContent = 'SENDING...';
     
     // Simulate a delay for sending (for now we assume success)
+    // Simulate API call
     setTimeout(() => {
-        // Show success toast
-        showContactSuccessMessage();
+        // Always fail for testing
+        const shouldFail = true;
         
-        // Reset form after successful submission
-        form.reset();
-        checkContactFormValidity();
+        if (shouldFail) {
+            // Show error popup
+            showContactErrorMessage();
+        } else {
+            // Show success toast
+            showContactSuccessMessage();
+            
+            // Reset form after successful submission
+            form.reset();
+            checkContactFormValidity();
+        }
         
         // Re-enable submit button
         submitButton.disabled = false;
         submitButton.textContent = originalText;
-    }, 1500); // 1.5 second delay to simulate sending
+    }, 0); // Instant for testing
 }
 
 function validateContactForm(data) {
@@ -841,8 +850,8 @@ function showContactSuccessMessage() {
     // Add toast to container
     toastContainer.appendChild(toast);
     
-    // Initialize Perlin noise animation
-    initToastPerlinNoise(canvas);
+    // Initialize Perlin noise animation with green particles
+    initToastPerlinNoise(canvas, { colorProfile: 'green' });
     
     // Dismiss function
     const dismissToast = () => {
@@ -878,15 +887,21 @@ function showContactSuccessMessage() {
 }
 
 // Initialize Perlin noise for toast background using existing system
-function initToastPerlinNoise(canvas) {
+function initToastPerlinNoise(canvas, config = {}) {
     // Give the canvas a temporary ID
     const tempId = 'toastPerlinCanvas';
     canvas.id = tempId;
     
-    // Set canvas size
+    // Set canvas size - extend height above and below popup for invisible particle areas
     const rect = canvas.parentElement.getBoundingClientRect();
+    const exitBuffer = 5; // Extra height below popup
     canvas.width = rect.width;
-    canvas.height = rect.height;
+    canvas.height = rect.height + exitBuffer;
+    
+    // Position canvas so the extra height is above the visible popup
+    canvas.style.position = 'absolute';
+    canvas.style.top = `-1px`;
+    canvas.style.left = '0';
     
     // Use the existing createFlowField function but modify it for toast
     const ctx = canvas.getContext('2d');
@@ -909,7 +924,7 @@ function initToastPerlinNoise(canvas) {
     }
     
     let particles = [];
-    let particleLimit = 60; // Fewer particles for smaller toast
+    let particleLimit = 45; // Fewer particles for smaller toast
     let frameCount = 0;
     let animationId = null;
     let isAnimating = true;
@@ -923,11 +938,14 @@ function initToastPerlinNoise(canvas) {
             ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Add new particles
+            // Add new particles - spawn them in the buffer area above visible popup
             if (particles.length < particleLimit) {
                 const spawnCount = Math.min(2, particleLimit - particles.length);
                 for (let i = 0; i < spawnCount; i++) {
-                    particles.push(new Particle(canvas));
+                    const particle = new Particle(canvas, config);
+                    // Override spawn position to be in the buffer area above visible popup
+                    particle.y = 0; // Spawn in buffer area above popup
+                    particles.push(particle);
                 }
             }
             
@@ -936,6 +954,7 @@ function initToastPerlinNoise(canvas) {
                 particles[i].update(grid, spacing);
                 particles[i].draw(ctx);
                 
+                // Check if particle is dead - use actual visible popup height for bottom boundary
                 if (particles[i].isDead()) {
                     particles.splice(i, 1);
                 }
@@ -963,6 +982,80 @@ function initToastPerlinNoise(canvas) {
         }
     });
     observer.observe(canvas.parentElement.parentElement, { childList: true });
+}
+
+function showContactErrorMessage() {
+    // Get toast container
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    // Clear any existing toasts
+    toastContainer.innerHTML = '';
+    
+    // Show container
+    toastContainer.classList.add('active');
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    
+    // Create Perlin noise canvas
+    const canvas = document.createElement('canvas');
+    canvas.className = 'toast-perlin-bg';
+    toast.appendChild(canvas);
+    
+    // Add content
+    const content = document.createElement('div');
+    content.className = 'toast-content';
+    content.innerHTML = `
+        <div class="toast-corner top-left"></div>
+        <div class="toast-corner top-right"></div>
+        <div class="toast-corner bottom-left"></div>
+        <div class="toast-corner bottom-right"></div>
+        <div class="toast-message">
+            There was an error processing your query, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>
+        </div>
+        <button class="toast-dismiss">DISMISS</button>
+    `;
+    toast.appendChild(content);
+    
+    // Add toast to container
+    toastContainer.appendChild(toast);
+    
+    // Initialize Perlin noise animation with red particles
+    initToastPerlinNoise(canvas, { colorProfile: 'red' });
+    
+    // Dismiss function
+    const dismissToast = () => {
+        // Add slide out animation
+        toast.style.animation = 'toastSlideOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+        
+        // Re-enable scroll
+        document.body.style.overflow = '';
+        
+        // Remove after animation
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+            // Hide container when toast is removed
+            toastContainer.classList.remove('active');
+        }, 500);
+    };
+    
+    // Handle dismiss button
+    const dismissBtn = toast.querySelector('.toast-dismiss');
+    dismissBtn.addEventListener('click', dismissToast);
+    
+    // Click outside to dismiss
+    toastContainer.addEventListener('click', (e) => {
+        if (e.target === toastContainer) {
+            dismissToast();
+        }
+    });
+    
+    // Prevent body scroll while toast is visible
+    document.body.style.overflow = 'hidden';
 }
 
 // Animate numbers in the course details section

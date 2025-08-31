@@ -1,165 +1,113 @@
-#!/usr/bin/env python3
-"""
-Integration test for contact form endpoint
-Tests the /contact API endpoint
-"""
-
 import json
-import time
 import requests
-import sys
-import os
+import pytest
 from pathlib import Path
 
-# Add parent directory to path for shared utilities
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 def load_terraform_outputs():
-    """Load terraform outputs to get API URL"""
-    outputs_path = Path(__file__).parent / 'terraform-outputs.json'
-    
-    if not outputs_path.exists():
-        print("❌ terraform-outputs.json not found. Run deploy.sh first.")
-        sys.exit(1)
-    
-    with open(outputs_path, 'r') as f:
-        outputs = json.load(f)
-    
-    return outputs
+    """Load terraform outputs from JSON file"""
+    with open('test/terraform-outputs.json', 'r') as f:
+        return json.load(f)
 
-def test_contact_endpoint():
-    """Test the contact form endpoint"""
-    outputs = load_terraform_outputs()
+
+@pytest.fixture(scope="module")
+def terraform_outputs():
+    """Pytest fixture to load terraform outputs"""
+    return load_terraform_outputs()
+
+
+@pytest.fixture(scope="module")
+def contact_endpoint(terraform_outputs):
+    """Pytest fixture to get contact form endpoint URL"""
+    api_url = terraform_outputs['api_gateway_invoke_url']['value']
+    return f"{api_url}/contact"
+
+
+class TestContactForm:
+    """Test contact form endpoint functionality"""
     
-    # Get API URL from terraform outputs
-    api_url = outputs['api_gateway_invoke_url']['value']
-    contact_endpoint = f"{api_url}/contact"
-    
-    print(f"🧪 Testing contact form endpoint: {contact_endpoint}")
-    print("-" * 50)
-    
-    # Test 1: Valid contact form submission
-    print("\n✅ Test 1: Valid contact form submission")
-    valid_payload = {
-        "name": "Test User",
-        "email": "testuser@example.com",
-        "message": "This is a test message from the integration test suite. Please ignore this message."
-    }
-    
-    try:
+    def test_valid_contact_submission(self, contact_endpoint):
+        """Test valid contact form submission"""
+        payload = {
+            "name": "Test User",
+            "email": "testuser@example.com",
+            "message": "This is a test message from the integration test suite. Please ignore this message."
+        }
+        
         response = requests.post(
             contact_endpoint,
-            json=valid_payload,
+            json=payload,
             headers={'Content-Type': 'application/json'},
             timeout=10
         )
         
-        if response.status_code == 200:
-            print(f"  ✓ Status code: {response.status_code}")
-            data = response.json()
-            if 'messageId' in data:
-                print(f"  ✓ Email sent successfully. MessageId: {data['messageId']}")
-            else:
-                print(f"  ✓ Response: {data}")
-        else:
-            print(f"  ✗ Unexpected status code: {response.status_code}")
-            print(f"  ✗ Response: {response.text}")
-            return False
-    except Exception as e:
-        print(f"  ✗ Request failed: {str(e)}")
-        return False
+        assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
+        
+        data = response.json()
+        assert 'messageId' in data or 'message' in data, f"Expected messageId or message in response: {data}"
     
-    # Test 2: Missing required field (name)
-    print("\n✅ Test 2: Missing name field")
-    invalid_payload = {
-        "email": "testuser@example.com",
-        "message": "Test message"
-    }
-    
-    try:
+    def test_missing_name_field(self, contact_endpoint):
+        """Test missing name field validation"""
+        payload = {
+            "email": "testuser@example.com",
+            "message": "Test message"
+        }
+        
         response = requests.post(
             contact_endpoint,
-            json=invalid_payload,
+            json=payload,
             headers={'Content-Type': 'application/json'},
             timeout=10
         )
         
-        if response.status_code == 400:
-            print(f"  ✓ Correctly rejected with status: {response.status_code}")
-            data = response.json()
-            if 'error' in data and 'name' in data['error'].lower():
-                print(f"  ✓ Error message mentions missing name: {data['error']}")
-            else:
-                print(f"  ✓ Error response: {data}")
-        else:
-            print(f"  ✗ Should have returned 400, got: {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"  ✗ Request failed: {str(e)}")
-        return False
+        assert response.status_code == 400, f"Expected 400 for missing name, got {response.status_code}"
+        
+        data = response.json()
+        assert 'error' in data, f"Expected error field in response: {data}"
+        assert 'name' in data['error'].lower(), f"Error should mention name: {data['error']}"
     
-    # Test 3: Missing email field
-    print("\n✅ Test 3: Missing email field")
-    invalid_payload = {
-        "name": "Test User",
-        "message": "Test message"
-    }
-    
-    try:
+    def test_missing_email_field(self, contact_endpoint):
+        """Test missing email field validation"""
+        payload = {
+            "name": "Test User",
+            "message": "Test message"
+        }
+        
         response = requests.post(
             contact_endpoint,
-            json=invalid_payload,
+            json=payload,
             headers={'Content-Type': 'application/json'},
             timeout=10
         )
         
-        if response.status_code == 400:
-            print(f"  ✓ Correctly rejected with status: {response.status_code}")
-            data = response.json()
-            if 'error' in data and 'email' in data['error'].lower():
-                print(f"  ✓ Error message mentions missing email: {data['error']}")
-            else:
-                print(f"  ✓ Error response: {data}")
-        else:
-            print(f"  ✗ Should have returned 400, got: {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"  ✗ Request failed: {str(e)}")
-        return False
+        assert response.status_code == 400, f"Expected 400 for missing email, got {response.status_code}"
+        
+        data = response.json()
+        assert 'error' in data, f"Expected error field in response: {data}"
+        assert 'email' in data['error'].lower(), f"Error should mention email: {data['error']}"
     
-    # Test 4: Missing message field
-    print("\n✅ Test 4: Missing message field")
-    invalid_payload = {
-        "name": "Test User",
-        "email": "testuser@example.com"
-    }
-    
-    try:
+    def test_missing_message_field(self, contact_endpoint):
+        """Test missing message field validation"""
+        payload = {
+            "name": "Test User",
+            "email": "testuser@example.com"
+        }
+        
         response = requests.post(
             contact_endpoint,
-            json=invalid_payload,
+            json=payload,
             headers={'Content-Type': 'application/json'},
             timeout=10
         )
         
-        if response.status_code == 400:
-            print(f"  ✓ Correctly rejected with status: {response.status_code}")
-            data = response.json()
-            if 'error' in data and 'message' in data['error'].lower():
-                print(f"  ✓ Error message mentions missing message: {data['error']}")
-            else:
-                print(f"  ✓ Error response: {data}")
-        else:
-            print(f"  ✗ Should have returned 400, got: {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"  ✗ Request failed: {str(e)}")
-        return False
+        assert response.status_code == 400, f"Expected 400 for missing message, got {response.status_code}"
+        
+        data = response.json()
+        assert 'error' in data, f"Expected error field in response: {data}"
+        assert 'message' in data['error'].lower(), f"Error should mention message: {data['error']}"
     
-    # Test 5: Empty body
-    print("\n✅ Test 5: Empty request body")
-    
-    try:
+    def test_empty_request_body(self, contact_endpoint):
+        """Test empty request body handling"""
         response = requests.post(
             contact_endpoint,
             data='',
@@ -167,21 +115,13 @@ def test_contact_endpoint():
             timeout=10
         )
         
-        if response.status_code == 400:
-            print(f"  ✓ Correctly rejected with status: {response.status_code}")
-            data = response.json()
-            print(f"  ✓ Error response: {data}")
-        else:
-            print(f"  ✗ Should have returned 400, got: {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"  ✗ Request failed: {str(e)}")
-        return False
+        assert response.status_code == 400, f"Expected 400 for empty body, got {response.status_code}"
+        
+        data = response.json()
+        assert 'error' in data, f"Expected error field in response: {data}"
     
-    # Test 6: Invalid JSON
-    print("\n✅ Test 6: Invalid JSON")
-    
-    try:
+    def test_invalid_json(self, contact_endpoint):
+        """Test invalid JSON handling"""
         response = requests.post(
             contact_endpoint,
             data='{"name": "Test", invalid json}',
@@ -189,21 +129,13 @@ def test_contact_endpoint():
             timeout=10
         )
         
-        if response.status_code == 400:
-            print(f"  ✓ Correctly rejected with status: {response.status_code}")
-            data = response.json()
-            print(f"  ✓ Error response: {data}")
-        else:
-            print(f"  ✗ Should have returned 400, got: {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"  ✗ Request failed: {str(e)}")
-        return False
+        assert response.status_code == 400, f"Expected 400 for invalid JSON, got {response.status_code}"
+        
+        data = response.json()
+        assert 'error' in data, f"Expected error field in response: {data}"
     
-    # Test 7: CORS preflight (OPTIONS)
-    print("\n✅ Test 7: CORS preflight request")
-    
-    try:
+    def test_cors_preflight(self, contact_endpoint):
+        """Test CORS preflight request"""
         response = requests.options(
             contact_endpoint,
             headers={
@@ -214,74 +146,29 @@ def test_contact_endpoint():
             timeout=10
         )
         
-        if response.status_code == 200:
-            print(f"  ✓ CORS preflight successful: {response.status_code}")
-            cors_headers = {
-                'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),
-                'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),
-                'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')
-            }
-            for header, value in cors_headers.items():
-                if value:
-                    print(f"  ✓ {header}: {value}")
-        else:
-            print(f"  ✗ Unexpected status code for OPTIONS: {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"  ✗ OPTIONS request failed: {str(e)}")
-        return False
+        assert response.status_code == 200, f"Expected 200 for OPTIONS, got {response.status_code}"
+        
+        # Check CORS headers
+        assert 'Access-Control-Allow-Origin' in response.headers, "Missing CORS Allow-Origin header"
+        assert 'Access-Control-Allow-Methods' in response.headers, "Missing CORS Allow-Methods header"
+        assert 'Access-Control-Allow-Headers' in response.headers, "Missing CORS Allow-Headers header"
     
-    # Test 8: Whitespace-only fields
-    print("\n✅ Test 8: Whitespace-only fields")
-    whitespace_payload = {
-        "name": "   ",
-        "email": "test@example.com",
-        "message": "\n\t  \n"
-    }
-    
-    try:
+    def test_whitespace_only_fields(self, contact_endpoint):
+        """Test that whitespace-only fields are rejected"""
+        payload = {
+            "name": "   ",
+            "email": "test@example.com",
+            "message": "\n\t  \n"
+        }
+        
         response = requests.post(
             contact_endpoint,
-            json=whitespace_payload,
+            json=payload,
             headers={'Content-Type': 'application/json'},
             timeout=10
         )
         
-        if response.status_code == 400:
-            print(f"  ✓ Correctly rejected whitespace-only fields: {response.status_code}")
-            data = response.json()
-            print(f"  ✓ Error response: {data}")
-        else:
-            print(f"  ✗ Should have rejected whitespace-only fields, got: {response.status_code}")
-            return False
-    except Exception as e:
-        print(f"  ✗ Request failed: {str(e)}")
-        return False
-    
-    print("\n" + "=" * 50)
-    print("✅ All contact form tests passed!")
-    return True
-
-def main():
-    """Main test runner"""
-    print("\n🚀 Contact Form Integration Tests")
-    print("=" * 50)
-    
-    # Check if API is reachable first
-    outputs = load_terraform_outputs()
-    api_url = outputs['api_gateway_invoke_url']['value']
-    
-    print(f"📡 API URL: {api_url}")
-    
-    # Run tests
-    success = test_contact_endpoint()
-    
-    if success:
-        print("\n✅ All tests passed successfully!")
-        sys.exit(0)
-    else:
-        print("\n❌ Some tests failed")
-        sys.exit(1)
-
-if __name__ == "__main__":
-    main()
+        assert response.status_code == 400, f"Expected 400 for whitespace-only fields, got {response.status_code}"
+        
+        data = response.json()
+        assert 'error' in data, f"Expected error field in response: {data}"

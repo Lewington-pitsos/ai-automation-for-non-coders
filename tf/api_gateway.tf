@@ -179,6 +179,15 @@ resource "aws_api_gateway_deployment" "course_api" {
   rest_api_id = aws_api_gateway_rest_api.course_api.id
   stage_name  = var.environment
 
+  # Force redeployment when contact endpoint is added
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_integration.register_integration.id,
+      aws_api_gateway_integration.contact_integration.id,
+      aws_api_gateway_integration.stripe_webhook_integration.id,
+    ]))
+  }
+
   lifecycle {
     create_before_destroy = true
   }

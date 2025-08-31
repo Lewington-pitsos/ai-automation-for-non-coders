@@ -13,9 +13,7 @@ aws logs tail "/aws/lambda/ai-automation-course-payment-webhook" --since 48h --f
 
 ppp  pytest test/integration/test_lambda_health.py -v   
 
-python test/integration/test_contact_form.py
-
-ppp  pytest test/integration/test_lambda_health.py -v
+ppp  pytest test/integration/test_contact_form.py -v
 
 aws dynamodb scan --table-name course_registrations --query "Items[*].{Name:name.S, Email:email.S, PaymentStatus:payment_status.S}" --output table  
 
