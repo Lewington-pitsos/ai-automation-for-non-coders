@@ -21,3 +21,8 @@ test/integration/.credentials.json
 
 **/__pycache__/
 **/.pytest_cache/
+
+
+marketing/.credentials.json
+marketing/outputs/
+marketing/metadata/
