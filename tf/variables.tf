@@ -28,6 +28,12 @@ variable "from_email" {
   default     = "gday@fairdinkumsystems.com"
 }
 
+variable "contact_form_email" {
+  description = "Contact form sender email address (no-reply address)"
+  type        = string
+  default     = "gday@fairdinkumsystems.com"  # Using verified email until domain is verified
+}
+
 variable "stripe_webhook_secret" {
   description = "Stripe webhook secret"
   type        = string

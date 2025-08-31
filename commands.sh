@@ -13,6 +13,7 @@ aws logs tail "/aws/lambda/ai-automation-course-payment-webhook" --since 48h --f
 
 ppp  pytest test/integration/test_lambda_health.py -v   
 
+python test/integration/test_contact_form.py
 
 ppp  pytest test/integration/test_lambda_health.py -v
 

@@ -741,7 +741,7 @@ function checkContactFormValidity() {
     }
 }
 
-function handleContactFormSubmission(event) {
+async function handleContactFormSubmission(event) {
     event.preventDefault();
     
     const form = event.target;
@@ -764,18 +764,19 @@ function handleContactFormSubmission(event) {
     submitButton.disabled = true;
     submitButton.textContent = 'SENDING...';
     
-    // Simulate form submission (replace with actual submission logic)
+    // Simulate a delay for sending (for now we assume success)
     setTimeout(() => {
+        // Show success toast
         showContactSuccessMessage();
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
-        
-        // Log the contact data (replace with actual submission to server)
         
         // Reset form after successful submission
         form.reset();
         checkContactFormValidity();
-    }, 2000);
+        
+        // Re-enable submit button
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+    }, 1500); // 1.5 second delay to simulate sending
 }
 
 function validateContactForm(data) {
@@ -802,47 +803,166 @@ function validateContactForm(data) {
 }
 
 function showContactSuccessMessage() {
-    // Remove existing success message
-    const existingSuccess = document.querySelector('.form-success');
-    if (existingSuccess) {
-        existingSuccess.remove();
+    // Get toast container
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    // Clear any existing toasts
+    toastContainer.innerHTML = '';
+    
+    // Show container
+    toastContainer.classList.add('active');
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    
+    // Create Perlin noise canvas
+    const canvas = document.createElement('canvas');
+    canvas.className = 'toast-perlin-bg';
+    toast.appendChild(canvas);
+    
+    // Add content
+    const content = document.createElement('div');
+    content.className = 'toast-content';
+    content.innerHTML = `
+        <div class="toast-corner top-left"></div>
+        <div class="toast-corner top-right"></div>
+        <div class="toast-corner bottom-left"></div>
+        <div class="toast-corner bottom-right"></div>
+        <div class="toast-message">
+            Your message has been received by our team.<br>
+            We will respond ASAP, thanks for reaching out.
+        </div>
+        <button class="toast-dismiss">DISMISS</button>
+    `;
+    toast.appendChild(content);
+    
+    // Add toast to container
+    toastContainer.appendChild(toast);
+    
+    // Initialize Perlin noise animation
+    initToastPerlinNoise(canvas);
+    
+    // Dismiss function
+    const dismissToast = () => {
+        // Add slide out animation
+        toast.style.animation = 'toastSlideOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+        
+        // Re-enable scroll
+        document.body.style.overflow = '';
+        
+        // Remove after animation
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.remove();
+            }
+            // Hide container when toast is removed
+            toastContainer.classList.remove('active');
+        }, 500);
+    };
+    
+    // Handle dismiss button
+    const dismissBtn = toast.querySelector('.toast-dismiss');
+    dismissBtn.addEventListener('click', dismissToast);
+    
+    // Click outside to dismiss
+    toastContainer.addEventListener('click', (e) => {
+        if (e.target === toastContainer) {
+            dismissToast();
+        }
+    });
+    
+    // Prevent body scroll while toast is visible
+    document.body.style.overflow = 'hidden';
+}
+
+// Initialize Perlin noise for toast background using existing system
+function initToastPerlinNoise(canvas) {
+    // Give the canvas a temporary ID
+    const tempId = 'toastPerlinCanvas';
+    canvas.id = tempId;
+    
+    // Set canvas size
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    
+    // Use the existing createFlowField function but modify it for toast
+    const ctx = canvas.getContext('2d');
+    const spacing = 15;
+    const rez = 0.1;
+    const grid = [];
+    const perlin = new PerlinNoise();
+    
+    // Create grid
+    const radius = spacing / 2;
+    for (let x = 0; x < canvas.width - radius; x += spacing) {
+        const row = [];
+        for (let y = 0; y < canvas.height - radius; y += spacing) {
+            const noiseValue = (perlin.noise(x * rez, y * rez) + 1) * 0.5;
+            const angle = noiseValue * Math.PI * 2;
+            const biasedAngle = angle * 0.5;
+            row.push(new GridAngle(x, y, radius, biasedAngle));
+        }
+        grid.push(row);
     }
     
-    // Create success message
-    const successContainer = document.createElement('div');
-    successContainer.className = 'form-success';
-    successContainer.style.cssText = `
-        background: rgba(78, 255, 159, 0.1);
-        border: 1px solid #4eff9f;
-        color: #4eff9f;
-        padding: 24px;
-        margin-bottom: 24px;
-        text-align: center;
-        font-size: 16px;
-        font-weight: 600;
-    `;
+    let particles = [];
+    let particleLimit = 60; // Fewer particles for smaller toast
+    let frameCount = 0;
+    let animationId = null;
+    let isAnimating = true;
     
-    successContainer.innerHTML = `
-        <div style="font-size: 24px; margin-bottom: 8px;">✓</div>
-        <div>Message Sent Successfully!</div>
-        <div style="font-size: 14px; margin-top: 8px; font-weight: normal; color: #ccc;">
-            We'll get back to you as soon as possible.
-        </div>
-    `;
-    
-    // Insert at the top of the form
-    const form = document.getElementById('contactForm');
-    form.insertBefore(successContainer, form.firstChild);
-    
-    // Scroll to success message
-    successContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // Auto-remove after 10 seconds
-    setTimeout(() => {
-        if (successContainer.parentNode) {
-            successContainer.remove();
+    function animate() {
+        if (!isAnimating) return;
+        
+        frameCount++;
+        
+        if (frameCount % 2 === 0) {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Add new particles
+            if (particles.length < particleLimit) {
+                const spawnCount = Math.min(2, particleLimit - particles.length);
+                for (let i = 0; i < spawnCount; i++) {
+                    particles.push(new Particle(canvas));
+                }
+            }
+            
+            // Update and draw particles
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update(grid, spacing);
+                particles[i].draw(ctx);
+                
+                if (particles[i].isDead()) {
+                    particles.splice(i, 1);
+                }
+            }
         }
-    }, 10000);
+        
+        animationId = requestAnimationFrame(animate);
+    }
+    
+    // Clear canvas initially
+    ctx.fillStyle = 'rgba(0, 0, 0, 0)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Start animation
+    animate();
+    
+    // Clean up when toast is removed
+    const observer = new MutationObserver(() => {
+        if (!document.contains(canvas)) {
+            isAnimating = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            observer.disconnect();
+        }
+    });
+    observer.observe(canvas.parentElement.parentElement, { childList: true });
 }
 
 // Animate numbers in the course details section

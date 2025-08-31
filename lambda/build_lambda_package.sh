@@ -75,4 +75,7 @@ build_lambda "payment-webhook" "payment-webhook.py"
 # Build registration-handler (no external dependencies needed, boto3 is in Lambda runtime)
 build_lambda "registration-handler" "registration-handler.py"
 
+# Build contact-handler (no external dependencies needed, boto3 is in Lambda runtime)
+build_lambda "contact-handler" "contact-handler.py"
+
 echo "All Lambda packages built successfully!"

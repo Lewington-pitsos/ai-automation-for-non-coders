@@ -48,3 +48,26 @@ resource "aws_lambda_function" "payment_webhook" {
   }
 }
 
+# Contact Form Handler Lambda
+resource "aws_lambda_function" "contact_handler" {
+  filename         = "../lambda/contact-handler.zip"
+  function_name    = "${var.project_name}-contact-handler"
+  role            = aws_iam_role.lambda_execution_role.arn
+  handler         = "lambda_function.lambda_handler"
+  source_code_hash = filebase64sha256("../lambda/contact-handler.zip")
+  runtime         = "python3.11"
+  timeout         = 30
+
+  environment {
+    variables = {
+      CONTACT_FORM_EMAIL = var.contact_form_email
+      ADMIN_EMAIL = var.admin_email
+    }
+  }
+
+  tags = {
+    Name        = "${var.project_name}-contact-handler"
+    Environment = var.environment
+  }
+}
+
