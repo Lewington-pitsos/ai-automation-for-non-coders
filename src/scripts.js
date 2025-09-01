@@ -724,11 +724,13 @@ function checkContactFormValidity() {
     // Get all required fields
     const name = form.querySelector('#name');
     const email = form.querySelector('#email');
+    const mobile = form.querySelector('#mobile');
     const message = form.querySelector('#message');
     
     // Check if all required fields are filled
     const isValid = name.value.trim() !== '' &&
                    email.value.trim() !== '' &&
+                   mobile.value.trim() !== '' &&
                    message.value.trim() !== '';
     
     // Enable/disable button based on validity
@@ -814,12 +816,19 @@ function validateContactForm(data) {
     // Required field validation
     if (!data.name) errors.push('Name is required');
     if (!data.email) errors.push('Email address is required');
+    if (!data.mobile) errors.push('Mobile phone is required');
     if (!data.message) errors.push('Message is required');
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (data.email && !emailRegex.test(data.email)) {
         errors.push('Please enter a valid email address');
+    }
+    
+    // Phone validation - allow various formats
+    const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,4}$/;
+    if (data.mobile && !phoneRegex.test(data.mobile.replace(/\s/g, ''))) {
+        errors.push('Please enter a valid mobile phone number');
     }
     
     if (errors.length > 0) {

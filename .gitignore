@@ -26,3 +26,4 @@ test/integration/.credentials.json
 marketing/.credentials.json
 marketing/outputs/
 marketing/metadata/
+marketing/gimp

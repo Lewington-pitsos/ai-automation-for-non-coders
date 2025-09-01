@@ -13,6 +13,13 @@ import asyncio
 from typing import Optional, List, Dict, Any, Tuple
 from pathlib import Path
 from google import genai
+from google.genai.types import (
+    RawReferenceImage,
+    MaskReferenceImage,
+    MaskReferenceConfig,
+    EditImageConfig,
+    Image
+)
 import base64
 from datetime import datetime
 from decimal import Decimal
@@ -244,6 +251,7 @@ class GeminiImageGenerator:
         
         self.client = genai.Client(api_key=self.api_key)
         self.model = "gemini-2.5-flash-image-preview"
+        self.imagen_model = "imagen-3.0-capability-001"
         
         # Initialize metadata tracker
         self.track_costs = track_costs
@@ -558,6 +566,91 @@ class GeminiImageGenerator:
         refined_prompt = f"Refine this image with the following changes: {refinement_prompt}"
         return await self.edit_image(image_path, refined_prompt, save_path)
     
+    async def outpaint_image(
+        self,
+        image_path: str,
+        mask_path: str,
+        prompt: str = "",
+        save_path: Optional[str] = None
+    ) -> Tuple[bytes, Dict]:
+        """
+        Expand an image using Imagen 3 outpainting
+        
+        Args:
+            image_path: Path to the input image
+            mask_path: Path to mask image (white areas will be outpainted)
+            prompt: Optional description of expanded area
+            save_path: Optional path to save the outpainted image
+            
+        Returns:
+            Tuple of (outpainted image data as bytes, metadata dict)
+        """
+        print(f"🖼️ Outpainting image: {image_path}")
+        print(f"🎭 Using mask: {mask_path}")
+        if prompt:
+            print(f"📝 Outpaint prompt: {prompt[:100]}...")
+        
+        try:
+            # Prepare reference images
+            raw_ref = RawReferenceImage(
+                reference_image=Image.from_file(location=image_path),
+                reference_id=0,
+            )
+            
+            mask_ref = MaskReferenceImage(
+                reference_id=1,
+                reference_image=Image.from_file(location=mask_path),
+                config=MaskReferenceConfig(
+                    mask_mode="MASK_MODE_USER_PROVIDED",
+                    mask_dilation=0.03,
+                ),
+            )
+            
+            # Perform outpainting using Imagen 3
+            response = await asyncio.to_thread(
+                self.client.models.edit_image,
+                model=self.imagen_model,
+                prompt=prompt if prompt else "Expand the image naturally",
+                reference_images=[raw_ref, mask_ref],
+                config=EditImageConfig(
+                    edit_mode="EDIT_MODE_OUTPAINT",
+                )
+            )
+            
+            # Extract the generated image
+            if response.generated_images and len(response.generated_images) > 0:
+                generated_image = response.generated_images[0]
+                
+                # Convert PIL Image to bytes
+                from io import BytesIO
+                buffer = BytesIO()
+                generated_image.image.save(buffer, format='PNG')
+                outpainted_data = buffer.getvalue()
+                
+                if save_path:
+                    await self._save_image(outpainted_data, save_path)
+                
+                # Track metadata and costs
+                metadata = {}
+                if self.track_costs:
+                    metadata = self.tracker.save_generation_metadata(
+                        operation="outpaint",
+                        prompt=prompt if prompt else "Expand the image naturally",
+                        image_path=save_path,
+                        image_data=outpainted_data,
+                        input_images=[image_path, mask_path],
+                        usage_metadata=getattr(response, 'usage_metadata', None)
+                    )
+                    print(f"💰 Estimated cost: ${metadata['cost_usd']:.4f}")
+                
+                return outpainted_data, metadata
+            
+            raise ValueError("No outpainted image in response")
+            
+        except Exception as e:
+            print(f"❌ Error outpainting image: {e}")
+            raise
+    
     def get_session_stats(self) -> str:
         """Get current session statistics"""
         if self.track_costs and self.tracker:
@@ -688,6 +781,14 @@ async def main():
     ref_parser.add_argument('-o', '--output', help='Output file path',
                            default=f'refined_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png')
     
+    # Outpaint command
+    outpaint_parser = subparsers.add_parser('outpaint', help='Expand an image using Imagen 3 outpainting')
+    outpaint_parser.add_argument('image', help='Path to input image')
+    outpaint_parser.add_argument('mask', help='Path to mask image (white areas will be outpainted)')
+    outpaint_parser.add_argument('-p', '--prompt', help='Optional description of expanded area', default='')
+    outpaint_parser.add_argument('-o', '--output', help='Output file path',
+                                default=f'outpainted_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png')
+    
     # Cost report command
     report_parser = subparsers.add_parser('report', help='Show cost reports')
     report_parser.add_argument('report', choices=['session', 'daily', 'all'],
@@ -741,6 +842,12 @@ async def main():
         elif args.command == 'refine':
             image_data, metadata = await generator.refine_image(args.image, args.prompt, args.output)
             print(f"\n✅ Image refined successfully: {args.output}")
+            if metadata:
+                print(f"📊 Generation ID: {metadata['generation_id']}")
+        
+        elif args.command == 'outpaint':
+            image_data, metadata = await generator.outpaint_image(args.image, args.mask, args.prompt, args.output)
+            print(f"\n✅ Image outpainted successfully: {args.output}")
             if metadata:
                 print(f"📊 Generation ID: {metadata['generation_id']}")
         

@@ -49,7 +49,7 @@ def lambda_handler(event, context):
             }
         
         # Validate required fields
-        required_fields = ['name', 'email', 'message']
+        required_fields = ['name', 'email', 'mobile', 'message']
         for field in required_fields:
             if not body.get(field) or not body[field].strip():
                 return {
@@ -61,6 +61,7 @@ def lambda_handler(event, context):
         # Extract contact data
         name = body['name'].strip()
         sender_email = body['email'].strip()
+        mobile = body['mobile'].strip()
         message = body['message'].strip()
         
         # Get environment variables
@@ -83,6 +84,7 @@ New Contact Form Submission
 
 Name: {name}
 Email: {sender_email}
+Mobile Phone: {mobile}
 Message:
 {message}
 
