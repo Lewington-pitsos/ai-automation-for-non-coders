@@ -29,9 +29,9 @@ def lambda_handler(event, context):
             <h3>What happens next?</h3>
             <ul>
                 <li>You will receive another email with your login details within 24 hours</li>
-                <li>Please arrive 10 minutes early for the in-person sessions on October 27th and November 4th</li>
+                <li>Please arrive 10 minutes early for the in-person sessions on September 27th and October 4th</li>
                 <li>Sessions start at 10:00 AM sharp and you will need to be let into the building</li>
-                <li>The exact address will be sent shortly</li>
+                <li>Address: 3/251 Flinders Ln, Melbourne VIC 3000, 2nd Level, Room 2, Sue Healy Room</li>
             </ul>
             
             <h3>What to bring:</h3>
@@ -61,9 +61,9 @@ def lambda_handler(event, context):
         
         What happens next?
         - You will receive another email with your login details within 24 hours
-        - Please arrive 10 minutes early for the in-person sessions on October 27th and November 4th
+        - Please arrive 10 minutes early for the in-person sessions on September 27th and October 4th
         - Sessions start at 10:00 AM sharp and you will need to be let into the building
-        - The exact address will be sent shortly
+        - Address: 3/251 Flinders Ln, Melbourne VIC 3000, 2nd Level, Room 2, Sue Healy Room
         
         What to bring:
         - A laptop

@@ -136,7 +136,7 @@ def get_user_confirmation_email(name, registration_id, amount_paid):
                 <h2 class="section-title">Important Information</h2>
                 
                 <div class="info-item">
-                    <strong>Venue Confirmation:</strong> The venue will be confirmed shortly and you'll receive another email with location details.
+                    <strong>Venue Details:</strong> In-person sessions will be held at 3/251 Flinders Ln, Melbourne VIC 3000, 2nd Level, Room 2, Sue Healy Room.
                 </div>
                 
                 <div class="info-item">
@@ -148,7 +148,7 @@ def get_user_confirmation_email(name, registration_id, amount_paid):
                 </div>
                 
                 <div class="info-item">
-                    <strong>Office Hours:</strong> From 5:30-6:30 PM each night between December 27th and January 4th (except when online courses are scheduled), the instructor will be holding office hours via online chat and will be available to assist you.
+                    <strong>Office Hours:</strong> From 5:30-6:30 PM each night between September 27th and October 4th (except when online courses are scheduled), the instructor will be holding office hours via online chat and will be available to assist you.
                 </div>
             </div>
             
@@ -191,13 +191,13 @@ Amount Paid: ${amount_paid:.2f}
 
 IMPORTANT INFORMATION:
 
-▪ Venue Confirmation: The venue will be confirmed shortly and you'll receive another email with location details.
+▪ Venue Details: In-person sessions will be held at 3/251 Flinders Ln, Melbourne VIC 3000, 2nd Level, Room 2, Sue Healy Room.
 
 ▪ What to Bring: Please bring your laptop and charger to all sessions.
 
 ▪ Privacy: Your email will never be used for anything non-course related.
 
-▪ Office Hours: From 5:30-6:30 PM each night between December 27th and January 4th (except when online courses are scheduled), the instructor will be holding office hours via online chat and will be available to assist you.
+▪ Office Hours: From 5:30-6:30 PM each night between September 27th and October 4th (except when online courses are scheduled), the instructor will be holding office hours via online chat and will be available to assist you.
 
 ▪ Pre-Course Learning (Optional): If you'd like to get a head start, we recommend watching these videos:
   • High-level AI intuition (lighthearted but informative): https://youtube.com/watch?v=R9OHn5ZF4Uo

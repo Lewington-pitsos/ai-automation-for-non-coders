@@ -258,13 +258,14 @@ class GeminiImageGenerator:
         if self.track_costs:
             self.tracker = MetadataTracker()
     
-    async def generate_image(self, prompt: str, save_path: Optional[str] = None) -> Tuple[bytes, Dict]:
+    async def generate_image(self, prompt: str, save_path: Optional[str] = None, seed: Optional[int] = None) -> Tuple[bytes, Dict]:
         """
         Generate an image from a text prompt
         
         Args:
             prompt: Text description of the image to generate
             save_path: Optional path to save the generated image
+            seed: Optional random seed for reproducible image generation
             
         Returns:
             Tuple of (image data as bytes, metadata dict)
@@ -272,10 +273,15 @@ class GeminiImageGenerator:
         print(f"🎨 Generating image with prompt: {prompt[:100]}...")
         
         try:
+            generation_config = {}
+            if seed is not None:
+                generation_config['seed'] = seed
+            
             response = await asyncio.to_thread(
                 self.client.models.generate_content,
                 model=self.model,
-                contents=[prompt]
+                contents=[prompt],
+                config=generation_config if generation_config else None,
             )
             
             # Extract usage metadata if available
@@ -758,6 +764,7 @@ async def main():
     gen_parser.add_argument('prompt', help='Text prompt for image generation')
     gen_parser.add_argument('-o', '--output', help='Output file path', 
                            default=f'generated_{datetime.now().strftime("%Y%m%d_%H%M%S")}.png')
+    gen_parser.add_argument('-s', '--seed', type=int, help='Random seed for reproducible generation')
     
     # Edit command
     edit_parser = subparsers.add_parser('edit', help='Edit an existing image')
@@ -822,7 +829,7 @@ async def main():
         
         # Execute command
         if args.command == 'generate':
-            image_data, metadata = await generator.generate_image(args.prompt, args.output)
+            image_data, metadata = await generator.generate_image(args.prompt, args.output, args.seed)
             print(f"\n✅ Image generated successfully: {args.output}")
             if metadata:
                 print(f"📊 Generation ID: {metadata['generation_id']}")

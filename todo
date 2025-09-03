@@ -1,40 +1,6 @@
---- 
+we have found an address, it is 3/251 Flinders Ln, Melbourne VIC 3000, 2nd Level, Room 2, Sue Healy Room
 
-the code is messily laid out. put all the website frontend code (around index.html) in a folder called src, 
-
-
+read the website copy thoroughly, go through everything and update it to reflect the fact that we have found a location
 
 ---
 
-favicon
-
----
-
-when we are in mobile mode alter the timeline so that the green bar and the associated dots no longer show. instead the cards take up the whole screen width
-
----
-
-now the frontend needs to take this into account, when the response comes back if this error is what we see, an orange toast needs to show saying "that email has already been used to register for this course, please use another one or contact support (with a link to the contact page)". this toast will not go away until dismissed.
-
----
-
-we need to keep track of the number of paid registrations (paid! only ones that have been confirmed and paid) in the database for the course 01_ai_automation_for_non_coders
-
-We want to create a new endpoint which tells us the course status, it takes the course id
-
-this includes:
-- current paid sign ups
-- current sign ups total
-- course limit a constant number 15
-
-the frontend pings this endpoint as soon as the page has loaded, and if the course is full we show a "sold out" message in a triangular green banner at the top of the page
-
-we also make it so that when a registration button is clicked, it flashes orange and says "sold out" instead
-
-We also disable all the form fields on the registration page, the user cannot enter anything.
-
----
-
-now we need to implement logic if the message fails. this should be another popup which says "there was an error processing your query, please try again in 24 hours or reach out to louka on linkedin: https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/
-
-also make the perlin noise red

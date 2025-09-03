@@ -43,11 +43,24 @@ prompts = [
     "Surrealist digital art, frowning figure pushing impossible invoice paper sphere up dreamlike hillside, frustrated expression clearly rendered, papers transforming while ascending magical slope, Magritte-inspired clarity on surreal incline, empty blue sky, photorealistic unhappy figure with supernatural paper physics rolling uphill, eternal dissatisfaction with upward task"
 ]
 
-async def generate_single_first_stage(generator, i, prompt, id):
+prompts = [
+    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+
+]
+
+async def generate_single_first_stage(generator: GeminiImageGenerator, i, prompt, id):
     async with semaphore:
         await generator.generate_image(
             prompt=prompt,
-            save_path=f"outputs/prompt_{i}-{id[:8]}.png"
+            save_path=f"outputs/prompt_{i}-{id[:8]}.png",
+            seed=i
         )
 
 async def first_stage():
@@ -93,7 +106,7 @@ async def add_text():
         save_path='sys_with_text.png'
     )
 if __name__ == "__main__":
-    asyncio.run(add_text())
-    # asyncio.run(first_stage())
+    # asyncio.run(add_text())
+    asyncio.run(first_stage())
     # asyncio.run(iterate())
 
