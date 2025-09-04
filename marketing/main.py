@@ -44,22 +44,16 @@ prompts = [
 ]
 
 prompts = [
-    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
-    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
-    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
-    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
-    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
-    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
-    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
-    "a simple logo which looks like two crossed keyboards (like crossed swords) 2 colors only, white on black background.",
+    "An eye-catching youtube thumbnail with the title AI Does My Taxes, A renaissance man sits at a complex computer surrounded by money at dawn, dramatic chiaroscuro lighting on hill slope, Renaissance painting style, empty void background, golden hour rim lighting, photorealistic rendering",
 
-]
+
+] * 10
 
 async def generate_single_first_stage(generator: GeminiImageGenerator, i, prompt, id):
     async with semaphore:
         await generator.generate_image(
             prompt=prompt,
-            save_path=f"outputs/prompt_{i}-{id[:8]}.png",
+            save_path=f"outputs/prompt_{id[:8]}-{i}.png",
             seed=i
         )
 
@@ -76,12 +70,12 @@ async def first_stage():
 
 async def generate_single_iteration(generator, i, id):
     async with semaphore:
-        input_image = f"outputs/prompt_{i}-{id[:8]}.png"
+        input_image = f"outputs/prompt_{id[:8]}-{i}.png"
         if os.path.exists(input_image):
             await generator.refine_image(
                 image_path=input_image,
                 refinement_prompt="create a version of this sisyphus image which looks like an edited version of the same image. The new image should look like an 'after' version of the first image which should look like a 'before' image. in the new image the sisyphus figure is enjoying himself, having a good time, relaxing. He is no longer pushing the boulder and he has found a way to automate the boulder rolling task using some kind of robot. the robot always looks sleek and in control.",
-                save_path=f"outputs/prompt_{i}-{id[:8]}_automated.png"
+                save_path=f"outputs/prompt_{id[:8]}-{i}_automated.png"
             )
 
 async def iterate():
