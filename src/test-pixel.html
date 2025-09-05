@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Pixel Test Page</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #111;
+            border: 1px solid #333;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #222;
+        }
+        .test-button {
+            padding: 10px 20px;
+            margin: 10px;
+            background: #4eff9f;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .test-button:hover {
+            background: #3ee08f;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            background: #222;
+            color: #4eff9f;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .test-title {
+            color: #4eff9f;
+            margin-bottom: 10px;
+        }
+        #pixel-status {
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+        .status-ok {
+            color: #4eff9f;
+            border-color: #4eff9f;
+        }
+        .status-error {
+            color: #ff4444;
+            border-color: #ff4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Meta Pixel Test Page</h1>
+        
+        <div id="pixel-status">
+            Checking Meta Pixel status...
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">1. Test ViewContent Event</h2>
+            <p>This event should fire automatically when the page loads.</p>
+            <button class="test-button" onclick="testViewContent()">Manually Trigger ViewContent</button>
+            <div id="viewcontent-status" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">2. Test Contact Event</h2>
+            <p>Simulate a contact form submission.</p>
+            <button class="test-button" onclick="testContactEvent()">Trigger Contact Event</button>
+            <div id="contact-status" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">3. Test CompleteRegistration Event</h2>
+            <p>Simulate a course registration.</p>
+            <button class="test-button" onclick="testRegistrationEvent()">Trigger CompleteRegistration Event</button>
+            <div id="registration-status" class="status"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">4. Check Facebook Pixel Helper</h2>
+            <p>To verify events are being sent correctly:</p>
+            <ol>
+                <li>Install the Facebook Pixel Helper Chrome extension</li>
+                <li>Click the extension icon while on this page</li>
+                <li>It should show your Pixel ID: <strong>1316281149823688</strong></li>
+                <li>All triggered events should appear in the helper</li>
+            </ol>
+        </div>
+        
+        <div class="test-section">
+            <h2 class="test-title">5. Verify in Events Manager</h2>
+            <p>To see your events in Facebook:</p>
+            <ol>
+                <li>Go to <a href="https://business.facebook.com/events_manager" target="_blank" style="color: #4eff9f;">Facebook Events Manager</a></li>
+                <li>Select your pixel (ID: 1316281149823688)</li>
+                <li>Check the "Overview" tab for real-time activity</li>
+                <li>Events should appear within seconds of triggering</li>
+            </ol>
+            <p><strong>Note:</strong> All tracking is done client-side via the Meta Pixel JavaScript SDK. Events are sent directly from the user's browser to Meta.</p>
+        </div>
+    </div>
+    
+    <!-- Meta Pixel tracking -->
+    <script src="meta-pixel.js"></script>
+    
+    <script src="scripts.js"></script>
+    <script>
+        // Check if Meta Pixel is loaded
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const statusDiv = document.getElementById('pixel-status');
+                if (typeof fbq !== 'undefined') {
+                    statusDiv.innerHTML = '✓ Meta Pixel is loaded successfully! Pixel ID: 1316281149823688';
+                    statusDiv.className = 'status-ok';
+                    
+                    // Log all fbq calls for debugging
+                    const originalFbq = window.fbq;
+                    window.fbq = function() {
+                        console.log('Meta Pixel Event:', arguments);
+                        logEvent('All Events', Array.from(arguments));
+                        return originalFbq.apply(this, arguments);
+                    };
+                } else {
+                    statusDiv.innerHTML = '✗ Meta Pixel is NOT loaded. Check your configuration.';
+                    statusDiv.className = 'status-error';
+                }
+            }, 1000);
+        });
+        
+        function logEvent(section, data) {
+            const timestamp = new Date().toISOString();
+            const message = `[${timestamp}] ${JSON.stringify(data, null, 2)}`;
+            
+            if (section === 'ViewContent') {
+                document.getElementById('viewcontent-status').innerHTML += message + '\n';
+            } else if (section === 'Contact') {
+                document.getElementById('contact-status').innerHTML += message + '\n';
+            } else if (section === 'Registration') {
+                document.getElementById('registration-status').innerHTML += message + '\n';
+            }
+        }
+        
+        function testViewContent() {
+            console.log('Testing ViewContent event...');
+            if (window.MetaPixel) {
+                window.MetaPixel.trackViewContent({
+                    content_name: 'Test Page View',
+                    content_category: 'Test',
+                    content_type: 'test_page',
+                    value: 100,
+                    currency: 'USD'
+                });
+            }
+            logEvent('ViewContent', {
+                event: 'ViewContent',
+                params: {
+                    content_name: 'Test Page View',
+                    value: 100,
+                    currency: 'USD'
+                }
+            });
+        }
+        
+        function testContactEvent() {
+            console.log('Testing Contact event...');
+            const testData = {
+                name: 'Test User',
+                email: 'test@example.com',
+                mobile: '+1234567890',
+                message: 'This is a test message'
+            };
+            if (window.MetaPixel) {
+                window.MetaPixel.trackContactEvent(testData);
+            }
+            logEvent('Contact', {
+                event: 'Contact',
+                userData: testData
+            });
+        }
+        
+        function testRegistrationEvent() {
+            console.log('Testing CompleteRegistration event...');
+            const testData = {
+                firstName: 'John',
+                lastName: 'Doe',
+                email: 'john.doe@example.com',
+                phone: '+1234567890'
+            };
+            if (window.MetaPixel) {
+                window.MetaPixel.trackCompleteRegistration(testData);
+            }
+            logEvent('Registration', {
+                event: 'CompleteRegistration',
+                userData: testData,
+                value: 612.00,
+                currency: 'USD'
+            });
+        }
+    </script>
+</body>
+</html>

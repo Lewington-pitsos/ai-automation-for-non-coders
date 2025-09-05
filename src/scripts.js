@@ -1,4 +1,5 @@
 // Perlin background functionality is loaded from perlin-background.js
+// Meta Pixel functionality is loaded from meta-pixel.js
 
 // Load shared components
 async function loadComponent(elementId, componentPath) {
@@ -27,6 +28,10 @@ function fixFooterCursors() {
 
 // Initialize everything on load
 window.addEventListener('load', async () => {
+    // Initialize Meta Pixel (from meta-pixel.js)
+    if (window.MetaPixel) {
+        window.MetaPixel.init();
+    }
     
     // Load shared components first
     await Promise.all([
@@ -471,6 +476,11 @@ async function handleFormSubmission(event) {
     })
     .then(data => {
         if (data.registration_id) {
+            // Track CompleteRegistration event
+            if (window.MetaPixel) {
+                window.MetaPixel.trackCompleteRegistration(registrationData);
+            }
+            
             // Store registration ID for later use
             sessionStorage.setItem('registrationId', data.registration_id);
             sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
@@ -789,6 +799,11 @@ async function handleContactFormSubmission(event) {
         const result = await response.json();
         
         if (response.ok) {
+            // Track Contact event
+            if (window.MetaPixel) {
+                window.MetaPixel.trackContactEvent(contactData);
+            }
+            
             // Show success toast
             showContactSuccessMessage();
             
