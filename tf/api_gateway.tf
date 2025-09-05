@@ -167,24 +167,94 @@ resource "aws_api_gateway_integration" "contact_integration" {
   uri                     = aws_lambda_function.contact_handler.invoke_arn
 }
 
+# ViewContent tracking endpoint
+resource "aws_api_gateway_resource" "view_content" {
+  rest_api_id = aws_api_gateway_rest_api.course_api.id
+  parent_id   = aws_api_gateway_rest_api.course_api.root_resource_id
+  path_part   = "view-content"
+}
+
+resource "aws_api_gateway_method" "view_content_post" {
+  rest_api_id   = aws_api_gateway_rest_api.course_api.id
+  resource_id   = aws_api_gateway_resource.view_content.id
+  http_method   = "POST"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_method" "view_content_options" {
+  rest_api_id   = aws_api_gateway_rest_api.course_api.id
+  resource_id   = aws_api_gateway_resource.view_content.id
+  http_method   = "OPTIONS"
+  authorization = "NONE"
+}
+
+resource "aws_api_gateway_integration" "view_content_options" {
+  rest_api_id = aws_api_gateway_rest_api.course_api.id
+  resource_id = aws_api_gateway_resource.view_content.id
+  http_method = aws_api_gateway_method.view_content_options.http_method
+  type        = "MOCK"
+
+  request_templates = {
+    "application/json" = "{\"statusCode\": 200}"
+  }
+}
+
+resource "aws_api_gateway_method_response" "view_content_options" {
+  rest_api_id = aws_api_gateway_rest_api.course_api.id
+  resource_id = aws_api_gateway_resource.view_content.id
+  http_method = aws_api_gateway_method.view_content_options.http_method
+  status_code = "200"
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
+    "method.response.header.Access-Control-Allow-Methods" = true
+    "method.response.header.Access-Control-Allow-Origin"  = true
+  }
+}
+
+resource "aws_api_gateway_integration_response" "view_content_options" {
+  rest_api_id = aws_api_gateway_rest_api.course_api.id
+  resource_id = aws_api_gateway_resource.view_content.id
+  http_method = aws_api_gateway_method.view_content_options.http_method
+  status_code = aws_api_gateway_method_response.view_content_options.status_code
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+    "method.response.header.Access-Control-Allow-Methods" = "'POST,OPTIONS'"
+    "method.response.header.Access-Control-Allow-Origin"  = "'*'"
+  }
+}
+
+resource "aws_api_gateway_integration" "view_content_integration" {
+  rest_api_id             = aws_api_gateway_rest_api.course_api.id
+  resource_id             = aws_api_gateway_resource.view_content.id
+  http_method             = aws_api_gateway_method.view_content_post.http_method
+  integration_http_method = "POST"
+  type                    = "AWS_PROXY"
+  uri                     = aws_lambda_function.view_content_handler.invoke_arn
+}
+
 resource "aws_api_gateway_deployment" "course_api" {
   depends_on = [
     aws_api_gateway_integration.register_integration,
     aws_api_gateway_integration.register_options,
     aws_api_gateway_integration.stripe_webhook_integration,
     aws_api_gateway_integration.contact_integration,
-    aws_api_gateway_integration.contact_options
+    aws_api_gateway_integration.contact_options,
+    aws_api_gateway_integration.view_content_integration,
+    aws_api_gateway_integration.view_content_options
   ]
 
   rest_api_id = aws_api_gateway_rest_api.course_api.id
   stage_name  = var.environment
 
-  # Force redeployment when contact endpoint is added
+  # Force redeployment when endpoints are added
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_integration.register_integration.id,
       aws_api_gateway_integration.contact_integration.id,
       aws_api_gateway_integration.stripe_webhook_integration.id,
+      aws_api_gateway_integration.view_content_integration.id,
     ]))
   }
 
@@ -213,6 +283,14 @@ resource "aws_lambda_permission" "api_gateway_contact" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.contact_handler.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_api_gateway_rest_api.course_api.execution_arn}/*/*"
+}
+
+resource "aws_lambda_permission" "api_gateway_view_content" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.view_content_handler.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.course_api.execution_arn}/*/*"
 }

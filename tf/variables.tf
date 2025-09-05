@@ -45,3 +45,9 @@ variable "stripe_api_key" {
   type        = string
   sensitive   = true
 }
+
+variable "meta_access_token" {
+  description = "Meta Conversions API access token"
+  type        = string
+  sensitive   = true
+}

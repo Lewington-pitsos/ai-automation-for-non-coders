@@ -11,9 +11,10 @@ resource "aws_lambda_function" "registration_handler" {
   environment {
     variables = {
       TABLE_NAME = aws_dynamodb_table.course_registrations.name
+      META_PIXEL_ID = "1232612085335834"
+      META_ACCESS_TOKEN = var.meta_access_token
     }
   }
-
 
   tags = {
     Name        = "${var.project_name}-registration-handler"
@@ -38,9 +39,10 @@ resource "aws_lambda_function" "payment_webhook" {
       STRIPE_WEBHOOK_SECRET = var.stripe_webhook_secret
       FROM_EMAIL = var.from_email
       ADMIN_EMAIL = var.admin_email
+      META_PIXEL_ID = "1232612085335834"
+      META_ACCESS_TOKEN = var.meta_access_token
     }
   }
-
 
   tags = {
     Name        = "${var.project_name}-payment-webhook"
@@ -62,11 +64,36 @@ resource "aws_lambda_function" "contact_handler" {
     variables = {
       CONTACT_FORM_EMAIL = var.contact_form_email
       ADMIN_EMAIL = var.admin_email
+      META_PIXEL_ID = "1232612085335834"
+      META_ACCESS_TOKEN = var.meta_access_token
     }
   }
 
   tags = {
     Name        = "${var.project_name}-contact-handler"
+    Environment = var.environment
+  }
+}
+
+# ViewContent Handler Lambda
+resource "aws_lambda_function" "view_content_handler" {
+  filename         = "../lambda/view-content-handler.zip"
+  function_name    = "${var.project_name}-view-content-handler"
+  role            = aws_iam_role.lambda_execution_role.arn
+  handler         = "lambda_function.lambda_handler"
+  source_code_hash = filebase64sha256("../lambda/view-content-handler.zip")
+  runtime         = "python3.11"
+  timeout         = 30
+
+  environment {
+    variables = {
+      META_PIXEL_ID = "1232612085335834"
+      META_ACCESS_TOKEN = var.meta_access_token
+    }
+  }
+
+  tags = {
+    Name        = "${var.project_name}-view-content-handler"
     Environment = var.environment
   }
 }

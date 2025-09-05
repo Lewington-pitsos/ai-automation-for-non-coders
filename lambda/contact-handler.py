@@ -3,6 +3,7 @@ import boto3
 import os
 import logging
 from botocore.exceptions import ClientError
+from meta_conversions_api import handle_contact
 
 # Set up logging
 logger = logging.getLogger()
@@ -49,7 +50,7 @@ def lambda_handler(event, context):
             }
         
         # Validate required fields
-        required_fields = ['name', 'email', 'mobile', 'message']
+        required_fields = ['name', 'email', 'message']
         for field in required_fields:
             if not body.get(field) or not body[field].strip():
                 return {
@@ -61,7 +62,7 @@ def lambda_handler(event, context):
         # Extract contact data
         name = body['name'].strip()
         sender_email = body['email'].strip()
-        mobile = body['mobile'].strip()
+        phone = body.get('phone', '').strip() if body.get('phone') else ''
         message = body['message'].strip()
         
         # Get environment variables
@@ -84,7 +85,7 @@ New Contact Form Submission
 
 Name: {name}
 Email: {sender_email}
-Mobile Phone: {mobile}
+{f"Phone: {phone}" if phone else ""}
 Message:
 {message}
 
@@ -117,6 +118,28 @@ DO NOT REPLY to this email - replies will not be received.
             )
             
             logger.info(f"Email sent successfully. MessageId: {response['MessageId']}")
+            
+            # Send Contact event to Meta Conversions API
+            try:
+                user_agent = event.get("headers", {}).get("User-Agent", "")
+                user_data = {
+                    "email": sender_email,
+                    "client_user_agent": user_agent
+                }
+                if phone:
+                    user_data["phone"] = phone
+                
+                # Get the source URL from the event if available
+                event_source_url = event.get("headers", {}).get("referer") or event.get("headers", {}).get("Referer")
+                
+                meta_result = handle_contact(user_data, event_source_url)
+                if meta_result["success"]:
+                    logger.info(f"Meta Conversions API Contact event sent successfully for {sender_email}")
+                else:
+                    logger.warning(f"Failed to send Meta Conversions API Contact event for {sender_email}, error: {meta_result.get('error')}")
+            except Exception as meta_error:
+                logger.error(f"Error sending Meta Conversions API Contact event: {str(meta_error)}")
+                # Don't fail the contact form if Meta API fails
             
             return {
                 'statusCode': 200,

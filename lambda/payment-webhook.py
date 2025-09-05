@@ -6,6 +6,7 @@ import logging
 from datetime import datetime
 from decimal import Decimal
 from email_templates import get_user_confirmation_email
+from meta_conversions_api import handle_purchase
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -158,6 +159,27 @@ Stripe Session ID: {session.get("id", "")}"""
                     }
                 }
             )
+            
+            # Send Purchase event to Meta Conversions API
+            try:
+                user_data = {
+                    "email": item["email"],
+                    "phone": item.get("phone", "")
+                }
+                
+                purchase_data = {
+                    "currency": "USD",
+                    "value": float(session.get("amount_total", 0) / 100)
+                }
+                
+                meta_result = handle_purchase(user_data, purchase_data, None, registration_id)
+                if meta_result["success"]:
+                    logger.info(f"Meta Conversions API Purchase event sent successfully for registration: {registration_id}")
+                else:
+                    logger.warning(f"Failed to send Meta Conversions API Purchase event for registration: {registration_id}, error: {meta_result.get('error')}")
+            except Exception as meta_error:
+                logger.error(f"Error sending Meta Conversions API Purchase event: {str(meta_error)}")
+                # Don't fail the webhook if Meta API fails
             
             logger.info(f"Payment successful for registration: {registration_id}")
         

@@ -4,6 +4,7 @@ import uuid
 from datetime import datetime
 import logging
 import os
+from meta_conversions_api import handle_complete_registration
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -119,6 +120,27 @@ def lambda_handler(event, context):
         }
         
         table.put_item(Item=item)
+        
+        # Send CompleteRegistration event to Meta Conversions API
+        try:
+            user_agent = event.get("headers", {}).get("User-Agent", "")
+            user_data = {
+                "email": email,
+                "phone": body.get("phone", ""),
+                "client_user_agent": user_agent
+            }
+            
+            # Get the source URL from the event if available
+            event_source_url = event.get("headers", {}).get("referer") or event.get("headers", {}).get("Referer")
+            
+            meta_result = handle_complete_registration(user_data, event_source_url, registration_id)
+            if meta_result["success"]:
+                logger.info(f"Meta Conversions API CompleteRegistration event sent successfully for registration: {registration_id}")
+            else:
+                logger.warning(f"Failed to send Meta Conversions API event for registration: {registration_id}, error: {meta_result.get('error')}")
+        except Exception as meta_error:
+            logger.error(f"Error sending Meta Conversions API event: {str(meta_error)}")
+            # Don't fail the registration if Meta API fails
         
         logger.info(f"Registration created: {registration_id} for email: {email}, course: {course_id}")
         

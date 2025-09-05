@@ -126,6 +126,7 @@ class TestLambdaHealth:
             "name": "Test User",
             "course_id": "test-course",  # Use test course ID for testing
             "referral_source": "test",
+            "phone": "+1234567890",
             "dietary_requirements": "none"
         }
         
@@ -145,6 +146,7 @@ class TestLambdaHealth:
             "name": "Test User",
             "course_id": "invalid-course-id",
             "referral_source": "test",
+            "phone": "+1234567890",
             "dietary_requirements": "none"
         }
         response = requests.post(f"{api_url}/register", json=test_data, timeout=30)

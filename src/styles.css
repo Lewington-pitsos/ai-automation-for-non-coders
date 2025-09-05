@@ -109,6 +109,13 @@ nav {
     align-items: center;
 }
 
+.header-logo {
+    height: 90px;
+    width: auto;
+    margin-right: 20px;
+    object-fit: contain;
+}
+
 .nav-menu {
     display: flex;
     align-items: center;
@@ -1022,6 +1029,11 @@ footer {
     
     .nav-header .logo {
         font-size: 14px; /* 0.7 * 20px = 14px */
+    }
+    
+    .header-logo {
+        height: 4F0px;
+        margin-right: 12px;
     }
     
     .nav-menu {

@@ -58,6 +58,11 @@ build_lambda() {
         cp email_templates.py /tmp/${function_name}/
     fi
     
+    # Copy meta_conversions_api.py if it exists (needed for Meta tracking)
+    if [ -f meta_conversions_api.py ]; then
+        cp meta_conversions_api.py /tmp/${function_name}/
+    fi
+    
     # Create the zip file
     cd /tmp/${function_name}
     zip -r9 ${OLDPWD}/${function_name}.zip .
@@ -77,5 +82,8 @@ build_lambda "registration-handler" "registration-handler.py"
 
 # Build contact-handler (no external dependencies needed, boto3 is in Lambda runtime)
 build_lambda "contact-handler" "contact-handler.py"
+
+# Build view-content-handler (needs requests for Meta API calls)
+build_lambda "view-content-handler" "view_content_handler.py"
 
 echo "All Lambda packages built successfully!"
