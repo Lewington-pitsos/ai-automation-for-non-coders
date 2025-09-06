@@ -801,9 +801,9 @@ async function handleLivestreamFormSubmission(event) {
             form.reset();
             checkLivestreamFormValidity();
         } else {
-            // Show backend error with specific message or generic backend error
-            if (result.error === 'email_already_registered') {
-                showErrorMessage('This email is already registered for the livestream');
+            // Check for duplicate registration error (409 status)
+            if (response.status === 409) {
+                showErrorMessage('This email has already registered for this event. Please try another email.');
             } else {
                 // Show full backend error toast
                 showLivestreamErrorMessage();

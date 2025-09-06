@@ -82,13 +82,11 @@ def lambda_handler(event, context):
             
             if "Item" in existing_item:
                 logger.info(f"Duplicate livestream registration attempt for email: {email}")
-                # Still return success to avoid revealing duplicate registrations
                 return {
-                    'statusCode': 200,
+                    'statusCode': 409,
                     'headers': headers,
                     'body': json.dumps({
-                        'message': 'Registration successful',
-                        'registration_id': existing_item["Item"].get("registration_id")
+                        'error': 'Registration already exists for this email'
                     })
                 }
         except Exception as e:
@@ -191,9 +189,16 @@ def send_user_confirmation_email(name, email, registration_id):
         <div style="padding: 30px;">
             <p>Hi {name},</p>
             
-            <p>Thank you for registering for our <strong>AI Tax Automation Livestream</strong>!</p>
+            <p><strong>Thanks for signing up for the stream!</strong></p>
             
-            <p>We're excited to have you join us for this free online session where we'll demonstrate how AI can revolutionize tax preparation and accounting workflows.</p>
+            <div style="text-align: center; margin: 20px 0;">
+                <a href="https://youtube.com/live/4vAqaKfexeE" style="display: inline-block; text-decoration: none;">
+                    <img src="https://img.youtube.com/vi/4vAqaKfexeE/maxresdefault.jpg" alt="AI Tax Automation Livestream" style="max-width: 100%; height: auto; border-radius: 8px; border: 2px solid #000;">
+                </a>
+                <p style="margin-top: 10px;"><a href="https://youtube.com/live/4vAqaKfexeE" style="color: #000; text-decoration: none; font-weight: bold;">Click to watch the livestream</a></p>
+            </div>
+            
+            <p>We're going to email you again just before the stream starts as a quick reminder.</p>
             
             <div style="background-color: #f8f8f8; border-left: 4px solid #000; padding: 20px; margin: 20px 0;">
                 <p style="margin: 5px 0;"><strong>Registration ID:</strong> {registration_id}</p>
@@ -201,10 +206,14 @@ def send_user_confirmation_email(name, email, registration_id):
                 <p style="margin: 5px 0;"><strong>Cost:</strong> FREE</p>
             </div>
             
-            <h3 style="margin-top: 30px;">What's Next?</h3>
-            <p>We'll send you the livestream link and access details closer to the event date. Make sure to check your email regularly.</p>
-            
-            <h3>What You'll Learn:</h3>
+            <h3 style="margin-top: 30px;">Why A.I. Automation Right Now?</h3>
+            <p>AI makes software easier and easier to create. Instead of getting software experts to learn problems and then solve them, it's making more and more sense to have the experts who understand the problem intimately already learn how to build software using tools like Claude, MCP and n8n. See for instance the <a href="https://www.reddit.com/r/PowerApps/comments/1ce5kd9/are_there_really_tons_of_citizen_developers_out/"> rise of Citizen Developers</a></p>
+
+            <p>A great example is the story of <a href="https://www.linkedin.com/pulse/how-i-automated-friends-invoicing-process-one-weekend-rich-nasser/">Rich Nasser</a> who automated a 3-day invoice processing process into a 45-minute task using Power Automate. Rich understood the invoicing problem intimately—he knew which exceptions broke the system, which edge cases mattered, and what actually needed to be solved. With AI tools, he could solve it himself rather than trying to explain it to a developer.</p>
+
+            <p>I'm always keen to chat about this topic, so if you have any questions, feel free to reply to this email or add me on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/">LinkedIn</a>.</p>
+
+            <h3>What We'll cover in the livestream:</h3>
             <ul>
                 <li>How to automate tax form processing with AI</li>
                 <li>Building intelligent document extraction workflows</li>
@@ -214,8 +223,8 @@ def send_user_confirmation_email(name, email, registration_id):
             
             <p style="margin-top: 30px;">If you have any questions, feel free to reach out to us.</p>
             
-            <p>Best regards,<br>
-            The AI Automation Team</p>
+            <p>See you soon!,<br>
+            - Louka</p>
         </div>
         
         <div style="background-color: #f5f5f5; padding: 20px; text-align: center; color: #666; font-size: 14px;">
@@ -228,19 +237,25 @@ def send_user_confirmation_email(name, email, registration_id):
     email_body_text = f"""
 Hi {name},
 
-Thank you for registering for our AI Tax Automation Livestream!
+Thanks for signing up for the stream!
 
-We're excited to have you join us for this free online session where we'll demonstrate how AI can revolutionize tax preparation and accounting workflows.
+Watch the livestream here: https://youtube.com/live/4vAqaKfexeE
+
+We're going to email you again just before the stream starts as a quick reminder.
 
 Registration Details:
 - Registration ID: {registration_id}
 - Format: Online Livestream
 - Cost: FREE
 
-What's Next?
-We'll send you the livestream link and access details closer to the event date. Make sure to check your email regularly.
+Why A.I. Automation Right Now?
+AI makes software easier and easier to create. Instead of getting software experts to learn problems and then solve them, it's making more and more sense to have the experts who understand the problem intimately already learn how to build software using tools like Claude, MCP and n8n. See for instance the rise of Citizen Developers: https://www.reddit.com/r/PowerApps/comments/1ce5kd9/are_there_really_tons_of_citizen_developers_out/
 
-What You'll Learn:
+A great example is the story of Rich Nasser (https://www.linkedin.com/pulse/how-i-automated-friends-invoicing-process-one-weekend-rich-nasser/) who automated a 3-day invoice processing process into a 45-minute task using Power Automate. Rich understood the invoicing problem intimately—he knew which exceptions broke the system, which edge cases mattered, and what actually needed to be solved. With AI tools, he could solve it himself rather than trying to explain it to a developer.
+
+I'm always keen to chat about this topic, so if you have any questions, feel free to reply to this email or add me on LinkedIn: https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/
+
+What We'll cover in the livestream:
 • How to automate tax form processing with AI
 • Building intelligent document extraction workflows
 • Integrating AI with existing accounting systems
@@ -248,8 +263,8 @@ What You'll Learn:
 
 If you have any questions, feel free to reach out to us.
 
-Best regards,
-The AI Automation Team
+See you soon!,
+- Louka
     """
     
     # Send email via SES

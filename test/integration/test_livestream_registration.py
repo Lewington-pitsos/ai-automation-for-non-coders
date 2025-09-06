@@ -147,7 +147,7 @@ class TestLivestreamRegistration:
         assert 'email' in response.json()['error'].lower(), "Error should mention email"
     
     def test_duplicate_registration_handling(self, livestream_endpoint, dynamodb_cleanup):
-        """Test that duplicate email registrations return existing registration_id"""
+        """Test that duplicate email registrations return error"""
         test_email = "test_duplicate@example.com"
         payload = {
             "name": "First Registration",
@@ -168,7 +168,7 @@ class TestLivestreamRegistration:
         assert response1.status_code == 200, f"First registration failed: {response1.status_code}: {response1.text}"
         first_registration_id = response1.json()['registration_id']
         
-        # Second registration with same email should return same registration_id
+        # Second registration with same email should return error
         response2 = requests.post(
             livestream_endpoint,
             json={"name": "Second Registration", "email": test_email},
@@ -176,8 +176,10 @@ class TestLivestreamRegistration:
             timeout=10
         )
         
-        assert response2.status_code == 200, f"Second registration should succeed: {response2.status_code}: {response2.text}"
-        assert response2.json()['registration_id'] == first_registration_id, "Should return same registration_id for duplicate"
+        assert response2.status_code == 409, f"Second registration should fail with 409: {response2.status_code}: {response2.text}"
+        data = response2.json()
+        assert 'error' in data, f"Expected error in response: {data}"
+        assert 'already exists' in data['error'].lower(), f"Expected 'already exists' in error message: {data['error']}"
     
     def test_cors_preflight_request(self, livestream_endpoint):
         """Test CORS preflight request for livestream endpoint"""
