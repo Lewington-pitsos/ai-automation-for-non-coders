@@ -2726,11 +2726,77 @@ a:hover {
     padding: 120px 0;
     background: #000;
     min-height: 100vh;
+    position: relative;
+}
+
+.registration-section .perlin-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .registration-content {
     max-width: 1000px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* Livestream page specific styles */
+.livestream-details {
+    margin: 40px 0;
+}
+
+.livestream-details h2 {
+    margin-bottom: 20px;
+}
+
+.livestream-list {
+    list-style-position: outside;
+    margin-left: 0;
+    padding-left: 20px;
+}
+
+.livestream-list li {
+    margin-bottom: 10px;
+}
+
+.event-details {
+    margin-top: 30px;
+}
+
+.event-details h3 {
+    margin-bottom: 15px;
+}
+
+.event-details p {
+    margin-bottom: 8px;
+}
+
+.video-section {
+    margin: 40px 0;
+}
+
+.video-container {
+    max-width: 100%;
+    margin: 0 auto;
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 
 .registration-form {
