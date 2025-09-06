@@ -1,10 +1,16 @@
-we have found an address, it is 3/251 Flinders Ln, Melbourne VIC 3000, 2nd Level, Room 2, Sue Healy Room
+--- 
 
-read the website copy thoroughly, go through everything and update it to reflect the fact that we have found a location
 
 ---
 
-- make a sign-up-for-live-stream page
+at the moment we track the registrations event. we want to track two versions of this, registrations for the course and registrations for the livestream.
+
+both will be meta conversions registration events but with different parameters so we can distinguish them.
+
+
+
+---
+- finish livestream email
 - get a better understanding of meta conversions api 
 - test and have full control and confidence of meta conversions api
 - do some refactoring 
