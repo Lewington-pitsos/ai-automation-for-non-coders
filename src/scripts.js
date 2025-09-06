@@ -686,6 +686,343 @@ function showSuccessMessage() {
     }, 10000);
 }
 
+// Livestream Form Handling
+function initLivestreamForm() {
+    const form = document.getElementById('livestreamForm');
+    if (!form) return;
+    
+    form.addEventListener('submit', handleLivestreamFormSubmission);
+    
+    // Get submit button and make it disabled initially
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
+    
+    // Add real-time validation
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        field.addEventListener('blur', validateField);
+        field.addEventListener('input', function(event) {
+            clearFieldError(event);
+            checkLivestreamFormValidity();
+        });
+        field.addEventListener('change', checkLivestreamFormValidity);
+    });
+    
+    // Initial form validity check
+    checkLivestreamFormValidity();
+}
+
+function checkLivestreamFormValidity() {
+    const form = document.getElementById('livestreamForm');
+    if (!form) return;
+    
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (!submitButton) return;
+    
+    // Get all required fields
+    const name = form.querySelector('#name');
+    const email = form.querySelector('#email');
+    
+    // Check if all required fields are filled
+    const isValid = name && name.value.trim() !== '' &&
+                   email && email.value.trim() !== '';
+    
+    // Enable/disable button based on validity
+    if (isValid) {
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
+    } else {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
+}
+
+async function handleLivestreamFormSubmission(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Convert form data to object
+    const livestreamData = {};
+    for (let [key, value] of formData.entries()) {
+        livestreamData[key] = value.trim();
+    }
+    
+    // Validate form
+    if (!livestreamData.name || !livestreamData.email) {
+        showErrorMessage('Please fill in all required fields');
+        return;
+    }
+    
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(livestreamData.email)) {
+        showErrorMessage('Please enter a valid email address');
+        return;
+    }
+    
+    // Disable submit button and show loading state
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'SIGNING UP...';
+    
+    try {
+        // Wait for config to load if needed
+        if (typeof configPromise !== 'undefined') {
+            await configPromise;
+        }
+        
+        // Build API URL
+        const apiUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL 
+            ? `${API_CONFIG.API_URL}/livestream`
+            : 'https://YOUR_API_GATEWAY_URL/prod/livestream';
+        
+        // Send livestream registration data to Lambda
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(livestreamData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            // Show success toast
+            showLivestreamSuccessMessage();
+            
+            // Reset form after successful submission
+            form.reset();
+            checkLivestreamFormValidity();
+        } else {
+            // Show backend error with specific message or generic backend error
+            if (result.error === 'email_already_registered') {
+                showErrorMessage('This email is already registered for the livestream');
+            } else {
+                // Show full backend error toast
+                showLivestreamErrorMessage();
+            }
+        }
+    } catch (error) {
+        console.error('Livestream form error:', error);
+        // Show backend error popup
+        showLivestreamErrorMessage();
+    } finally {
+        // Re-enable submit button
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+    }
+}
+
+function showLivestreamSuccessMessage() {
+    // Get toast container
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    // Clear any existing toasts
+    toastContainer.innerHTML = '';
+    
+    // Show container
+    toastContainer.classList.add('active');
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    
+    // Create Perlin noise canvas
+    const canvas = document.createElement('canvas');
+    canvas.className = 'toast-perlin-bg';
+    toast.appendChild(canvas);
+    
+    // Add content
+    const content = document.createElement('div');
+    content.className = 'toast-content';
+    content.innerHTML = `
+        <div class="toast-corner top-left"></div>
+        <div class="toast-corner top-right"></div>
+        <div class="toast-corner bottom-left"></div>
+        <div class="toast-corner bottom-right"></div>
+        <div class="toast-message">
+            You're registered for the livestream!<br>
+            Check your email for confirmation and access details.
+        </div>
+        <button class="toast-dismiss">DISMISS</button>
+    `;
+    toast.appendChild(content);
+    
+    // Add to container with animation
+    toastContainer.appendChild(toast);
+    
+    // Initialize Perlin noise animation with green particles
+    initToastPerlinNoise(canvas, { colorProfile: 'green' });
+    
+    // Dismiss function
+    const dismissToast = () => {
+        // Add slide out animation
+        toast.style.animation = 'toastSlideOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+        
+        // Re-enable scroll
+        document.body.style.overflow = '';
+        
+        // Hide container after animation
+        setTimeout(() => {
+            toastContainer.classList.remove('active');
+            toastContainer.innerHTML = '';
+        }, 500);
+    };
+    
+    // Add dismiss button handler
+    const dismissButton = toast.querySelector('.toast-dismiss');
+    dismissButton.addEventListener('click', dismissToast);
+    
+    // Auto-dismiss after 10 seconds
+    setTimeout(dismissToast, 10000);
+    
+    // Disable scroll on body while toast is active
+    document.body.style.overflow = 'hidden';
+}
+
+function showLivestreamErrorMessage() {
+    // Get toast container
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    // Clear any existing toasts
+    toastContainer.innerHTML = '';
+    
+    // Show container
+    toastContainer.classList.add('active');
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    
+    // Create Perlin noise canvas
+    const canvas = document.createElement('canvas');
+    canvas.className = 'toast-perlin-bg';
+    toast.appendChild(canvas);
+    
+    // Add content
+    const content = document.createElement('div');
+    content.className = 'toast-content';
+    content.innerHTML = `
+        <div class="toast-corner top-left"></div>
+        <div class="toast-corner top-right"></div>
+        <div class="toast-corner bottom-left"></div>
+        <div class="toast-corner bottom-right"></div>
+        <div class="toast-message">
+            There was an error processing your livestream registration, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>
+        </div>
+        <button class="toast-dismiss">DISMISS</button>
+    `;
+    toast.appendChild(content);
+    
+    // Add to container with animation
+    toastContainer.appendChild(toast);
+    
+    // Initialize Perlin noise animation with red particles
+    initToastPerlinNoise(canvas, { colorProfile: 'red' });
+    
+    // Dismiss function
+    const dismissToast = () => {
+        // Add slide out animation
+        toast.style.animation = 'toastSlideOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+        
+        // Re-enable scroll
+        document.body.style.overflow = '';
+        
+        // Hide container after animation
+        setTimeout(() => {
+            toastContainer.classList.remove('active');
+            toastContainer.innerHTML = '';
+        }, 500);
+    };
+    
+    // Add dismiss button handler
+    const dismissButton = toast.querySelector('.toast-dismiss');
+    dismissButton.addEventListener('click', dismissToast);
+    
+    // Auto-dismiss after 10 seconds
+    setTimeout(dismissToast, 10000);
+    
+    // Disable scroll on body while toast is active
+    document.body.style.overflow = 'hidden';
+}
+
+// Generic error message function for validation errors
+function showErrorMessage(message) {
+    // Get toast container
+    const toastContainer = document.getElementById('toast-container');
+    if (!toastContainer) return;
+    
+    // Clear any existing toasts
+    toastContainer.innerHTML = '';
+    
+    // Show container
+    toastContainer.classList.add('active');
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    
+    // Create Perlin noise canvas
+    const canvas = document.createElement('canvas');
+    canvas.className = 'toast-perlin-bg';
+    toast.appendChild(canvas);
+    
+    // Add content
+    const content = document.createElement('div');
+    content.className = 'toast-content';
+    content.innerHTML = `
+        <div class="toast-corner top-left"></div>
+        <div class="toast-corner top-right"></div>
+        <div class="toast-corner bottom-left"></div>
+        <div class="toast-corner bottom-right"></div>
+        <div class="toast-message">
+            ${message}
+        </div>
+        <button class="toast-dismiss">DISMISS</button>
+    `;
+    toast.appendChild(content);
+    
+    // Add to container with animation
+    toastContainer.appendChild(toast);
+    
+    // Initialize Perlin noise animation with red particles
+    initToastPerlinNoise(canvas, { colorProfile: 'red' });
+    
+    // Dismiss function
+    const dismissToast = () => {
+        // Add slide out animation
+        toast.style.animation = 'toastSlideOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
+        
+        // Re-enable scroll
+        document.body.style.overflow = '';
+        
+        // Hide container after animation
+        setTimeout(() => {
+            toastContainer.classList.remove('active');
+            toastContainer.innerHTML = '';
+        }, 500);
+    };
+    
+    // Add dismiss button handler
+    const dismissButton = toast.querySelector('.toast-dismiss');
+    dismissButton.addEventListener('click', dismissToast);
+    
+    // Auto-dismiss after 10 seconds
+    setTimeout(dismissToast, 10000);
+    
+    // Disable scroll on body while toast is active
+    document.body.style.overflow = 'hidden';
+}
+
 // Contact Form Handling
 function initContactForm() {
     const form = document.getElementById('contactForm');
@@ -1331,6 +1668,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initFeatureCards();
     initRegistrationForm();
     initContactForm();
+    initLivestreamForm();
     animateNumbers();
     initDetailCardAnimations();
 });

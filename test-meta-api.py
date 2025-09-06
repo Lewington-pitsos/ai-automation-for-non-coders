@@ -5,6 +5,7 @@ import time
 pixel_id = '1232612085335834'  # Your course website pixel
 access_token = 'EAASwaXmwgBsBPTeZCrEXniBubi0Fu0nBfOu4rrEB1l2aDsEw6qbVwZBURWkpUQJds3ZAZBCaxP3ZAf3Eh9c9ZB4cWmUA0saofs0PIHxKGGIKZAiMUzkytpbsC5zg4eoF9EC4vjgkQGptNWKzWguIUu3dCPvdIX37eTRjbEB2PEQS7H4QwjlPQvUwPTk5ncZB7ZCt1aAZDZD'
 
+test_id = 'TEST62526'
 # Prepare test event for WEBSITE pixel
 event_data = {
     'data': [{
@@ -22,7 +23,7 @@ event_data = {
             'value': 99.00
         }
     }],
-    'test_event_code': 'TEST33140'  # Use this code in Test Events tab
+    'test_event_code': test_id  # Use this code in Test Events tab
 }
 
 # Send the request
@@ -42,6 +43,6 @@ if 'events_received' in result:
     print("1. Go to Events Manager")
     print("2. Click on 'course website' pixel")
     print("3. Click 'Test events' tab")
-    print("4. Enter code: TEST33140")
+    print(f"4. Enter code: {test_id}")
 else:
     print("❌ Error:", result)

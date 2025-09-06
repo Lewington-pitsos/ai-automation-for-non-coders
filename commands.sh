@@ -6,10 +6,18 @@ aws logs tail /aws/lambda/ai-automation-course-payment-webhook
 
 aws logs tail /aws/lambda/ai-automation-course-contact-handler
 
+
+aws logs tail /aws/lambda/ai-automation-course-livestream-handler
+
+
+
+
 cd tf && terraform output -json > ../test/terraform-outputs.json && terraform output -json > ../src/terraform-outputs.json; cd ../
 
 
 aws logs tail "/aws/lambda/ai-automation-course-payment-webhook" --since 48h --follow
+
+aws lambda list-functions --query 'Functions[*].[FunctionName,Runtime,LastModified]' --output table
 
 
 ppp  pytest test/integration/test_lambda_health.py -v   

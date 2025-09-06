@@ -86,4 +86,7 @@ build_lambda "contact-handler" "contact-handler.py"
 # Build view-content-handler (needs requests for Meta API calls)
 build_lambda "view-content-handler" "view_content_handler.py"
 
+# Build livestream-handler (needs requests for Meta API calls)
+build_lambda "livestream-handler" "livestream-handler.py"
+
 echo "All Lambda packages built successfully!"

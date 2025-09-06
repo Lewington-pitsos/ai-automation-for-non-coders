@@ -52,7 +52,7 @@ def lambda_handler(event, context):
             }
         
         # Validate course_id - only accept specific values
-        valid_course_ids = ["01_ai_automation_for_non_coders", "test-course"]
+        valid_course_ids = ["01_ai_automation_for_non_coders", "test-course", "tax-livestream-01"]
         if not course_id or course_id not in valid_course_ids:
             logger.error(f"Invalid course_id: {course_id}")
             return {
