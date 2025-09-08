@@ -84,15 +84,32 @@ def send_conversion_event(event_name, event_time, user_data, custom_data=None, e
         logger.error(f"Failed to send {event_name} event to Meta Conversions API: {str(e)}")
         return {"success": False, "error": str(e)}
 
-def handle_complete_registration(user_data, event_source_url=None, registration_id=None):
-    """Handle Complete Registration event"""
+def handle_complete_registration(user_data, event_source_url=None, registration_id=None, registration_type="course"):
+    """
+    Handle Complete Registration event with type distinction
+    
+    Args:
+        user_data: User information dictionary
+        event_source_url: URL where registration occurred
+        registration_id: Unique registration ID
+        registration_type: Type of registration ('course' or 'livestream')
+    """
     event_time = int(time.time())
     # Use registration_id as event_id for deduplication
     event_id = f"registration_{registration_id}" if registration_id else None
+    
+    # Add custom data to distinguish registration types
+    custom_data = {
+        "registration_type": registration_type,
+        "content_name": "AI Tax Automation Livestream" if registration_type == "livestream" else "AI Automation Mastery Course",
+        "content_category": registration_type
+    }
+    
     return send_conversion_event(
         event_name="CompleteRegistration",
         event_time=event_time,
         user_data=user_data,
+        custom_data=custom_data,
         event_source_url=event_source_url,
         event_id=event_id,
         test_event_code=TEST_EVENT_CODE
@@ -216,7 +233,9 @@ def lambda_handler(event, context):
         # Route to appropriate handler
         result = None
         if event_type == "CompleteRegistration":
-            result = handle_complete_registration(user_data, event_source_url)
+            # Get registration type from custom data if provided
+            registration_type = custom_data.get("registration_type", "course") if custom_data else "course"
+            result = handle_complete_registration(user_data, event_source_url, registration_type=registration_type)
         elif event_type == "Contact":
             result = handle_contact(user_data, event_source_url)
         elif event_type == "ViewContent":

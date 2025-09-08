@@ -129,7 +129,7 @@ def lambda_handler(event, context):
             logger.error(f"Error sending admin notification: {str(admin_error)}")
             # Don't fail the registration if admin notification fails
         
-        # Send CompleteRegistration event to Meta Conversions API
+        # Send CompleteRegistration event to Meta Conversions API with livestream type
         try:
             user_agent = event.get("headers", {}).get("User-Agent", "")
             user_data = {
@@ -140,9 +140,10 @@ def lambda_handler(event, context):
             # Get the source URL from the event if available
             event_source_url = event.get("headers", {}).get("referer") or event.get("headers", {}).get("Referer")
             
-            meta_result = handle_complete_registration(user_data, event_source_url, registration_id)
+            # Pass registration_type as 'livestream'
+            meta_result = handle_complete_registration(user_data, event_source_url, registration_id, registration_type="livestream")
             if meta_result["success"]:
-                logger.info(f"Meta Conversions API CompleteRegistration event sent for: {registration_id}")
+                logger.info(f"Meta Conversions API CompleteRegistration (livestream) event sent for: {registration_id}")
             else:
                 logger.warning(f"Failed to send Meta Conversions API event: {meta_result.get('error')}")
         except Exception as meta_error:
@@ -396,7 +397,7 @@ def send_user_confirmation_email(name, email, registration_id):
         logger.error("Missing CONTACT_FORM_EMAIL environment variable")
         raise ValueError("Email configuration error")
     
-    email_message = create_email_message(name, email, registration_id)
+    email_message = create_email_message(name, registration_id)
     
     # Send email via SES
     response = ses_client.send_email(

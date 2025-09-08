@@ -121,7 +121,7 @@ def lambda_handler(event, context):
         
         table.put_item(Item=item)
         
-        # Send CompleteRegistration event to Meta Conversions API
+        # Send CompleteRegistration event to Meta Conversions API with course type
         try:
             user_agent = event.get("headers", {}).get("User-Agent", "")
             user_data = {
@@ -133,9 +133,10 @@ def lambda_handler(event, context):
             # Get the source URL from the event if available
             event_source_url = event.get("headers", {}).get("referer") or event.get("headers", {}).get("Referer")
             
-            meta_result = handle_complete_registration(user_data, event_source_url, registration_id)
+            # Pass registration_type as 'course'
+            meta_result = handle_complete_registration(user_data, event_source_url, registration_id, registration_type="course")
             if meta_result["success"]:
-                logger.info(f"Meta Conversions API CompleteRegistration event sent successfully for registration: {registration_id}")
+                logger.info(f"Meta Conversions API CompleteRegistration (course) event sent successfully for registration: {registration_id}")
             else:
                 logger.warning(f"Failed to send Meta Conversions API event for registration: {registration_id}, error: {meta_result.get('error')}")
         except Exception as meta_error:
