@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contact Form Validation Test</title>
+    <script>
+        // Mock the validation functions from scripts.js to test the logic
+        function validateContactFormData(data) {
+            // Required field validation
+            if (!data.name || !data.email || !data.mobile || !data.message) {
+                return false;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                return false;
+            }
+            
+            // Phone validation - allow various formats
+            const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,4}$/;
+            if (!phoneRegex.test(data.mobile.replace(/\s/g, ''))) {
+                return false;
+            }
+            
+            return true;
+        }
+
+        function runTests() {
+            console.log('=== Contact Form Validation Tests ===');
+            
+            // Test 1: Valid data
+            const validData = {
+                name: 'John Doe',
+                email: 'john@example.com',
+                mobile: '+1 (555) 123-4567',
+                message: 'This is a test message'
+            };
+            console.log('Test 1 - Valid data:', validateContactFormData(validData) ? 'PASS' : 'FAIL');
+            
+            // Test 2: Invalid email
+            const invalidEmail = {
+                name: 'John Doe',
+                email: 'invalid-email',
+                mobile: '+1 (555) 123-4567',
+                message: 'This is a test message'
+            };
+            console.log('Test 2 - Invalid email:', !validateContactFormData(invalidEmail) ? 'PASS' : 'FAIL');
+            
+            // Test 3: Invalid phone
+            const invalidPhone = {
+                name: 'John Doe',
+                email: 'john@example.com',
+                mobile: 'abc',
+                message: 'This is a test message'
+            };
+            console.log('Test 3 - Invalid phone:', !validateContactFormData(invalidPhone) ? 'PASS' : 'FAIL');
+            
+            // Test 4: Empty fields
+            const emptyFields = {
+                name: '',
+                email: 'john@example.com',
+                mobile: '+1 (555) 123-4567',
+                message: 'This is a test message'
+            };
+            console.log('Test 4 - Empty name field:', !validateContactFormData(emptyFields) ? 'PASS' : 'FAIL');
+            
+            console.log('=== Tests Complete ===');
+        }
+        
+        window.onload = runTests;
+    </script>
+</head>
+<body>
+    <h1>Contact Form Validation Test</h1>
+    <p>Check the browser console for test results.</p>
+</body>
+</html>

@@ -20,7 +20,6 @@ os.environ["META_ACCESS_TOKEN"] = "xxx"
 from meta_conversions_api import (
     handle_complete_registration,
     handle_contact,
-    handle_view_content,
     handle_purchase,
     hash_data
 )
@@ -168,44 +167,6 @@ def test_purchase_event():
         assert event_data["custom_data"]["value"] == 299.99
         
         print("✓ Purchase event structure is correct")
-
-def test_view_content_event():
-    """Test ViewContent event"""
-    print("Testing ViewContent event...")
-    
-    with patch('meta_conversions_api.requests.post') as mock_post:
-        mock_response = Mock()
-        mock_response.raise_for_status.return_value = None
-        mock_response.json.return_value = {"events_received": 1}
-        mock_post.return_value = mock_response
-        
-        user_data = {
-            "client_user_agent": "Mozilla/5.0 Test"
-        }
-        
-        content_data = {
-            "content_name": "Course Landing Page",
-            "content_category": "education"
-        }
-        
-        result = handle_view_content(
-            user_data=user_data,
-            event_source_url="https://example.com/course",
-            content_data=content_data
-        )
-        
-        assert result["success"] == True
-        
-        call_args = mock_post.call_args
-        payload = call_args[1]["json"]
-        event_data = payload["data"][0]
-        
-        assert event_data["event_name"] == "ViewContent"
-        assert "custom_data" in event_data
-        assert event_data["custom_data"]["content_name"] == "Course Landing Page"
-        assert event_data["custom_data"]["content_category"] == "education"
-        
-        print("✓ ViewContent event structure is correct")
 
 def test_api_error_handling():
     """Test API error handling"""

@@ -226,8 +226,6 @@ def lambda_handler(event, context):
             result = handle_complete_registration(user_data, event_source_url, registration_type=registration_type)
         elif event_type == "Contact":
             result = handle_contact(user_data, event_source_url)
-        elif event_type == "ViewContent":
-            result = handle_view_content(user_data, event_source_url, custom_data)
         elif event_type == "Purchase":
             if not custom_data or not custom_data.get("value"):
                 return {

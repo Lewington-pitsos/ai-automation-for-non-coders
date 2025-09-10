@@ -55,9 +55,7 @@ class TestContactFormSimple:
         """Test that submit button is disabled when form is empty"""
         submit_button = page.locator("button[type='submit']")
         assert submit_button.is_disabled(), "Submit button should be disabled initially"
-    
-    def test_button_enabled_when_all_fields_filled(self, page):
-        """Test that submit button becomes enabled when all required fields are filled"""
+
         # Fill all required fields
         page.fill("#name", "Test User")
         page.fill("#email", "test@example.com")
@@ -71,18 +69,20 @@ class TestContactFormSimple:
         submit_button = page.locator("button[type='submit']")
         assert submit_button.is_enabled(), "Submit button should be enabled when all fields are filled"
     
-    def test_email_validation_shows_error(self, page):
-        """Test that invalid email shows validation error"""
-        email_field = page.locator("#email")
+    def test_form_prevents_submission_with_invalid_data(self, page):
+        """Test that form validation prevents submission with invalid data"""
+        # Fill form with mix of valid and invalid data
+        page.fill("#name", "Test User")
+        page.fill("#email", "invalid-email")  # Invalid
+        page.fill("#mobile", "123")  # Invalid 
+        page.fill("#message", "Test message")
         
-        # Enter invalid email and blur
-        email_field.fill("invalid-email")
-        email_field.blur()
-        
-        # Wait for validation to trigger
+        # Wait for form validation
         page.wait_for_timeout(500)
-        
-        # Check if border color changed (indicating validation error)
+
+        email_field = page.locator("#email")
+        email_field.blur()
+
         border_color = email_field.evaluate("el => window.getComputedStyle(el).borderColor")
         
         # Check for error messages
@@ -95,17 +95,6 @@ class TestContactFormSimple:
         # Since we can't guarantee the exact color, let's check if it's not the default
         default_border = "rgb(0, 0, 0)"  # or similar default
         assert border_color != default_border, f"Email field should show validation error, but border color is: {border_color}"
-    
-    def test_form_prevents_submission_with_invalid_data(self, page):
-        """Test that form validation prevents submission with invalid data"""
-        # Fill form with mix of valid and invalid data
-        page.fill("#name", "Test User")
-        page.fill("#email", "invalid-email")  # Invalid
-        page.fill("#mobile", "123")  # Invalid 
-        page.fill("#message", "Test message")
-        
-        # Wait for form validation
-        page.wait_for_timeout(500)
         
         # Try to submit - the validation should prevent actual submission
         submit_button = page.locator("button[type='submit']")

@@ -816,7 +816,51 @@ function initContactForm() {
 }
 
 function checkContactFormValidity() {
-    checkGenericFormValidity('contactForm', ['#name', '#email', '#mobile', '#message']);
+    const form = document.getElementById('contactForm');
+    if (!form) return;
+    
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (!submitButton) return;
+    
+    // Get form data to validate
+    const formData = new FormData(form);
+    const contactData = {};
+    for (let [key, value] of formData.entries()) {
+        contactData[key] = value.trim();
+    }
+    
+    // Use the same validation logic as form submission
+    const isValid = validateContactFormData(contactData);
+    
+    // Enable/disable button based on validity
+    if (isValid) {
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
+    } else {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
+}
+
+function validateContactFormData(data) {
+    // Required field validation
+    if (!data.name || !data.email || !data.mobile || !data.message) {
+        return false;
+    }
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+        return false;
+    }
+    
+    // Phone validation - allow various formats
+    const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,4}$/;
+    if (!phoneRegex.test(data.mobile.replace(/\s/g, ''))) {
+        return false;
+    }
+    
+    return true;
 }
 
 async function handleContactFormSubmission(event) {
