@@ -43,3 +43,6 @@ aws dynamodb scan --table-name course_registrations --query "Items[*].{Name:name
 
 aws dynamodb scan --table-name course_registrations --projection-expression "course_id,email" --no-cli-pager | jq -r '.Items[] | "aws dynamodb delete-item --table-name course_registrations --key \"{\\\"course_id\\\":{\\\"S\\\":\\\"" 
   + .course_id.S + "\\\"},\\\"email\\\":{\\\"S\\\":\\\"" + .email.S + "\\\"}}\""' | bash
+
+
+cd tf && terraform apply -auto-approve; cd ../
