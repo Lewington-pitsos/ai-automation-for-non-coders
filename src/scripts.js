@@ -298,7 +298,7 @@ function initRegistrationForm() {
 function checkFormValidity() {
     checkGenericFormValidity('registrationForm', [
         '#firstName', '#lastName', '#email', '#phone', 
-        '#experience', '#referralSource', '#dietaryRequirements', '#terms'
+        '#experience', '#company', '#jobTitle'
     ]);
 }
 
@@ -312,6 +312,12 @@ async function handleFormSubmission(event) {
     const registrationData = {};
     for (let [key, value] of formData.entries()) {
         registrationData[key] = value.trim();
+    }
+    
+    // Check if this is an auto-fill registration (has applicant_id)
+    const applicantId = form.getAttribute('data-applicant-id');
+    if (applicantId) {
+        registrationData.applicant_id = applicantId;
     }
     
     // Validate form
@@ -347,10 +353,11 @@ async function handleFormSubmission(event) {
             company: registrationData.company || '',
             job_title: registrationData.jobTitle || '',
             experience: registrationData.experience,
-            referral_source: registrationData.referralSource,
+            referral_source: 'applied',
             automation_interest: registrationData.automationInterest || '',
-            dietary_requirements: registrationData.dietaryRequirements,
-            course_id: API_CONFIG.COURSE_ID || '01_ai_automation_for_non_coders'
+            dietary_requirements: 'none',
+            course_id: API_CONFIG.COURSE_ID || '01_ai_automation_for_non_coders',
+            ...(registrationData.applicant_id && { applicant_id: registrationData.applicant_id })
         })
     })
     .then(response => {
@@ -401,8 +408,8 @@ function validateForm(data) {
     if (!data.email) errors.push('Email address is required');
     if (!data.phone) errors.push('Phone number is required');
     if (!data.experience) errors.push('Coding experience level is required');
-    if (!data.referralSource) errors.push('Please tell us how you heard about us');
-    if (!data.dietaryRequirements) errors.push('Dietary requirements is required');
+    if (!data.company) errors.push('Company is required');
+    if (!data.jobTitle) errors.push('Job title is required');
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -578,93 +585,119 @@ function showSuccessMessage() {
     }, 10000);
 }
 
+// Application Form Handling
+function initApplicationForm() {
+    const config = {
+        endpoint: 'livestream', // Use livestream endpoint but with application type
+        loadingText: 'SUBMITTING APPLICATION...',
+        validationFn: (data) => {
+            // Add registration_type to data
+            data.registration_type = 'application';
+            
+            // Combine firstName and lastName into name
+            if (data.firstName || data.lastName) {
+                data.name = `${data.firstName || ''} ${data.lastName || ''}`.trim();
+            }
+            
+            // Validate required fields
+            const requiredFields = ['name', 'email', 'phone', 'experience', 'company', 'jobTitle', 'timeCommitment', 'automationInterest', 'automationBarriers'];
+            for (const field of requiredFields) {
+                if (!data[field]) {
+                    return { isValid: false, error: `Please fill in all required fields` };
+                }
+            }
+            
+            // Validate attendance checkbox
+            if (!data.attendance) {
+                return { isValid: false, error: 'You must confirm you can attend both in person sessions' };
+            }
+            
+            // Validate consent checkbox
+            if (!data.consent) {
+                return { isValid: false, error: 'You must consent to being contacted about this course' };
+            }
+            
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(data.email)) {
+                return { isValid: false, error: 'Please enter a valid email address' };
+            }
+            
+            return { isValid: true };
+        },
+        successMessage: 'Application submitted successfully!<br>We\'ll review your application and get back to you within 3-5 business days.',
+        errorMessage: 'There was an error submitting your application. Please try again later or contact us directly.',
+        validityChecker: checkApplicationFormValidity
+    };
+    initGenericForm('applicationForm', (event) => handleGenericFormSubmission(event, config), checkApplicationFormValidity, true);
+}
+
+function checkApplicationFormValidity() {
+    checkGenericFormValidity('applicationForm', [
+        '#firstName[required]',
+        '#lastName[required]', 
+        '#email[required]',
+        '#phone[required]',
+        '#experience[required]',
+        '#company[required]',
+        '#jobTitle[required]',
+        '#timeCommitment[required]',
+        '#automationInterest[required]',
+        '#automationBarriers[required]',
+        '#attendance[required]',
+        '#consent[required]'
+    ]);
+}
+
 // Livestream Form Handling
 function initLivestreamForm() {
-    initGenericForm('livestreamForm', handleLivestreamFormSubmission, checkLivestreamFormValidity, true);
+    const config = {
+        endpoint: 'livestream',
+        loadingText: 'SIGNING UP...',
+        validationFn: validateLivestreamFormData,
+        successMessage: 'You\'re registered for the livestream!<br>Check your email for confirmation and access details.',
+        errorMessage: 'There was an error processing your livestream registration, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>',
+        validityChecker: checkLivestreamFormValidity
+    };
+    initGenericForm('livestreamForm', (event) => handleGenericFormSubmission(event, config), checkLivestreamFormValidity, true);
 }
 
 function checkLivestreamFormValidity() {
-    checkGenericFormValidity('livestreamForm', ['#name', '#email']);
-}
-
-async function handleLivestreamFormSubmission(event) {
-    event.preventDefault();
+    const form = document.getElementById('livestreamForm');
+    if (!form) return;
     
-    const form = event.target;
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (!submitButton) return;
+    
+    // Get form data to validate
     const formData = new FormData(form);
-    
-    // Convert form data to object
     const livestreamData = {};
     for (let [key, value] of formData.entries()) {
         livestreamData[key] = value.trim();
     }
     
-    // Validate form
-    if (!livestreamData.name || !livestreamData.email) {
-        showGenericErrorMessage('Please fill in all required fields');
-        return;
-    }
+    // Use the same validation logic as form submission
+    const validationResult = validateLivestreamFormData(livestreamData);
+    const isValid = validationResult.isValid;
     
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(livestreamData.email)) {
-        showGenericErrorMessage('Please enter a valid email address');
-        return;
-    }
-    
-    // Disable submit button and show loading state
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalText = submitButton.textContent;
-    submitButton.disabled = true;
-    submitButton.textContent = 'SIGNING UP...';
-    
-    try {
-        // Wait for config to load if needed
-        if (typeof configPromise !== 'undefined') {
-            await configPromise;
-        }
-        
-        // Build API URL
-        const apiUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL 
-            ? `${API_CONFIG.API_URL}/livestream`
-            : 'https://YOUR_API_GATEWAY_URL/prod/livestream';
-        
-        // Send livestream registration data to Lambda
-        const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(livestreamData)
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok) {
-            // Show success toast
-            showLivestreamSuccessMessage();
-            
-            // Reset form after successful submission
-            form.reset();
-            checkLivestreamFormValidity();
-        } else {
-            // Check for duplicate registration error (409 status)
-            if (response.status === 409) {
-                showGenericErrorMessage('This email has already registered for this event. Please try another email.');
-            } else {
-                // Show full backend error toast
-                showLivestreamErrorMessage();
-            }
-        }
-    } catch (error) {
-        console.error('Livestream form error:', error);
-        // Show backend error popup
-        showLivestreamErrorMessage();
-    } finally {
-        // Re-enable submit button
+    // Enable/disable button based on validity
+    if (isValid) {
         submitButton.disabled = false;
-        submitButton.textContent = originalText;
+        submitButton.classList.remove('disabled');
+    } else {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
     }
+}
+
+function validateLivestreamFormData(data) {
+    if (!data.name || !data.email) {
+        return { isValid: false, error: 'Please fill in all required fields' };
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(data.email)) {
+        return { isValid: false, error: 'Please enter a valid email address' };
+    }
+    return { isValid: true };
 }
 
 function showGenericSuccessMessage(message) {
@@ -734,9 +767,6 @@ function showGenericSuccessMessage(message) {
     document.body.style.overflow = 'hidden';
 }
 
-function showLivestreamSuccessMessage() {
-    showGenericSuccessMessage('You\'re registered for the livestream!<br>Check your email for confirmation and access details.');
-}
 
 function showGenericErrorMessage(message) {
     // Get toast container
@@ -805,14 +835,19 @@ function showGenericErrorMessage(message) {
     document.body.style.overflow = 'hidden';
 }
 
-function showLivestreamErrorMessage() {
-    showGenericErrorMessage('There was an error processing your livestream registration, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>');
-}
 
 
 // Contact Form Handling
 function initContactForm() {
-    initGenericForm('contactForm', handleContactFormSubmission, checkContactFormValidity, true);
+    const config = {
+        endpoint: 'contact',
+        loadingText: 'SENDING...',
+        validationFn: validateContactFormData,
+        successMessage: 'Your message has been received by our team.<br>We will respond ASAP, thanks for reaching out.',
+        errorMessage: 'There was an error processing your query, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>',
+        validityChecker: checkContactFormValidity
+    };
+    initGenericForm('contactForm', (event) => handleGenericFormSubmission(event, config), checkContactFormValidity, true);
 }
 
 function checkContactFormValidity() {
@@ -830,7 +865,8 @@ function checkContactFormValidity() {
     }
     
     // Use the same validation logic as form submission
-    const isValid = validateContactFormData(contactData);
+    const validationResult = validateContactFormData(contactData);
+    const isValid = validationResult.isValid;
     
     // Enable/disable button based on validity
     if (isValid) {
@@ -845,38 +881,41 @@ function checkContactFormValidity() {
 function validateContactFormData(data) {
     // Required field validation
     if (!data.name || !data.email || !data.mobile || !data.message) {
-        return false;
+        return { isValid: false, error: 'Please fill in all required fields' };
     }
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
-        return false;
+        return { isValid: false, error: 'Please enter a valid email address' };
     }
     
     // Phone validation - allow various formats
     const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,4}$/;
     if (!phoneRegex.test(data.mobile.replace(/\s/g, ''))) {
-        return false;
+        return { isValid: false, error: 'Please enter a valid mobile phone number' };
     }
     
-    return true;
+    return { isValid: true };
 }
 
-async function handleContactFormSubmission(event) {
+// Generic form submission handler
+async function handleGenericFormSubmission(event, config) {
     event.preventDefault();
     
     const form = event.target;
     const formData = new FormData(form);
     
     // Convert form data to object
-    const contactData = {};
+    const data = {};
     for (let [key, value] of formData.entries()) {
-        contactData[key] = value.trim();
+        data[key] = value.trim();
     }
     
     // Validate form
-    if (!validateContactForm(contactData)) {
+    const validation = config.validationFn(data);
+    if (!validation.isValid) {
+        showGenericErrorMessage(validation.error);
         return;
     }
     
@@ -884,7 +923,7 @@ async function handleContactFormSubmission(event) {
     const submitButton = form.querySelector('button[type="submit"]');
     const originalText = submitButton.textContent;
     submitButton.disabled = true;
-    submitButton.textContent = 'SENDING...';
+    submitButton.textContent = config.loadingText;
     
     try {
         // Wait for config to load if needed
@@ -894,36 +933,40 @@ async function handleContactFormSubmission(event) {
         
         // Build API URL
         const apiUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL 
-            ? `${API_CONFIG.API_URL}/contact`
-            : 'https://YOUR_API_GATEWAY_URL/prod/contact';
+            ? `${API_CONFIG.API_URL}/${config.endpoint}`
+            : `https://YOUR_API_GATEWAY_URL/prod/${config.endpoint}`;
         
-        // Send contact form data to Lambda
+        // Send form data to Lambda
         const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(contactData)
+            body: JSON.stringify(data)
         });
         
         const result = await response.json();
         
         if (response.ok) {
-            
             // Show success toast
-            showContactSuccessMessage();
+            showGenericSuccessMessage(config.successMessage);
             
             // Reset form after successful submission
             form.reset();
-            checkContactFormValidity();
+            config.validityChecker();
         } else {
-            // Show error popup
-            showContactErrorMessage();
+            // Check for duplicate registration error (409 status) for livestream
+            if (response.status === 409 && config.endpoint === 'livestream') {
+                showGenericErrorMessage('This email has already registered for this event. Please try another email.');
+            } else {
+                // Show generic error message
+                showGenericErrorMessage(config.errorMessage);
+            }
         }
     } catch (error) {
-        console.error('Contact form error:', error);
-        // Show error popup
-        showContactErrorMessage();
+        console.error(`${config.endpoint} form error:`, error);
+        // Show generic error message
+        showGenericErrorMessage(config.errorMessage);
     } finally {
         // Re-enable submit button
         submitButton.disabled = false;
@@ -931,39 +974,6 @@ async function handleContactFormSubmission(event) {
     }
 }
 
-function validateContactForm(data) {
-    const errors = [];
-    
-    // Required field validation
-    if (!data.name) errors.push('Name is required');
-    if (!data.email) errors.push('Email address is required');
-    if (!data.mobile) errors.push('Mobile phone is required');
-    if (!data.message) errors.push('Message is required');
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (data.email && !emailRegex.test(data.email)) {
-        errors.push('Please enter a valid email address');
-    }
-    
-    // Phone validation - allow various formats
-    const phoneRegex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s\.]?[(]?[0-9]{1,4}[)]?[-\s\.]?[0-9]{1,4}[-\s\.]?[0-9]{1,4}$/;
-    if (data.mobile && !phoneRegex.test(data.mobile.replace(/\s/g, ''))) {
-        errors.push('Please enter a valid mobile phone number');
-    }
-    
-    if (errors.length > 0) {
-        showFormErrors(errors);
-        return false;
-    }
-    
-    clearFormErrors();
-    return true;
-}
-
-function showContactSuccessMessage() {
-    showGenericSuccessMessage('Your message has been received by our team.<br>We will respond ASAP, thanks for reaching out.');
-}
 
 // Initialize Perlin noise for toast background using existing system
 function initToastPerlinNoise(canvas, config = {}) {
@@ -1063,9 +1073,6 @@ function initToastPerlinNoise(canvas, config = {}) {
     observer.observe(canvas.parentElement.parentElement, { childList: true });
 }
 
-function showContactErrorMessage() {
-    showGenericErrorMessage('There was an error processing your query, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>');
-}
 
 // Animate numbers in the course details section
 function animateNumbers() {
@@ -1193,6 +1200,98 @@ function initFeatureCards() {
     }
 }
 
+// Auto-fill registration form from URL parameters (for approved applicants)
+function populateFormFromURL() {
+    const registrationForm = document.getElementById('registrationForm');
+    if (!registrationForm) return;
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // Check if this is an auto-fill request (has applicant_id)
+    if (!urlParams.get('applicant_id')) return;
+    
+    // Map URL parameters to form field IDs
+    const fieldMappings = {
+        'email': 'email',
+        'firstName': 'firstName', 
+        'lastName': 'lastName',
+        'phone': 'phone',
+        'company': 'company',
+        'jobTitle': 'jobTitle',
+        'experience': 'experience',
+        'company': 'company',
+        'jobTitle': 'jobTitle',
+        'automationInterest': 'automationInterest'
+    };
+    
+    // Store applicant_id in a hidden field or data attribute for later use
+    registrationForm.setAttribute('data-applicant-id', urlParams.get('applicant_id'));
+    
+    // Populate form fields
+    Object.entries(fieldMappings).forEach(([paramName, fieldId]) => {
+        const paramValue = urlParams.get(paramName);
+        if (paramValue) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                if (field.tagName.toLowerCase() === 'select') {
+                    // For select elements, set the value directly
+                    field.value = paramValue;
+                } else if (field.tagName.toLowerCase() === 'textarea' || field.type === 'text' || field.type === 'email' || field.type === 'tel') {
+                    // For text inputs and textareas
+                    field.value = decodeURIComponent(paramValue);
+                }
+            }
+        }
+    });
+    
+    // Combine first and last name for the name field if it exists
+    const firstName = urlParams.get('firstName');
+    const lastName = urlParams.get('lastName');
+    if (firstName || lastName) {
+        const nameField = document.getElementById('name');
+        if (nameField) {
+            nameField.value = `${firstName || ''} ${lastName || ''}`.trim();
+        }
+    }
+    
+    // Show a message that the form has been pre-filled
+    if (urlParams.get('applicant_id')) {
+        showAutoFillMessage();
+    }
+    
+    // Re-run form validation to update button states
+    if (typeof checkRegistrationFormValidity === 'function') {
+        setTimeout(checkRegistrationFormValidity, 100);
+    }
+}
+
+function showAutoFillMessage() {
+    // Create info message
+    const infoContainer = document.createElement('div');
+    infoContainer.className = 'form-info';
+    infoContainer.style.cssText = `
+        background: rgba(78, 255, 159, 0.1);
+        border: 1px solid #4eff9f;
+        color: #4eff9f;
+        padding: 16px;
+        margin-bottom: 24px;
+        font-size: 14px;
+    `;
+    
+    infoContainer.innerHTML = `
+        <div style="font-weight: 600; margin-bottom: 8px;">✓ Application Approved!</div>
+        <div>Your information has been pre-filled from your application. Please review and complete your registration below.</div>
+    `;
+    
+    // Insert at the top of the form
+    const form = document.getElementById('registrationForm');
+    const existingInfo = document.querySelector('.form-info');
+    if (existingInfo) {
+        existingInfo.remove();
+    }
+    form.insertBefore(infoContainer, form.firstChild);
+}
+
 // Initialize registration form when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Audio hover functionality for CTA buttons
@@ -1308,8 +1407,10 @@ document.addEventListener('DOMContentLoaded', function() {
     initCourseTimelineAnimations();
     initFeatureCards();
     initRegistrationForm();
+    initApplicationForm();
     initContactForm();
     initLivestreamForm();
+    populateFormFromURL();
     animateNumbers();
     initDetailCardAnimations();
 });

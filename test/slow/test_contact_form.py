@@ -5,7 +5,7 @@ import os
 import signal
 from playwright.sync_api import sync_playwright
 
-class TestContactFormSimple:
+class TestContactForm:
     """Simple contact form validation test using local server"""
     
     @pytest.fixture(scope="class")
@@ -36,7 +36,8 @@ class TestContactFormSimple:
     def browser(self):
         """Create a single browser instance for all tests"""
         with sync_playwright() as p:
-            browser = p.chromium.launch(headless=True)
+            headless = os.getenv('HEADLESS', 'true').lower() != 'false'
+            browser = p.chromium.launch(headless=headless)
             yield browser
             browser.close()
     
@@ -142,3 +143,62 @@ class TestContactFormSimple:
         # At least one of these should indicate validation
         assert has_error_message or submit_disabled or "rgb(255, 68, 68)" in border_color, \
             "Required field validation should provide some indication when field is empty"
+
+    def test_successful_form_submission_no_cleanup_needed(self, page):
+        """Test successful form submission - contact form only sends emails, no DynamoDB cleanup needed"""
+        # Fill out the form with valid data
+        page.fill("#name", "Test Contact User")
+        page.fill("#email", "test_contact_ui@example.com")
+        page.fill("#mobile", "+1234567890")
+        page.fill("#message", "This is a test message for the contact form.")
+        
+        # Wait for validation
+        page.wait_for_timeout(500)
+        
+        # Try multiple click strategies
+        submit_button = page.locator("button[type='submit']")
+        
+        # Ensure button is enabled before clicking
+        page.wait_for_function("document.querySelector('button[type=\"submit\"]').disabled === false")
+        
+        # Strategy 1: Try regular click with force
+        try:
+            submit_button.click(force=True)
+        except Exception as e:
+            print(f"Force click failed: {e}")
+            
+            # Strategy 2: Try dispatching click event
+            try:
+                submit_button.dispatch_event("click")
+            except Exception as e2:
+                print(f"Dispatch event failed: {e2}")
+                
+                # Strategy 3: Try form submission directly
+                page.evaluate("document.getElementById('contactForm').requestSubmit()")
+        
+        # Wait for submission to complete and check for success toast
+        page.wait_for_timeout(3000)
+        
+        # Check for success toast with specific message
+        toast_selector = ".toast-success, .success-message"
+        success_toast = page.locator(toast_selector)
+        
+        # Wait for toast to appear and check content
+        try:
+            success_toast.wait_for(state="visible", timeout=5000)
+            toast_text = success_toast.text_content()
+            assert "We will respond ASAP, thanks for reaching out" in toast_text, f"Expected success message not found in toast: '{toast_text}'"
+        except Exception:
+            # If toast doesn't appear, check other success indicators
+            button_text = submit_button.text_content()
+            name_value = page.locator("#name").input_value()
+            
+            success_indicators = [
+                "success" in button_text.lower(),
+                "thank" in button_text.lower(), 
+                name_value == ""  # Form was cleared
+            ]
+            
+            assert any(success_indicators), f"No success toast found and no other success indicators. Button text: '{button_text}', Name field: '{name_value}'"
+        
+        # Note: Contact form only sends emails via SES, no DynamoDB cleanup needed

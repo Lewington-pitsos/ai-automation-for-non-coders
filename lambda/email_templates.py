@@ -211,3 +211,379 @@ Best regards,
 - Louka"""
     
     return subject, html_body, text_body
+
+
+def get_application_confirmation_email(name, application_id):
+    subject = "Application Received - A.I. Automation for Non Coders"
+    
+    html_body = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {{
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #000000;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }}
+        .header {{
+            background-color: #000000;
+            color: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+        }}
+        .header h1 {{
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }}
+        .content {{
+            padding: 40px 30px;
+        }}
+        .greeting {{
+            font-size: 18px;
+            margin-bottom: 20px;
+        }}
+        .confirmation-box {{
+            background-color: #f8f8f8;
+            border-left: 4px solid #000000;
+            padding: 20px;
+            margin: 30px 0;
+        }}
+        .confirmation-box p {{
+            margin: 8px 0;
+            font-size: 14px;
+        }}
+        .confirmation-box .label {{
+            color: #666666;
+            font-weight: 600;
+            display: inline-block;
+            width: 120px;
+        }}
+        .section {{
+            margin: 30px 0;
+        }}
+        .section-title {{
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #000000;
+        }}
+        .info-item {{
+            margin: 15px 0;
+            padding-left: 25px;
+            position: relative;
+        }}
+        .info-item::before {{
+            content: "▪";
+            position: absolute;
+            left: 0;
+            color: #666666;
+        }}
+        .info-item strong {{
+            color: #000000;
+        }}
+        .cta-section {{
+            background-color: #f8f8f8;
+            padding: 25px;
+            text-align: center;
+            margin: 30px 0;
+        }}
+        .footer {{
+            padding: 30px;
+            text-align: center;
+            color: #666666;
+            font-size: 14px;
+            border-top: 1px solid #e0e0e0;
+        }}
+        .signature {{
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>A.I. Automation for Non Coders</h1>
+        </div>
+        
+        <div class="content">
+            <p class="greeting">Hi {name},</p>
+            
+            <p>Thank you for applying for <strong>A.I. Automation for Non Coders</strong>!</p>
+            
+            <p>We've received your application and will review it carefully.</p>
+            
+            <div class="confirmation-box">
+                <p><span class="label">Application ID:</span> <strong>{application_id}</strong></p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">What Happens Next</h2>
+                
+                <div class="info-item">
+                    <strong>Review Process:</strong> We review all applications carefully to ensure the best fit for our intensive course format.
+                </div>
+                
+                <div class="info-item">
+                    <strong>Timeline:</strong> You'll hear back from us within 3-5 business days with our decision.
+                </div>
+                
+                <div class="info-item">
+                    <strong>If Accepted:</strong> You'll receive an email with a link to complete your registration and payment.
+                </div>
+                
+                <div class="info-item">
+                    <strong>Questions:</strong> If you have any questions about your application, please don't hesitate to reach out.
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <p style="margin: 0; color: #333333;">We appreciate your interest and will be in touch soon!</p>
+            </div>
+            
+            <div class="signature">
+                <p style="margin: 5px 0;"><strong>Best regards,</strong></p>
+                <p style="margin: 5px 0;">Louka</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 A.I. Automation for Non Coders. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>"""
+    
+    # Plain text fallback
+    text_body = f"""Hi {name},
+
+Thank you for applying for A.I. Automation for Non Coders!
+
+We've received your application and will review it carefully.
+
+Application ID: {application_id}
+
+WHAT HAPPENS NEXT:
+
+▪ Review Process: We review all applications carefully to ensure the best fit for our intensive course format.
+
+▪ Timeline: You'll hear back from us within 3-5 business days with our decision.
+
+▪ If Accepted: You'll receive an email with a link to complete your registration and payment.
+
+▪ Questions: If you have any questions about your application, please don't hesitate to reach out.
+
+We appreciate your interest and will be in touch soon!
+
+Best regards,
+- Louka"""
+    
+    return subject, html_body, text_body
+
+
+def get_application_acceptance_email(name, application_id, registration_url):
+    subject = "Congratulations! You've been accepted - A.I. Automation for Non Coders"
+    
+    html_body = f"""<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {{
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #000000;
+        }}
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }}
+        .header {{
+            background-color: #000000;
+            color: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+        }}
+        .header h1 {{
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }}
+        .content {{
+            padding: 40px 30px;
+        }}
+        .greeting {{
+            font-size: 18px;
+            margin-bottom: 20px;
+        }}
+        .confirmation-box {{
+            background-color: #f8f8f8;
+            border-left: 4px solid #000000;
+            padding: 20px;
+            margin: 30px 0;
+        }}
+        .confirmation-box p {{
+            margin: 8px 0;
+            font-size: 14px;
+        }}
+        .confirmation-box .label {{
+            color: #666666;
+            font-weight: 600;
+            display: inline-block;
+            width: 120px;
+        }}
+        .section {{
+            margin: 30px 0;
+        }}
+        .section-title {{
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #000000;
+        }}
+        .info-item {{
+            margin: 15px 0;
+            padding-left: 25px;
+            position: relative;
+        }}
+        .info-item::before {{
+            content: "▪";
+            position: absolute;
+            left: 0;
+            color: #666666;
+        }}
+        .info-item strong {{
+            color: #000000;
+        }}
+        .cta-button {{
+            display: inline-block;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 20px 0;
+        }}
+        .cta-section {{
+            background-color: #f8f8f8;
+            padding: 25px;
+            text-align: center;
+            margin: 30px 0;
+        }}
+        .footer {{
+            padding: 30px;
+            text-align: center;
+            color: #666666;
+            font-size: 14px;
+            border-top: 1px solid #e0e0e0;
+        }}
+        .signature {{
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>A.I. Automation for Non Coders</h1>
+        </div>
+        
+        <div class="content">
+            <p class="greeting">Hi {name},</p>
+            
+            <p><strong>Congratulations! You've been accepted into A.I. Automation for Non Coders!</strong></p>
+            
+            <p>We were impressed by your application and believe you'll be a great fit for our course.</p>
+            
+            <div class="confirmation-box">
+                <p><span class="label">Application ID:</span> <strong>{application_id}</strong></p>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">Next Steps</h2>
+                
+                <div class="info-item">
+                    <strong>Complete Registration:</strong> Click the button below to complete your registration and secure your spot.
+                </div>
+                
+                <div class="info-item">
+                    <strong>Your Information:</strong> We've pre-filled your registration form with the details from your application.
+                </div>
+                
+                <div class="info-item">
+                    <strong>Payment:</strong> Complete payment to confirm your enrollment.
+                </div>
+                
+                <div class="info-item">
+                    <strong>Time Sensitive:</strong> Please complete your registration within 48 hours to secure your spot.
+                </div>
+            </div>
+            
+            <div class="cta-section">
+                <a href="{registration_url}" class="cta-button">COMPLETE REGISTRATION</a>
+            </div>
+            
+            <div class="signature">
+                <p style="margin: 5px 0;">We're excited to have you join us!</p>
+                <p style="margin: 5px 0;"><strong>Best regards,</strong></p>
+                <p style="margin: 5px 0;">Louka</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>© 2024 A.I. Automation for Non Coders. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>"""
+    
+    # Plain text fallback
+    text_body = f"""Hi {name},
+
+Congratulations! You've been accepted into A.I. Automation for Non Coders!
+
+We were impressed by your application and believe you'll be a great fit for our course.
+
+Application ID: {application_id}
+
+NEXT STEPS:
+
+▪ Complete Registration: Visit the link below to complete your registration and secure your spot.
+
+▪ Your Information: We've pre-filled your registration form with the details from your application.
+
+▪ Payment: Complete payment to confirm your enrollment.
+
+▪ Time Sensitive: Please complete your registration within 48 hours to secure your spot.
+
+Registration Link: {registration_url}
+
+We're excited to have you join us!
+
+Best regards,
+- Louka"""
+    
+    return subject, html_body, text_body

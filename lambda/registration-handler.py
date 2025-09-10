@@ -1,5 +1,6 @@
 import json
 import boto3
+from boto3.dynamodb.conditions import Attr
 import uuid
 from datetime import datetime
 import logging
@@ -19,6 +20,7 @@ def lambda_handler(event, context):
         
         email = body["email"].lower()  # Store email in lowercase for consistent matching
         course_id = body.get("course_id")
+        applicant_id = body.get("applicant_id")  # For auto-fill from approved applications
         
         # Validate required fields
         if not body.get("referral_source"):
@@ -67,6 +69,80 @@ def lambda_handler(event, context):
                     "message": "Invalid course ID provided"
                 })
             }
+        
+        # If applicant_id is provided, verify it exists and is in 'pending' status
+        if applicant_id:
+            try:
+                # Scan for the application by registration_id
+                response = table.scan(
+                    FilterExpression=Attr('registration_id').eq(applicant_id)
+                )
+                
+                if not response['Items']:
+                    logger.error(f"Application {applicant_id} not found")
+                    return {
+                        "statusCode": 400,
+                        "headers": {
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Headers": "Content-Type",
+                            "Access-Control-Allow-Methods": "POST, OPTIONS"
+                        },
+                        "body": json.dumps({
+                            "error": "invalid_application",
+                            "message": "Application not found or invalid"
+                        })
+                    }
+                
+                application = response['Items'][0]
+                
+                # Verify the application is in 'pending' status
+                if application.get('payment_status') != 'pending':
+                    logger.error(f"Application {applicant_id} is not in pending status: {application.get('payment_status')}")
+                    return {
+                        "statusCode": 400,
+                        "headers": {
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Headers": "Content-Type",
+                            "Access-Control-Allow-Methods": "POST, OPTIONS"
+                        },
+                        "body": json.dumps({
+                            "error": "invalid_application_status",
+                            "message": "Application is not approved for registration"
+                        })
+                    }
+                
+                # Verify the email matches
+                if application['email'] != email:
+                    logger.error(f"Email mismatch for application {applicant_id}: {application['email']} vs {email}")
+                    return {
+                        "statusCode": 400,
+                        "headers": {
+                            "Access-Control-Allow-Origin": "*",
+                            "Access-Control-Allow-Headers": "Content-Type",
+                            "Access-Control-Allow-Methods": "POST, OPTIONS"
+                        },
+                        "body": json.dumps({
+                            "error": "email_mismatch",
+                            "message": "Email does not match the application"
+                        })
+                    }
+                
+                logger.info(f"Verified application {applicant_id} for auto-fill registration")
+                
+            except Exception as e:
+                logger.error(f"Error verifying application: {str(e)}")
+                return {
+                    "statusCode": 500,
+                    "headers": {
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Headers": "Content-Type",
+                        "Access-Control-Allow-Methods": "POST, OPTIONS"
+                    },
+                    "body": json.dumps({
+                        "error": "application_verification_error",
+                        "message": "Error verifying application"
+                    })
+                }
         
         # Check if registration already exists for this email and course
         try:

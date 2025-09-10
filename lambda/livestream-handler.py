@@ -5,6 +5,7 @@ from datetime import datetime
 import logging
 import os
 from meta_conversions_api import handle_complete_registration
+from email_templates import get_application_confirmation_email
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -68,8 +69,17 @@ def lambda_handler(event, context):
         email = body['email'].strip().lower()
         name = body['name'].strip()
         
-        # Fixed course ID for livestream
-        course_id = 'tax-livestream-01'
+        # Determine request type and course ID
+        registration_type = body.get('registration_type', 'livestream')
+        
+        if registration_type == 'application':
+            course_id = '01_ai_automation_for_non_coders'
+            payment_status = 'applied'
+            payment_amount = 0
+        else:  # livestream
+            course_id = 'tax-livestream-01'
+            payment_status = 'paid'
+            payment_amount = 0
         
         # Check if registration already exists
         try:
@@ -96,35 +106,52 @@ def lambda_handler(event, context):
         registration_id = str(uuid.uuid4())
         timestamp = datetime.utcnow().isoformat()
         
-        # Create registration item with automatic paid status
+        # Create registration item
         item = {
             "course_id": course_id,
             "email": email,
             "registration_id": registration_id,
             "name": name,
-            "payment_status": "paid",  # Automatically mark as paid
-            "payment_amount": 0,  # $0 for free livestream
+            "payment_status": payment_status,
+            "payment_amount": payment_amount,
             "registration_date": timestamp,
-            "registration_type": "livestream",
-            "stripe_session_id": "",  # No Stripe session for free registration
+            "registration_type": registration_type,
+            "stripe_session_id": "",  # No Stripe session
         }
+        
+        # Add application-specific fields if this is an application
+        if registration_type == 'application':
+            # Add additional fields from registration form
+            item.update({
+                "phone": body.get("phone", ""),
+                "company": body.get("company", ""),
+                "job_title": body.get("jobTitle", ""),
+                "experience": body.get("experience", ""),
+                "referral_source": "applied",
+                "automation_interest": body.get("automationInterest", ""),
+                "dietary_requirements": "none",
+            })
         
         # Store in DynamoDB
         table.put_item(Item=item)
-        logger.info(f"Livestream registration created: {registration_id} for email: {email}")
+        logger.info(f"{registration_type.title()} created: {registration_id} for email: {email}")
         
         # Send confirmation email to user
         try:
-            send_user_confirmation_email(name, email, registration_id)
-            logger.info(f"Confirmation email sent to {email}")
+            if registration_type == 'application':
+                send_application_confirmation_email(name, email, registration_id)
+                logger.info(f"Application confirmation email sent to {email}")
+            else:
+                send_user_confirmation_email(name, email, registration_id)
+                logger.info(f"Livestream confirmation email sent to {email}")
         except Exception as email_error:
-            logger.error(f"Error sending user confirmation email: {str(email_error)}")
+            logger.error(f"Error sending confirmation email: {str(email_error)}")
             # Don't fail the registration if email fails
         
         # Send notification to admin
         try:
-            send_admin_notification(name, email, registration_id)
-            logger.info(f"Admin notification sent for registration: {registration_id}")
+            send_admin_notification(name, email, registration_id, registration_type)
+            logger.info(f"Admin notification sent for {registration_type}: {registration_id}")
         except Exception as admin_error:
             logger.error(f"Error sending admin notification: {str(admin_error)}")
             # Don't fail the registration if admin notification fails
@@ -140,10 +167,10 @@ def lambda_handler(event, context):
             # Get the source URL from the event if available
             event_source_url = event.get("headers", {}).get("referer") or event.get("headers", {}).get("Referer")
             
-            # Pass registration_type as 'livestream'
-            meta_result = handle_complete_registration(user_data, event_source_url, registration_id, registration_type="livestream")
+            # Pass the actual registration_type
+            meta_result = handle_complete_registration(user_data, event_source_url, registration_id, registration_type=registration_type)
             if meta_result["success"]:
-                logger.info(f"Meta Conversions API CompleteRegistration (livestream) event sent for: {registration_id}")
+                logger.info(f"Meta Conversions API CompleteRegistration ({registration_type}) event sent for: {registration_id}")
             else:
                 logger.warning(f"Failed to send Meta Conversions API event: {meta_result.get('error')}")
         except Exception as meta_error:
@@ -154,7 +181,7 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'headers': headers,
             'body': json.dumps({
-                'message': 'Registration successful',
+                'message': f'{registration_type.title()} successful',
                 'registration_id': registration_id
             })
         }
@@ -409,9 +436,46 @@ def send_user_confirmation_email(name, email, registration_id):
     return response['MessageId']
 
 
-def send_admin_notification(name, email, registration_id):
+def send_application_confirmation_email(name, email, registration_id):
     """
-    Send notification to admin about new livestream registration
+    Send confirmation email to user for application submission
+    """
+    contact_form_email = os.environ.get('CONTACT_FORM_EMAIL')
+    
+    if not contact_form_email:
+        logger.error("Missing CONTACT_FORM_EMAIL environment variable")
+        raise ValueError("Email configuration error")
+    
+    subject, html_body, text_body = get_application_confirmation_email(name, registration_id)
+    
+    # Send email via SES
+    response = ses_client.send_email(
+        Source=contact_form_email,
+        Destination={'ToAddresses': [email]},
+        Message={
+            'Subject': {
+                'Data': subject,
+                'Charset': 'UTF-8'
+            },
+            'Body': {
+                'Text': {
+                    'Data': text_body,
+                    'Charset': 'UTF-8'
+                },
+                'Html': {
+                    'Data': html_body,
+                    'Charset': 'UTF-8'
+                }
+            }
+        }
+    )
+    
+    return response['MessageId']
+
+
+def send_admin_notification(name, email, registration_id, registration_type='livestream'):
+    """
+    Send notification to admin about new registration
     """
     contact_form_email = os.environ.get('CONTACT_FORM_EMAIL')
     admin_email = os.environ.get('ADMIN_EMAIL')
@@ -420,20 +484,27 @@ def send_admin_notification(name, email, registration_id):
         logger.error("Missing required email environment variables")
         raise ValueError("Email configuration error")
     
-    subject = f"[Livestream Registration] New signup from {name}"
+    if registration_type == 'application':
+        subject = f"[Application] New application from {name}"
+        course_info = "AI Automation for Non Coders (01_ai_automation_for_non_coders)"
+        status_info = "Applied (Awaiting Review)"
+    else:
+        subject = f"[Livestream Registration] New signup from {name}"
+        course_info = "AI Tax Automation Livestream (tax-livestream-01)"
+        status_info = "Paid (Free Registration)"
     
     email_body = f"""
-New Livestream Registration
+New {registration_type.title()}
 
 Registration Details:
 - Name: {name}
 - Email: {email}
 - Registration ID: {registration_id}
-- Course: AI Tax Automation Livestream (tax-livestream-01)
-- Payment Status: Paid (Free Registration)
+- Course: {course_info}
+- Status: {status_info}
 - Registration Time: {datetime.utcnow().isoformat()}
 
-This is an automated notification for a new livestream registration.
+This is an automated notification for a new {registration_type}.
     """
     
     # Send email via SES

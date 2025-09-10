@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply - AI Automation Mastery</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KEBYBH8T5H"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-KEBYBH8T5H');
+    </script>
+</head>
+<body>
+    <div id="header-component"></div>
+
+    <!-- Application Form -->
+    <section class="registration-section">
+        <div class="container">
+            <div class="registration-content">
+                <div class="section-header">
+                    <p>This cohort only has 15 seats available, so to ensure every participant achieves meaningful results, we're looking for applicants who face genuine business problems.</p> 
+                    <p style="margin-top: 15px;">The participants who get the most from this course are those who already have a specific, time-consuming workflow in their sights and the bandwidth to tackle it.</p>
+                </div>
+                
+                <form id="applicationForm" class="registration-form">
+                    <p style="font-size: 13px; color: #888; text-align: center; margin-bottom: 30px;">We will never pass your contact details on to other parties.</p>
+                    
+                    <div class="form-grid">
+                        <!-- Personal Information -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">Course Admin</h3>
+                            
+                            <div class="form-group">
+                                <label for="firstName">First Name *</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="lastName">Last Name *</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email Address *</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="phone">Phone Number *</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+
+                        </div>
+                        
+                        <!-- Professional Information -->
+                        <div class="form-section">
+                            <h3 class="form-section-title">About You</h3>
+                            
+                            <div class="form-group">
+                                <label for="company">Company *</label>
+                                <input type="text" id="company" name="company" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="jobTitle">Job Title *</label>
+                                <input type="text" id="jobTitle" name="jobTitle" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="experience">Coding Experience *</label>
+                                <select id="experience" name="experience" required>
+                                    <option value="">Select your experience level</option>
+                                    <option value="none">None - I'm completely new to coding</option>
+                                    <option value="vibe">Vibe coding only - I dabble occasionally</option>
+                                    <option value="hobby">Only coded hobby projects</option>
+                                    <option value="professional">Have coded professionally</option>
+                                </select>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    
+                    <!-- Workflow and Consent Section -->
+                    <div class="form-section full-width">
+                            <div class="form-group">
+                                <label for="timeCommitment">How many out-of-class hours will you have to work on your automation during the course?*</label>
+                                <select id="timeCommitment" name="timeCommitment" required>
+                                    <option value="">Select average hours per day (roughly)</option>
+                                    <option value="0.5">Less than 0.5 hours</option>
+                                    <option value="1.5">0.5-1.5 hours</option>
+                                    <option value="3">1.5-3 hours</option>
+                                    <option value="4">3 hours or more</option>
+                                </select>
+                            </div>
+
+                        
+                        <div class="form-group">
+                            <label for="automationInterest">Describe one workflow you'd like to automate, include how much time it would save *</label>
+                            <textarea id="automationInterest" name="automationInterest" rows="4" placeholder="Example: I spend 3 hours every Monday pulling data from 4 different systems to create weekly reports. Automating this would save me 3 hours per week." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="automationBarriers">What is preventing you from building this automation currently? *</label>
+                            <textarea id="automationBarriers" name="automationBarriers" rows="3" placeholder="Example: I don't know where to start, I'm not technical enough, I don't have the right tools..." required></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="terms-checkbox-wrapper">
+                                <input type="checkbox" id="attendance" name="attendance" required class="terms-checkbox">
+                                <label for="attendance" class="terms-checkbox-label">I am able to attend both in person sessions</label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="terms-checkbox-wrapper">
+                                <input type="checkbox" id="consent" name="consent" required class="terms-checkbox">
+                                <label for="consent" class="terms-checkbox-label">I consent to being contacted by course administrators</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr style="border: none; height: 1px; background-color: #333; margin: 40px 0;">
+                    
+                    
+                    <!-- Course Details Reminder -->
+                    <div class="course-summary">
+                        <h3>Course Details</h3>
+                        <div class="course-details-grid">
+                            <div>
+                                <p class="course-detail-item"><strong>Kickoff Location:</strong> 3/251 Flinders Ln, Melbourne VIC 3000, Sue Healy Room</p>
+                                <p class="course-detail-item"><strong>Final Review Location:</strong> 3/251 Flinders Ln, Melbourne VIC 3000, Sue Healy Room</p>
+                                <p class="course-detail-item"><strong>In-Person Dates:</strong> Oct 4th & Oct 11th, 2025</p>
+                                <p class="course-detail-item"><strong>Online Dates:</strong> Oct 6th & Oct 9th, 2025</p>
+                                <p class="course-detail-item"><strong>Investment:</strong> <del>$927</del> $612 (first 4 seats)</p>
+                            </div>
+                            <div>
+                                <p class="course-detail-item"><strong>Class Size:</strong> Maximum 15 participants</p>
+                                <p class="course-detail-item"><strong>Includes:</strong> 1 Month A.I. Access & 2x catered lunches</p>
+                                <p class="course-detail-item"><strong>Support:</strong> Async instructor assistance & cohort chat</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="cta-button no-effects">SUBMIT APPLICATION</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <div id="footer-component"></div>
+
+    <!-- Load Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <!-- Configuration -->
+    <script src="config.js"></script>
+    
+    <!-- Perlin background -->
+    <script src="perlin-background.js"></script>
+    
+    <!-- Main scripts -->
+    <script src="meta-tracking.js"></script>
+    <script src="scripts.js"></script>
+
+</body>
+</html>
