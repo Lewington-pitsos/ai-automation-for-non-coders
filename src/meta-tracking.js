@@ -5,98 +5,45 @@
  * to your Meta Conversions API Lambda function.
  */
 
-// Configuration - Update these URLs based on your API Gateway endpoints
+// Configuration - API endpoints for Meta Conversions API
+// Note: ViewContent endpoint removed since we don't track anonymous page views
 const META_API_CONFIG = {
-    viewContentEndpoint: 'https://0rhn8rbzd4.execute-api.ap-southeast-2.amazonaws.com/prod/view-content',
     debug: false // Set to true for console logging
 };
 
 /**
- * Send a ViewContent event to Meta Conversions API
- * @param {Object} options - Event options
- * @param {string} options.contentName - Name of the content being viewed
- * @param {string} options.contentCategory - Category of the content
- * @param {string} options.userEmail - User's email (optional, for logged-in users)
- * @param {string} options.eventSourceUrl - URL of the page (defaults to current page)
+ * ViewContent tracking via Conversions API has been removed.
+ * For page view tracking, use Meta Pixel (fbq) instead:
+ * 
+ * Example:
+ * fbq('track', 'ViewContent', {
+ *     content_name: 'Page Title',
+ *     content_category: 'page_category'
+ * });
+ * 
+ * This function is kept for backwards compatibility but does nothing.
+ * @deprecated Use Meta Pixel for ViewContent tracking
  */
-async function sendViewContentEvent(options = {}) {
-    const {
-        contentName = document.title,
-        contentCategory = 'website',
-        userEmail = null,
-        eventSourceUrl = window.location.href
-    } = options;
-
-    try {
-        const payload = {
-            user_data: {
-                client_user_agent: navigator.userAgent
-            },
-            event_source_url: eventSourceUrl,
-            content_data: {
-                content_name: contentName,
-                content_category: contentCategory
-            }
-        };
-
-        // Add email if provided
-        if (userEmail) {
-            payload.user_data.email = userEmail;
-        }
-
-        if (META_API_CONFIG.debug) {
-            console.log('Sending ViewContent event:', payload);
-        }
-
-        const response = await fetch(META_API_CONFIG.viewContentEndpoint, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            if (META_API_CONFIG.debug) {
-                console.log('ViewContent event sent successfully:', result);
-            }
-            return result;
-        } else {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-    } catch (error) {
-        console.error('Error sending ViewContent event:', error);
-        // Don't throw - we don't want tracking errors to break the user experience
+function sendViewContentEvent(options = {}) {
+    if (META_API_CONFIG.debug) {
+        console.warn('sendViewContentEvent is deprecated. Use Meta Pixel (fbq) for page view tracking.');
     }
+    // Function disabled - use Meta Pixel instead
+    return Promise.resolve({ message: 'ViewContent tracking disabled - use Meta Pixel instead' });
 }
 
 /**
  * Track key page views automatically
+ * Note: ViewContent tracking via Conversions API requires user email/phone,
+ * so automatic page view tracking has been disabled for anonymous users.
+ * Use Meta Pixel for anonymous page view tracking instead.
  */
 function setupAutoTracking() {
-    // Track landing page view
-    if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
-        sendViewContentEvent({
-            contentName: 'AI Automation Mastery - Home',
-            contentCategory: 'landing_page'
-        });
-    }
+    // Automatic ViewContent tracking disabled - requires user email for Conversions API
+    // Use Meta Pixel (fbq) for anonymous page view tracking instead
     
-    // Track registration page view
-    if (window.location.pathname.includes('/register')) {
-        sendViewContentEvent({
-            contentName: 'Course Registration',
-            contentCategory: 'registration_page'
-        });
-    }
-    
-    // Track contact page view
-    if (window.location.pathname.includes('/contact')) {
-        sendViewContentEvent({
-            contentName: 'Contact Us',
-            contentCategory: 'contact_page'
-        });
+    if (META_API_CONFIG.debug) {
+        console.log('Auto-tracking disabled for anonymous users. Use sendViewContentEvent manually with userEmail for logged-in users.');
     }
 }
 
@@ -117,8 +64,9 @@ if (document.readyState === 'loading') {
 }
 
 // Export functions for manual use
+// Note: ViewContent tracking has been removed - use Meta Pixel instead
 window.MetaTracking = {
-    sendViewContentEvent,
+    sendViewContentEvent, // Deprecated - does nothing
     trackPageView,
     setupAutoTracking
 };

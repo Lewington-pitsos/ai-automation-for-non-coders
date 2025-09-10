@@ -129,18 +129,6 @@ def handle_contact(user_data, event_source_url=None, contact_id=None):
         test_event_code=TEST_EVENT_CODE
     )
 
-def handle_view_content(user_data, event_source_url=None, content_data=None):
-    """Handle View Content event"""
-    event_time = int(time.time())
-    custom_data = content_data or {}
-    return send_conversion_event(
-        event_name="ViewContent",
-        event_time=event_time,
-        user_data=user_data,
-        custom_data=custom_data,
-        event_source_url=event_source_url,
-        test_event_code=TEST_EVENT_CODE
-    )
 
 def handle_purchase(user_data, purchase_data, event_source_url=None, order_id=None):
     """Handle Purchase event"""

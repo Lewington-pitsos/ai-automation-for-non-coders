@@ -26,6 +26,85 @@ function fixFooterCursors() {
     });
 }
 
+// Generic form validation function
+function checkGenericFormValidity(formId, fieldSelectors, extraValidations = null) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (!submitButton) return;
+    
+    // Get all required fields and check validity
+    let isValid = true;
+    
+    for (const selector of fieldSelectors) {
+        const field = form.querySelector(selector);
+        if (!field) {
+            isValid = false;
+            break;
+        }
+        
+        if (field.type === 'checkbox') {
+            if (!field.checked) {
+                isValid = false;
+                break;
+            }
+        } else {
+            if (field.value.trim() === '' || field.value === '') {
+                isValid = false;
+                break;
+            }
+        }
+    }
+    
+    // Run any extra validations
+    if (isValid && extraValidations) {
+        isValid = extraValidations(form);
+    }
+    
+    // Enable/disable button based on validity
+    if (isValid) {
+        submitButton.disabled = false;
+        submitButton.classList.remove('disabled');
+    } else {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
+}
+
+// Generic form initialization function
+function initGenericForm(formId, submitHandler, validityChecker, useFieldValidation = true) {
+    const form = document.getElementById(formId);
+    if (!form) return;
+    
+    form.addEventListener('submit', submitHandler);
+    
+    // Get submit button and make it disabled initially
+    const submitButton = form.querySelector('button[type="submit"]');
+    if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.classList.add('disabled');
+    }
+    
+    // Add real-time validation
+    const requiredFields = form.querySelectorAll('[required]');
+    requiredFields.forEach(field => {
+        if (useFieldValidation) {
+            field.addEventListener('blur', validateField);
+        }
+        field.addEventListener('input', function(event) {
+            if (useFieldValidation) {
+                clearFieldError(event);
+            }
+            validityChecker();
+        });
+        field.addEventListener('change', validityChecker);
+    });
+    
+    // Initial form validity check
+    validityChecker();
+}
+
 // Initialize everything on load
 window.addEventListener('load', async () => {
     
@@ -213,68 +292,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Registration Form Handling
 function initRegistrationForm() {
-    const form = document.getElementById('registrationForm');
-    if (!form) return;
-    
-    form.addEventListener('submit', handleFormSubmission);
-    
-    // Get submit button and make it disabled initially
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
-    
-    // Add real-time validation
-    const requiredFields = form.querySelectorAll('[required]');
-    requiredFields.forEach(field => {
-        field.addEventListener('blur', validateField);
-        field.addEventListener('input', function(event) {
-            clearFieldError(event);
-            checkFormValidity();
-        });
-        field.addEventListener('change', checkFormValidity);
-    });
-    
-    // Initial form validity check
-    checkFormValidity();
+    initGenericForm('registrationForm', handleFormSubmission, checkFormValidity, true);
 }
 
 function checkFormValidity() {
-    const form = document.getElementById('registrationForm');
-    if (!form) return;
-    
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (!submitButton) return;
-    
-    // Get all required fields
-    const firstName = form.querySelector('#firstName');
-    const lastName = form.querySelector('#lastName');
-    const email = form.querySelector('#email');
-    const phone = form.querySelector('#phone');
-    const experience = form.querySelector('#experience');
-    const referralSource = form.querySelector('#referralSource');
-    const dietaryRequirements = form.querySelector('#dietaryRequirements');
-    const termsCheckbox = form.querySelector('#terms');
-    
-    // Check if all required fields are filled and terms are checked
-    const isValid = firstName.value.trim() !== '' &&
-                   lastName.value.trim() !== '' &&
-                   email.value.trim() !== '' &&
-                   phone.value.trim() !== '' &&
-                   experience.value !== '' &&
-                   referralSource.value !== '' &&
-                   dietaryRequirements.value.trim() !== '' &&
-                   termsCheckbox.checked;
-    
-    // Enable/disable button based on validity
-    if (isValid) {
-        submitButton.disabled = false;
-        submitButton.classList.remove('disabled');
-    } else {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
+    checkGenericFormValidity('registrationForm', [
+        '#firstName', '#lastName', '#email', '#phone', 
+        '#experience', '#referralSource', '#dietaryRequirements', '#terms'
+    ]);
 }
 
 async function handleFormSubmission(event) {
@@ -555,56 +580,11 @@ function showSuccessMessage() {
 
 // Livestream Form Handling
 function initLivestreamForm() {
-    const form = document.getElementById('livestreamForm');
-    if (!form) return;
-    
-    form.addEventListener('submit', handleLivestreamFormSubmission);
-    
-    // Get submit button and make it disabled initially
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
-    
-    // Add real-time validation
-    const requiredFields = form.querySelectorAll('[required]');
-    requiredFields.forEach(field => {
-        field.addEventListener('blur', validateField);
-        field.addEventListener('input', function(event) {
-            clearFieldError(event);
-            checkLivestreamFormValidity();
-        });
-        field.addEventListener('change', checkLivestreamFormValidity);
-    });
-    
-    // Initial form validity check
-    checkLivestreamFormValidity();
+    initGenericForm('livestreamForm', handleLivestreamFormSubmission, checkLivestreamFormValidity, true);
 }
 
 function checkLivestreamFormValidity() {
-    const form = document.getElementById('livestreamForm');
-    if (!form) return;
-    
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (!submitButton) return;
-    
-    // Get all required fields
-    const name = form.querySelector('#name');
-    const email = form.querySelector('#email');
-    
-    // Check if all required fields are filled
-    const isValid = name && name.value.trim() !== '' &&
-                   email && email.value.trim() !== '';
-    
-    // Enable/disable button based on validity
-    if (isValid) {
-        submitButton.disabled = false;
-        submitButton.classList.remove('disabled');
-    } else {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
+    checkGenericFormValidity('livestreamForm', ['#name', '#email']);
 }
 
 async function handleLivestreamFormSubmission(event) {
@@ -832,60 +812,11 @@ function showLivestreamErrorMessage() {
 
 // Contact Form Handling
 function initContactForm() {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
-    
-    form.addEventListener('submit', handleContactFormSubmission);
-    
-    // Get submit button and make it disabled initially
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (submitButton) {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
-    
-    // Add real-time validation
-    const requiredFields = form.querySelectorAll('[required]');
-    requiredFields.forEach(field => {
-        field.addEventListener('blur', validateField);
-        field.addEventListener('input', function(event) {
-            clearFieldError(event);
-            checkContactFormValidity();
-        });
-        field.addEventListener('change', checkContactFormValidity);
-    });
-    
-    // Initial form validity check
-    checkContactFormValidity();
+    initGenericForm('contactForm', handleContactFormSubmission, checkContactFormValidity, true);
 }
 
 function checkContactFormValidity() {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
-    
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (!submitButton) return;
-    
-    // Get all required fields
-    const name = form.querySelector('#name');
-    const email = form.querySelector('#email');
-    const mobile = form.querySelector('#mobile');
-    const message = form.querySelector('#message');
-    
-    // Check if all required fields are filled
-    const isValid = name.value.trim() !== '' &&
-                   email.value.trim() !== '' &&
-                   mobile.value.trim() !== '' &&
-                   message.value.trim() !== '';
-    
-    // Enable/disable button based on validity
-    if (isValid) {
-        submitButton.disabled = false;
-        submitButton.classList.remove('disabled');
-    } else {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
+    checkGenericFormValidity('contactForm', ['#name', '#email', '#mobile', '#message']);
 }
 
 async function handleContactFormSubmission(event) {
