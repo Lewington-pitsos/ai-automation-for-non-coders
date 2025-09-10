@@ -32,24 +32,30 @@ class TestContactFormSimple:
         except subprocess.TimeoutExpired:
             server_process.kill()
     
-    @pytest.fixture
-    def page(self, server):
-        """Create a new page for each test"""
+    @pytest.fixture(scope="class")
+    def browser(self):
+        """Create a single browser instance for all tests"""
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
-            page = browser.new_page()
-            
-            # Navigate to contact page
-            page.goto(f"{server}/contact.html")
-            
-            # Wait for page to fully load
-            page.wait_for_load_state("networkidle")
-            
-            # Wait for contact form initialization
-            page.wait_for_function("document.getElementById('contactForm') !== null")
-            
-            yield page
+            yield browser
             browser.close()
+    
+    @pytest.fixture
+    def page(self, server, browser):
+        """Reuse browser but create fresh page for each test"""
+        page = browser.new_page()
+        
+        # Navigate to contact page
+        page.goto(f"{server}/contact.html")
+        
+        # Wait for page to fully load
+        page.wait_for_load_state("networkidle")
+        
+        # Wait for contact form initialization
+        page.wait_for_function("document.getElementById('contactForm') !== null")
+        
+        yield page
+        page.close()
     
     def test_submit_button_disabled_initially(self, page):
         """Test that submit button is disabled when form is empty"""
