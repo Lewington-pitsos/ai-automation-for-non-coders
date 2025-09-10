@@ -152,33 +152,6 @@ function initPersonaCards() {
                 card.style.transform = '';
             }
         });
-        
-        // Click effect with ripple
-        card.addEventListener('click', (e) => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            // Set CSS variables for click position
-            card.style.setProperty('--click-x', x + 'px');
-            card.style.setProperty('--click-y', y + 'px');
-            
-            // Toggle selected state
-            card.classList.toggle('selected');
-            
-            // Update transform based on new selected state
-            if (card.classList.contains('selected')) {
-                card.style.transform = 'translateX(20px)';
-            } else {
-                card.style.transform = 'translateX(20px)'; // Keep it shifted if still hovered
-            }
-            
-            // Trigger ripple animation
-            card.classList.add('clicked');
-            setTimeout(() => {
-                card.classList.remove('clicked');
-            }, 600);
-        });
     });
 }
 
