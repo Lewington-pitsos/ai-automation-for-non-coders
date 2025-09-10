@@ -101,26 +101,4 @@ resource "aws_lambda_function" "livestream_handler" {
   }
 }
 
-# ViewContent Handler Lambda
-resource "aws_lambda_function" "view_content_handler" {
-  filename         = "../lambda/view-content-handler.zip"
-  function_name    = "${var.project_name}-view-content-handler"
-  role            = aws_iam_role.lambda_execution_role.arn
-  handler         = "lambda_function.lambda_handler"
-  source_code_hash = filebase64sha256("../lambda/view-content-handler.zip")
-  runtime         = "python3.11"
-  timeout         = 30
-
-  environment {
-    variables = {
-      META_PIXEL_ID = "1232612085335834"
-      META_ACCESS_TOKEN = var.meta_access_token
-    }
-  }
-
-  tags = {
-    Name        = "${var.project_name}-view-content-handler"
-    Environment = var.environment
-  }
-}
 
