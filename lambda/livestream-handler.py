@@ -129,6 +129,10 @@ def lambda_handler(event, context):
                 "experience": body.get("experience", ""),
                 "referral_source": "applied",
                 "automation_interest": body.get("automationInterest", ""),
+                "automation_barriers": body.get("automationBarriers", ""),
+                "time_commitment": body.get("timeCommitment", ""),
+                "attendance_confirmed": body.get("attendance", False),
+                "consent_given": body.get("consent", False),
                 "dietary_requirements": "none",
             })
         
@@ -150,7 +154,7 @@ def lambda_handler(event, context):
         
         # Send notification to admin
         try:
-            send_admin_notification(name, email, registration_id, registration_type)
+            send_admin_notification(name, email, registration_id, registration_type, body if registration_type == 'application' else None)
             logger.info(f"Admin notification sent for {registration_type}: {registration_id}")
         except Exception as admin_error:
             logger.error(f"Error sending admin notification: {str(admin_error)}")
@@ -473,7 +477,7 @@ def send_application_confirmation_email(name, email, registration_id):
     return response['MessageId']
 
 
-def send_admin_notification(name, email, registration_id, registration_type='livestream'):
+def send_admin_notification(name, email, registration_id, registration_type='livestream', application_data=None):
     """
     Send notification to admin about new registration
     """
@@ -488,12 +492,45 @@ def send_admin_notification(name, email, registration_id, registration_type='liv
         subject = f"[Application] New application from {name}"
         course_info = "AI Automation for Non Coders (01_ai_automation_for_non_coders)"
         status_info = "Applied (Awaiting Review)"
+        
+        # Build detailed application email body
+        email_body = f"""
+New Application Submitted
+
+Basic Information:
+- Name: {name}
+- Email: {email}
+- Phone: {application_data.get('phone', 'Not provided')}
+- Company: {application_data.get('company', 'Not provided')}
+- Job Title: {application_data.get('jobTitle', 'Not provided')}
+
+Technical Background:
+- Coding Experience: {application_data.get('experience', 'Not provided')}
+
+Course Commitment:
+- Time Commitment (hrs/day): {application_data.get('timeCommitment', 'Not provided')}
+- Attendance Confirmed: {'Yes' if application_data.get('attendance') else 'No'}
+- Consent Given: {'Yes' if application_data.get('consent') else 'No'}
+
+Application Details:
+- Automation Interest: {application_data.get('automationInterest', 'Not provided')}
+
+- Current Barriers: {application_data.get('automationBarriers', 'Not provided')}
+
+Course Information:
+- Registration ID: {registration_id}
+- Course: {course_info}
+- Status: {status_info}
+- Registration Time: {datetime.utcnow().isoformat()}
+
+This is an automated notification for a new application.
+        """
     else:
         subject = f"[Livestream Registration] New signup from {name}"
         course_info = "AI Tax Automation Livestream (tax-livestream-01)"
         status_info = "Paid (Free Registration)"
-    
-    email_body = f"""
+        
+        email_body = f"""
 New {registration_type.title()}
 
 Registration Details:
@@ -505,7 +542,7 @@ Registration Details:
 - Registration Time: {datetime.utcnow().isoformat()}
 
 This is an automated notification for a new {registration_type}.
-    """
+        """
     
     # Send email via SES
     response = ses_client.send_email(
