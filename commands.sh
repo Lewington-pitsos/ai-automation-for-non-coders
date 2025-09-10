@@ -17,6 +17,9 @@ cd tf && terraform output -json > ../test/terraform-outputs.json && terraform ou
 
 aws logs tail "/aws/lambda/ai-automation-course-payment-webhook" --since 48h --follow
 
+aws logs tail "/aws/lambda/ai-automation-course-contact-handler" --since 10m --follow
+
+
 aws lambda list-functions --query 'Functions[*].[FunctionName,Runtime,LastModified]' --output table
 
 

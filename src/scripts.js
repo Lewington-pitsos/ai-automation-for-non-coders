@@ -41,11 +41,6 @@ window.addEventListener('load', async () => {
     
     // Initialize Perlin backgrounds - DISABLED FOR TESTING
     initPerlinBackgrounds();
-    
-    // Initialize chart with a small delay to ensure Chart.js is loaded - DISABLED FOR TESTING
-    setTimeout(() => {
-        initChart();
-    }, 100);
 });
 
 window.addEventListener('resize', () => {
@@ -626,14 +621,14 @@ async function handleLivestreamFormSubmission(event) {
     
     // Validate form
     if (!livestreamData.name || !livestreamData.email) {
-        showErrorMessage('Please fill in all required fields');
+        showGenericErrorMessage('Please fill in all required fields');
         return;
     }
     
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(livestreamData.email)) {
-        showErrorMessage('Please enter a valid email address');
+        showGenericErrorMessage('Please enter a valid email address');
         return;
     }
     
@@ -675,7 +670,7 @@ async function handleLivestreamFormSubmission(event) {
         } else {
             // Check for duplicate registration error (409 status)
             if (response.status === 409) {
-                showErrorMessage('This email has already registered for this event. Please try another email.');
+                showGenericErrorMessage('This email has already registered for this event. Please try another email.');
             } else {
                 // Show full backend error toast
                 showLivestreamErrorMessage();
@@ -692,7 +687,7 @@ async function handleLivestreamFormSubmission(event) {
     }
 }
 
-function showLivestreamSuccessMessage() {
+function showGenericSuccessMessage(message) {
     // Get toast container
     const toastContainer = document.getElementById('toast-container');
     if (!toastContainer) return;
@@ -721,8 +716,7 @@ function showLivestreamSuccessMessage() {
         <div class="toast-corner bottom-left"></div>
         <div class="toast-corner bottom-right"></div>
         <div class="toast-message">
-            You're registered for the livestream!<br>
-            Check your email for confirmation and access details.
+            ${message}
         </div>
         <button class="toast-dismiss">DISMISS</button>
     `;
@@ -760,75 +754,11 @@ function showLivestreamSuccessMessage() {
     document.body.style.overflow = 'hidden';
 }
 
-function showLivestreamErrorMessage() {
-    // Get toast container
-    const toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) return;
-    
-    // Clear any existing toasts
-    toastContainer.innerHTML = '';
-    
-    // Show container
-    toastContainer.classList.add('active');
-    
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    
-    // Create Perlin noise canvas
-    const canvas = document.createElement('canvas');
-    canvas.className = 'toast-perlin-bg';
-    toast.appendChild(canvas);
-    
-    // Add content
-    const content = document.createElement('div');
-    content.className = 'toast-content';
-    content.innerHTML = `
-        <div class="toast-corner top-left"></div>
-        <div class="toast-corner top-right"></div>
-        <div class="toast-corner bottom-left"></div>
-        <div class="toast-corner bottom-right"></div>
-        <div class="toast-message">
-            There was an error processing your livestream registration, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>
-        </div>
-        <button class="toast-dismiss">DISMISS</button>
-    `;
-    toast.appendChild(content);
-    
-    // Add to container with animation
-    toastContainer.appendChild(toast);
-    
-    // Initialize Perlin noise animation with red particles
-    initToastPerlinNoise(canvas, { colorProfile: 'red' });
-    
-    // Dismiss function
-    const dismissToast = () => {
-        // Add slide out animation
-        toast.style.animation = 'toastSlideOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
-        
-        // Re-enable scroll
-        document.body.style.overflow = '';
-        
-        // Hide container after animation
-        setTimeout(() => {
-            toastContainer.classList.remove('active');
-            toastContainer.innerHTML = '';
-        }, 500);
-    };
-    
-    // Add dismiss button handler
-    const dismissButton = toast.querySelector('.toast-dismiss');
-    dismissButton.addEventListener('click', dismissToast);
-    
-    // Auto-dismiss after 10 seconds
-    setTimeout(dismissToast, 10000);
-    
-    // Disable scroll on body while toast is active
-    document.body.style.overflow = 'hidden';
+function showLivestreamSuccessMessage() {
+    showGenericSuccessMessage('You\'re registered for the livestream!<br>Check your email for confirmation and access details.');
 }
 
-// Generic error message function for validation errors
-function showErrorMessage(message) {
+function showGenericErrorMessage(message) {
     // Get toast container
     const toastContainer = document.getElementById('toast-container');
     if (!toastContainer) return;
@@ -894,6 +824,11 @@ function showErrorMessage(message) {
     // Disable scroll on body while toast is active
     document.body.style.overflow = 'hidden';
 }
+
+function showLivestreamErrorMessage() {
+    showGenericErrorMessage('There was an error processing your livestream registration, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>');
+}
+
 
 // Contact Form Handling
 function initContactForm() {
@@ -1052,78 +987,7 @@ function validateContactForm(data) {
 }
 
 function showContactSuccessMessage() {
-    // Get toast container
-    const toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) return;
-    
-    // Clear any existing toasts
-    toastContainer.innerHTML = '';
-    
-    // Show container
-    toastContainer.classList.add('active');
-    
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    
-    // Create Perlin noise canvas
-    const canvas = document.createElement('canvas');
-    canvas.className = 'toast-perlin-bg';
-    toast.appendChild(canvas);
-    
-    // Add content
-    const content = document.createElement('div');
-    content.className = 'toast-content';
-    content.innerHTML = `
-        <div class="toast-corner top-left"></div>
-        <div class="toast-corner top-right"></div>
-        <div class="toast-corner bottom-left"></div>
-        <div class="toast-corner bottom-right"></div>
-        <div class="toast-message">
-            Your message has been received by our team.<br>
-            We will respond ASAP, thanks for reaching out.
-        </div>
-        <button class="toast-dismiss">DISMISS</button>
-    `;
-    toast.appendChild(content);
-    
-    // Add toast to container
-    toastContainer.appendChild(toast);
-    
-    // Initialize Perlin noise animation with green particles
-    initToastPerlinNoise(canvas, { colorProfile: 'green' });
-    
-    // Dismiss function
-    const dismissToast = () => {
-        // Add slide out animation
-        toast.style.animation = 'toastSlideOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
-        
-        // Re-enable scroll
-        document.body.style.overflow = '';
-        
-        // Remove after animation
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-            // Hide container when toast is removed
-            toastContainer.classList.remove('active');
-        }, 500);
-    };
-    
-    // Handle dismiss button
-    const dismissBtn = toast.querySelector('.toast-dismiss');
-    dismissBtn.addEventListener('click', dismissToast);
-    
-    // Click outside to dismiss
-    toastContainer.addEventListener('click', (e) => {
-        if (e.target === toastContainer) {
-            dismissToast();
-        }
-    });
-    
-    // Prevent body scroll while toast is visible
-    document.body.style.overflow = 'hidden';
+    showGenericSuccessMessage('Your message has been received by our team.<br>We will respond ASAP, thanks for reaching out.');
 }
 
 // Initialize Perlin noise for toast background using existing system
@@ -1225,77 +1089,7 @@ function initToastPerlinNoise(canvas, config = {}) {
 }
 
 function showContactErrorMessage() {
-    // Get toast container
-    const toastContainer = document.getElementById('toast-container');
-    if (!toastContainer) return;
-    
-    // Clear any existing toasts
-    toastContainer.innerHTML = '';
-    
-    // Show container
-    toastContainer.classList.add('active');
-    
-    // Create toast element
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    
-    // Create Perlin noise canvas
-    const canvas = document.createElement('canvas');
-    canvas.className = 'toast-perlin-bg';
-    toast.appendChild(canvas);
-    
-    // Add content
-    const content = document.createElement('div');
-    content.className = 'toast-content';
-    content.innerHTML = `
-        <div class="toast-corner top-left"></div>
-        <div class="toast-corner top-right"></div>
-        <div class="toast-corner bottom-left"></div>
-        <div class="toast-corner bottom-right"></div>
-        <div class="toast-message">
-            There was an error processing your query, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>
-        </div>
-        <button class="toast-dismiss">DISMISS</button>
-    `;
-    toast.appendChild(content);
-    
-    // Add toast to container
-    toastContainer.appendChild(toast);
-    
-    // Initialize Perlin noise animation with red particles
-    initToastPerlinNoise(canvas, { colorProfile: 'red' });
-    
-    // Dismiss function
-    const dismissToast = () => {
-        // Add slide out animation
-        toast.style.animation = 'toastSlideOut 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards';
-        
-        // Re-enable scroll
-        document.body.style.overflow = '';
-        
-        // Remove after animation
-        setTimeout(() => {
-            if (toast.parentNode) {
-                toast.remove();
-            }
-            // Hide container when toast is removed
-            toastContainer.classList.remove('active');
-        }, 500);
-    };
-    
-    // Handle dismiss button
-    const dismissBtn = toast.querySelector('.toast-dismiss');
-    dismissBtn.addEventListener('click', dismissToast);
-    
-    // Click outside to dismiss
-    toastContainer.addEventListener('click', (e) => {
-        if (e.target === toastContainer) {
-            dismissToast();
-        }
-    });
-    
-    // Prevent body scroll while toast is visible
-    document.body.style.overflow = 'hidden';
+    showGenericErrorMessage('There was an error processing your query, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>');
 }
 
 // Animate numbers in the course details section

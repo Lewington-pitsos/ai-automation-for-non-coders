@@ -81,4 +81,8 @@ function initChart() {
 }
 
 // Make function globally available
-window.initChart = initChart;
+window.addEventListener('load', async () => {    
+    setTimeout(() => {
+        initChart();
+    }, 100);
+});
