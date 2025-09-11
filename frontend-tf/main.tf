@@ -206,7 +206,7 @@ resource "aws_route53_record" "website_www" {
 # S3 object for syncing website files
 resource "null_resource" "sync_website_files" {
   triggers = {
-    always_run = timestamp()
+    src_files = join(",", [for f in fileset("../src", "**") : filemd5("../src/${f}")])
   }
 
   provisioner "local-exec" {

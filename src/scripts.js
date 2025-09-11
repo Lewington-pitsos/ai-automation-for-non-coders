@@ -556,9 +556,6 @@ function showGenericSuccessMessage(message) {
     // Add to container with animation
     toastContainer.appendChild(toast);
     
-    // Initialize Perlin noise animation with green particles
-    // initToastPerlinNoise(canvas, { colorProfile: 'green' });
-    
     // Dismiss function
     const dismissToast = () => {
         // Add slide out animation
@@ -623,9 +620,7 @@ function showGenericErrorMessage(message) {
     
     // Add to container with animation
     toastContainer.appendChild(toast);
-    
-    // Initialize Perlin noise animation with red particles
-    initToastPerlinNoise(canvas, { colorProfile: 'red' });
+
     
     // Dismiss function
     const dismissToast = () => {
@@ -800,104 +795,6 @@ async function handleGenericFormSubmission(event, config) {
     }
 }
 
-
-// Initialize Perlin noise for toast background using existing system
-function initToastPerlinNoise(canvas, config = {}) {
-    // Give the canvas a temporary ID
-    const tempId = 'toastPerlinCanvas';
-    canvas.id = tempId;
-    
-    // Set canvas size - extend height above and below popup for invisible particle areas
-    const rect = canvas.parentElement.getBoundingClientRect();
-    const exitBuffer = 5; // Extra height below popup
-    canvas.width = rect.width;
-    canvas.height = rect.height + exitBuffer;
-    
-    // Position canvas so the extra height is above the visible popup
-    canvas.style.position = 'absolute';
-    canvas.style.top = `-1px`;
-    canvas.style.left = '0';
-    
-    // Use the existing createFlowField function but modify it for toast
-    const ctx = canvas.getContext('2d');
-    const spacing = 15;
-    const rez = 0.1;
-    const grid = [];
-    const perlin = new PerlinNoise();
-    
-    // Create grid
-    const radius = spacing / 2;
-    for (let x = 0; x < canvas.width - radius; x += spacing) {
-        const row = [];
-        for (let y = 0; y < canvas.height - radius; y += spacing) {
-            const noiseValue = (perlin.noise(x * rez, y * rez) + 1) * 0.5;
-            const angle = noiseValue * Math.PI * 2;
-            const biasedAngle = angle * 0.5;
-            row.push(new GridAngle(x, y, radius, biasedAngle));
-        }
-        grid.push(row);
-    }
-    
-    let particles = [];
-    let particleLimit = 45; // Fewer particles for smaller toast
-    let frameCount = 0;
-    let animationId = null;
-    let isAnimating = true;
-    
-    function animate() {
-        if (!isAnimating) return;
-        
-        frameCount++;
-        
-        if (frameCount % 2 === 0) {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Add new particles - spawn them in the buffer area above visible popup
-            if (particles.length < particleLimit) {
-                const spawnCount = Math.min(2, particleLimit - particles.length);
-                for (let i = 0; i < spawnCount; i++) {
-                    const particle = new Particle(canvas, config);
-                    // Override spawn position to be in the buffer area above visible popup
-                    particle.y = 0; // Spawn in buffer area above popup
-                    particles.push(particle);
-                }
-            }
-            
-            // Update and draw particles
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update(grid, spacing);
-                particles[i].draw(ctx);
-                
-                // Check if particle is dead - use actual visible popup height for bottom boundary
-                if (particles[i].isDead()) {
-                    particles.splice(i, 1);
-                }
-            }
-        }
-        
-        animationId = requestAnimationFrame(animate);
-    }
-    
-    // Clear canvas initially
-    ctx.fillStyle = 'rgba(0, 0, 0, 0)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Start animation
-    animate();
-    
-    // Clean up when toast is removed
-    const observer = new MutationObserver(() => {
-        if (!document.contains(canvas)) {
-            isAnimating = false;
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
-            observer.disconnect();
-        }
-    });
-    observer.observe(canvas.parentElement.parentElement, { childList: true });
-}
 
 
 // Animate numbers in the course details section
