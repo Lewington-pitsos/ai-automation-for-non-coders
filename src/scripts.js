@@ -290,147 +290,8 @@ document.addEventListener('DOMContentLoaded', function() {
     initCourseTimelineAnimations();
 });
 
-// Registration Form Handling
-function initRegistrationForm() {
-    initGenericForm('registrationForm', handleFormSubmission, checkFormValidity, true);
-}
 
-function checkFormValidity() {
-    checkGenericFormValidity('registrationForm', [
-        '#firstName', '#lastName', '#email', '#phone', 
-        '#experience', '#company', '#jobTitle'
-    ]);
-}
 
-async function handleFormSubmission(event) {
-    event.preventDefault();
-    
-    const form = event.target;
-    const formData = new FormData(form);
-    
-    // Convert form data to object
-    const registrationData = {};
-    for (let [key, value] of formData.entries()) {
-        registrationData[key] = value.trim();
-    }
-    
-    // Check if this is an auto-fill registration (has applicant_id)
-    const applicantId = form.getAttribute('data-applicant-id');
-    if (applicantId) {
-        registrationData.applicant_id = applicantId;
-    }
-    
-    // Validate form
-    if (!validateForm(registrationData)) {
-        return;
-    }
-    
-    // Disable submit button and show loading state
-    const submitButton = form.querySelector('button[type="submit"]');
-    const originalText = submitButton.textContent;
-    submitButton.disabled = true;
-    submitButton.textContent = 'PROCESSING...';
-    
-    // Wait for config to load if needed
-    if (typeof configPromise !== 'undefined') {
-        await configPromise;
-    }
-    
-    // Call registration API first
-    const apiUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.API_URL 
-        ? `${API_CONFIG.API_URL}/register`
-        : 'https://YOUR_API_GATEWAY_URL/prod/register';
-    
-    fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            email: registrationData.email,
-            name: `${registrationData.firstName} ${registrationData.lastName}`,
-            phone: registrationData.phone,
-            company: registrationData.company || '',
-            job_title: registrationData.jobTitle || '',
-            experience: registrationData.experience,
-            referral_source: 'applied',
-            automation_interest: registrationData.automationInterest || '',
-            dietary_requirements: 'none',
-            course_id: API_CONFIG.COURSE_ID || '01_ai_automation_for_non_coders',
-            ...(registrationData.applicant_id && { applicant_id: registrationData.applicant_id })
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(data => {
-                throw data;
-            });
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.registration_id) {
-            
-            // Store registration ID for later use
-            sessionStorage.setItem('registrationId', data.registration_id);
-            sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
-            
-            // Append registration_id and email to Stripe URL
-            const stripeUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.STRIPE_PAYMENT_LINK
-            const email = encodeURIComponent(registrationData.email);
-            // Pass registration_id as client_reference_id and prefill email
-            window.location.href = `${stripeUrl}?client_reference_id=${data.registration_id}&prefilled_email=${email}`;
-        } else {
-            throw new Error('Registration failed');
-        }
-    })
-    .catch(error => {
-        console.error('Registration error:', error);
-        
-        // Check for specific error types
-        if (error.error === 'email_already_registered') {
-            showFormErrors(['This email has already been registered for this course. Please use a different email address or contact support if you need assistance.']);
-        } else {
-            showFormErrors(['Registration failed. Please try again or contact support.']);
-        }
-        
-        submitButton.disabled = false;
-        submitButton.textContent = originalText;
-    });
-}
-
-function validateForm(data) {
-    const errors = [];
-    
-    // Required field validation
-    if (!data.firstName) errors.push('First name is required');
-    if (!data.lastName) errors.push('Last name is required');
-    if (!data.email) errors.push('Email address is required');
-    if (!data.phone) errors.push('Phone number is required');
-    if (!data.experience) errors.push('Coding experience level is required');
-    if (!data.company) errors.push('Company is required');
-    if (!data.jobTitle) errors.push('Job title is required');
-    
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (data.email && !emailRegex.test(data.email)) {
-        errors.push('Please enter a valid email address');
-    }
-    
-    // Phone validation (basic)
-    const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
-    if (data.phone && !phoneRegex.test(data.phone)) {
-        errors.push('Please enter a valid phone number');
-    }
-    
-    if (errors.length > 0) {
-        showFormErrors(errors);
-        return false;
-    }
-    
-    clearFormErrors();
-    return true;
-}
 
 function validateField(event) {
     const field = event.target;
@@ -541,49 +402,6 @@ function clearFormErrors() {
     }
 }
 
-function showSuccessMessage() {
-    // Remove existing success message
-    const existingSuccess = document.querySelector('.form-success');
-    if (existingSuccess) {
-        existingSuccess.remove();
-    }
-    
-    // Create success message
-    const successContainer = document.createElement('div');
-    successContainer.className = 'form-success';
-    successContainer.style.cssText = `
-        background: rgba(78, 255, 159, 0.1);
-        border: 1px solid #4eff9f;
-        color: #4eff9f;
-        padding: 24px;
-        margin-bottom: 24px;
-        text-align: center;
-        font-size: 16px;
-        font-weight: 600;
-    `;
-    
-    successContainer.innerHTML = `
-        <div style="font-size: 24px; margin-bottom: 8px;">✓</div>
-        <div>Registration Successful!</div>
-        <div style="font-size: 14px; margin-top: 8px; font-weight: normal; color: #ccc;">
-            We'll be in touch soon with payment details and course information.
-        </div>
-    `;
-    
-    // Insert at the top of the form
-    const form = document.getElementById('registrationForm');
-    form.insertBefore(successContainer, form.firstChild);
-    
-    // Scroll to success message
-    successContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // Auto-remove after 10 seconds
-    setTimeout(() => {
-        if (successContainer.parentNode) {
-            successContainer.remove();
-        }
-    }, 10000);
-}
 
 // Application Form Handling
 function initApplicationForm() {
@@ -600,7 +418,7 @@ function initApplicationForm() {
             }
             
             // Validate required fields
-            const requiredFields = ['name', 'email', 'phone', 'experience', 'company', 'jobTitle', 'timeCommitment', 'automationInterest', 'automationBarriers'];
+            const requiredFields = ['name', 'email', 'phone', 'company', 'jobTitle', 'timeCommitment', 'automationInterest', 'automationBarriers'];
             for (const field of requiredFields) {
                 if (!data[field]) {
                     return { isValid: false, error: `Please fill in all required fields` };
@@ -613,7 +431,7 @@ function initApplicationForm() {
             }
             
             // Validate consent checkbox
-            if (!data.consent) {
+            if (!data.contactConsent) {
                 return { isValid: false, error: 'You must consent to being contacted about this course' };
             }
             
@@ -637,14 +455,13 @@ function checkApplicationFormValidity() {
         '#lastName[required]', 
         '#email[required]',
         '#phone[required]',
-        '#experience[required]',
         '#company[required]',
         '#jobTitle[required]',
         '#timeCommitment[required]',
         '#automationInterest[required]',
         '#automationBarriers[required]',
         '#attendance[required]',
-        '#consent[required]'
+        '#contactConsent[required]'
     ]);
 }
 
@@ -1200,99 +1017,8 @@ function initFeatureCards() {
     }
 }
 
-// Auto-fill registration form from URL parameters (for approved applicants)
-function populateFormFromURL() {
-    const registrationForm = document.getElementById('registrationForm');
-    if (!registrationForm) return;
-    
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Check if this is an auto-fill request (has applicant_id)
-    if (!urlParams.get('applicant_id')) return;
-    
-    // Map URL parameters to form field IDs
-    const fieldMappings = {
-        'email': 'email',
-        'firstName': 'firstName', 
-        'lastName': 'lastName',
-        'phone': 'phone',
-        'company': 'company',
-        'jobTitle': 'jobTitle',
-        'experience': 'experience',
-        'company': 'company',
-        'jobTitle': 'jobTitle',
-        'automationInterest': 'automationInterest'
-    };
-    
-    // Store applicant_id in a hidden field or data attribute for later use
-    registrationForm.setAttribute('data-applicant-id', urlParams.get('applicant_id'));
-    
-    // Populate form fields
-    Object.entries(fieldMappings).forEach(([paramName, fieldId]) => {
-        const paramValue = urlParams.get(paramName);
-        if (paramValue) {
-            const field = document.getElementById(fieldId);
-            if (field) {
-                if (field.tagName.toLowerCase() === 'select') {
-                    // For select elements, set the value directly
-                    field.value = paramValue;
-                } else if (field.tagName.toLowerCase() === 'textarea' || field.type === 'text' || field.type === 'email' || field.type === 'tel') {
-                    // For text inputs and textareas
-                    field.value = decodeURIComponent(paramValue);
-                }
-            }
-        }
-    });
-    
-    // Combine first and last name for the name field if it exists
-    const firstName = urlParams.get('firstName');
-    const lastName = urlParams.get('lastName');
-    if (firstName || lastName) {
-        const nameField = document.getElementById('name');
-        if (nameField) {
-            nameField.value = `${firstName || ''} ${lastName || ''}`.trim();
-        }
-    }
-    
-    // Show a message that the form has been pre-filled
-    if (urlParams.get('applicant_id')) {
-        showAutoFillMessage();
-    }
-    
-    // Re-run form validation to update button states
-    if (typeof checkRegistrationFormValidity === 'function') {
-        setTimeout(checkRegistrationFormValidity, 100);
-    }
-}
 
-function showAutoFillMessage() {
-    // Create info message
-    const infoContainer = document.createElement('div');
-    infoContainer.className = 'form-info';
-    infoContainer.style.cssText = `
-        background: rgba(78, 255, 159, 0.1);
-        border: 1px solid #4eff9f;
-        color: #4eff9f;
-        padding: 16px;
-        margin-bottom: 24px;
-        font-size: 14px;
-    `;
-    
-    infoContainer.innerHTML = `
-        <div style="font-weight: 600; margin-bottom: 8px;">✓ Application Approved!</div>
-        <div>Your information has been pre-filled from your application. Please review and complete your registration below.</div>
-    `;
-    
-    // Insert at the top of the form
-    const form = document.getElementById('registrationForm');
-    const existingInfo = document.querySelector('.form-info');
-    if (existingInfo) {
-        existingInfo.remove();
-    }
-    form.insertBefore(infoContainer, form.firstChild);
-}
-
-// Initialize registration form when DOM is loaded
+// Initialize forms when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     // Audio hover functionality for CTA buttons
     const hoverAudio = new Audio('assets/audio/621849__welvynzportersamples__slow-building-synth-riser-uplifter.wav');
@@ -1406,14 +1132,149 @@ document.addEventListener('DOMContentLoaded', function() {
     initPersonaCards();
     initCourseTimelineAnimations();
     initFeatureCards();
-    initRegistrationForm();
     initApplicationForm();
     initContactForm();
     initLivestreamForm();
-    populateFormFromURL();
     animateNumbers();
     initDetailCardAnimations();
 });
 
 // Make functions globally available for inline event handlers
 window.toggleFAQ = toggleFAQ;
+
+
+
+
+function initRegistrationForm() {
+    initGenericForm('registrationForm', handleFormSubmission, checkFormValidity, true);
+}
+
+async function handleFormSubmission(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Convert form data to object
+    const registrationData = {};
+    for (let [key, value] of formData.entries()) {
+        registrationData[key] = value.trim();
+    }
+    
+    // Check if this is an auto-fill registration (has applicant_id)
+    const applicantId = form.getAttribute('data-applicant-id');
+    if (applicantId) {
+        registrationData.applicant_id = applicantId;
+    }
+    
+    // Validate form
+    if (!validateForm(registrationData)) {
+        return;
+    }
+    
+    // Disable submit button and show loading state
+    const submitButton = form.querySelector('button[type="submit"]');
+    const originalText = submitButton.textContent;
+    submitButton.disabled = true;
+    submitButton.textContent = 'PROCESSING...';
+    
+    // Wait for config to load if needed
+    if (typeof configPromise !== 'undefined') {
+        await configPromise;
+    }
+    
+    // Call registration API first
+    const apiUrl = `${API_CONFIG.API_URL}/register`;
+    
+    fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: registrationData.email,
+            name: `${registrationData.firstName} ${registrationData.lastName}`,
+            phone: registrationData.phone,
+            company: registrationData.company || '',
+            job_title: registrationData.jobTitle || '',
+            experience: registrationData.experience,
+            referral_source: 'applied',
+            automation_interest: registrationData.automationInterest || '',
+            dietary_requirements: 'none',
+            course_id: API_CONFIG.COURSE_ID || '01_ai_automation_for_non_coders',
+            ...(registrationData.applicant_id && { applicant_id: registrationData.applicant_id })
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw data;
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.registration_id) {
+            
+            // Store registration ID for later use
+            sessionStorage.setItem('registrationId', data.registration_id);
+            sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
+            
+            // Append registration_id and email to Stripe URL
+            const stripeUrl = typeof API_CONFIG !== 'undefined' && API_CONFIG.STRIPE_PAYMENT_LINK
+            const email = encodeURIComponent(registrationData.email);
+            // Pass registration_id as client_reference_id and prefill email
+            window.location.href = `${stripeUrl}?client_reference_id=${data.registration_id}&prefilled_email=${email}`;
+        } else {
+            throw new Error('Registration failed');
+        }
+    })
+    .catch(error => {
+        console.error('Registration error:', error);
+        
+        // Check for specific error types
+        if (error.error === 'email_already_registered') {
+            showFormErrors(['This email has already been registered for this course. Please use a different email address or contact support if you need assistance.']);
+        } else {
+            showFormErrors(['Registration failed. Please try again or contact support.']);
+        }
+        
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
+    });
+}
+
+
+
+function validateForm(data) {
+    const errors = [];
+    
+    // Required field validation
+    if (!data.firstName) errors.push('First name is required');
+    if (!data.lastName) errors.push('Last name is required');
+    if (!data.email) errors.push('Email address is required');
+    if (!data.phone) errors.push('Phone number is required');
+    if (!data.experience) errors.push('Coding experience level is required');
+    if (!data.company) errors.push('Company is required');
+    if (!data.jobTitle) errors.push('Job title is required');
+    
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (data.email && !emailRegex.test(data.email)) {
+        errors.push('Please enter a valid email address');
+    }
+    
+    // Phone validation (basic)
+    const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+    if (data.phone && !phoneRegex.test(data.phone)) {
+        errors.push('Please enter a valid phone number');
+    }
+    
+    if (errors.length > 0) {
+        showFormErrors(errors);
+        return false;
+    }
+    
+    clearFormErrors();
+    return true;
+}

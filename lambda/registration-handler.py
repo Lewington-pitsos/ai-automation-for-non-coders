@@ -22,21 +22,6 @@ def lambda_handler(event, context):
         course_id = body.get("course_id")
         applicant_id = body.get("applicant_id")  # For auto-fill from approved applications
         
-        # Validate required fields
-        if not body.get("referral_source"):
-            logger.error("Missing required field: referral_source")
-            return {
-                "statusCode": 400,
-                "headers": {
-                    "Access-Control-Allow-Origin": "*",
-                    "Access-Control-Allow-Headers": "Content-Type",
-                    "Access-Control-Allow-Methods": "POST, OPTIONS"
-                },
-                "body": json.dumps({
-                    "error": "missing_required_field",
-                    "message": "referral_source is required"
-                })
-            }
         
         if not body.get("dietary_requirements"):
             logger.error("Missing required field: dietary_requirements")
@@ -186,8 +171,7 @@ def lambda_handler(event, context):
             "phone": body.get("phone", ""),
             "company": body.get("company", ""),
             "job_title": body.get("job_title", ""),
-            "experience": body.get("experience", ""),
-            "referral_source": body["referral_source"],
+            "referral_source": "direct",
             "automation_interest": body.get("automation_interest", ""),
             "dietary_requirements": body["dietary_requirements"],
             "payment_status": "pending",

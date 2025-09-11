@@ -123,17 +123,18 @@ def lambda_handler(event, context):
         if registration_type == 'application':
             # Add additional fields from registration form
             item.update({
+                "first_name": body.get("firstName", ""),
+                "last_name": body.get("lastName", ""),
                 "phone": body.get("phone", ""),
                 "company": body.get("company", ""),
                 "job_title": body.get("jobTitle", ""),
-                "experience": body.get("experience", ""),
-                "referral_source": "applied",
                 "automation_interest": body.get("automationInterest", ""),
                 "automation_barriers": body.get("automationBarriers", ""),
                 "time_commitment": body.get("timeCommitment", ""),
                 "attendance_confirmed": body.get("attendance", False),
-                "consent_given": body.get("consent", False),
-                "dietary_requirements": "none",
+                "contact_consent_given": body.get("contactConsent", False),
+                "dietary_requirements": body.get("dietaryRequirements", ""),
+                "terms_accepted": body.get("terms", False),
             })
         
         # Store in DynamoDB
@@ -146,7 +147,7 @@ def lambda_handler(event, context):
                 send_application_confirmation_email(name, email, registration_id)
                 logger.info(f"Application confirmation email sent to {email}")
             else:
-                send_user_confirmation_email(name, email, registration_id)
+                send_livestream_confirmation_email(name, email, registration_id)
                 logger.info(f"Livestream confirmation email sent to {email}")
         except Exception as email_error:
             logger.error(f"Error sending confirmation email: {str(email_error)}")
@@ -418,7 +419,7 @@ See you soon!,
             }
         }
     
-def send_user_confirmation_email(name, email, registration_id):
+def send_livestream_confirmation_email(name, email, registration_id):
     """
     Send confirmation email to user for livestream registration
     """
@@ -499,18 +500,19 @@ New Application Submitted
 
 Basic Information:
 - Name: {name}
+- First Name: {application_data.get('firstName', 'Not provided')}
+- Last Name: {application_data.get('lastName', 'Not provided')}
 - Email: {email}
 - Phone: {application_data.get('phone', 'Not provided')}
 - Company: {application_data.get('company', 'Not provided')}
 - Job Title: {application_data.get('jobTitle', 'Not provided')}
-
-Technical Background:
-- Coding Experience: {application_data.get('experience', 'Not provided')}
+- Dietary Requirements: {application_data.get('dietaryRequirements', 'Not provided')}
 
 Course Commitment:
 - Time Commitment (hrs/day): {application_data.get('timeCommitment', 'Not provided')}
 - Attendance Confirmed: {'Yes' if application_data.get('attendance') else 'No'}
-- Consent Given: {'Yes' if application_data.get('consent') else 'No'}
+- Contact Consent Given: {'Yes' if application_data.get('contactConsent') else 'No'}
+- Terms Accepted: {'Yes' if application_data.get('terms') else 'No'}
 
 Application Details:
 - Automation Interest: {application_data.get('automationInterest', 'Not provided')}

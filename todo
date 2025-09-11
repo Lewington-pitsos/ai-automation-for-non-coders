@@ -10,33 +10,12 @@ both will be meta conversions registration events but with different parameters 
 
 
 ---
-- do some refactoring 
+remove the registration page from the course alltogether. we will only have the apply page.
 
+this means removing any javascript for that form as well
 
-
----
-
-> we need to change the registration form to an application form. 
-
-  the way this will work is (1) the user fills out the application
-
-  (2) it gets saved as a registration, but with a status of "applied"
-
-  (3) we send an email to thank them for applying and let them know we will be in touch
-
-  (4) on our end we review the application and either accept or reject it.
-
-  (5) there is then a new lambda or an endpoint on an existing lambda where we pass it the id of an application in the database and it 
-
-      (1) moves them to pending rather than applied
-      (2) sends a notification to the user congratulating them on making it into the course along with a link to the registration page which using url parameters auto fills in most of the fields 
-
-  the current registration page will be removed from the header, and instead we will have an "apply" button which goes to the application form.
-
-  the same with all the cta buttons, they now go to the application form.
-
-  the registration form is still there though, just nothing links to it. people can still find it if they want to.
-   do not make any chnages yet, just plan what changes you will make
-
+and remove any tests for that form
 
 ---
+
+the livestream-handler should be renamed to application_handler and we need to update all references to it accordingly

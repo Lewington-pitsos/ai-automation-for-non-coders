@@ -168,7 +168,6 @@ def create_registration_url(application):
         'phone': application.get('phone', ''),
         'company': application.get('company', ''),
         'jobTitle': application.get('job_title', ''),
-        'experience': application.get('experience', ''),
         'automationInterest': application.get('automation_interest', '')
     }
     
