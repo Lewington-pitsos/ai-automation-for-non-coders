@@ -1489,6 +1489,15 @@ a:hover {
     justify-content: center;
 }
 
+.credentials-section {
+    text-align: left !important;
+}
+
+
+.credentials-list {
+    text-align: left;
+}
+
 .instructor-credentials {
     display: flex;
     flex-direction: column;
@@ -1503,6 +1512,7 @@ a:hover {
 .instructor-image-hero {
     width: 350px;
     flex-shrink: 0;
+
 }
 
 .instructor-image-featured {
@@ -1517,14 +1527,12 @@ a:hover {
     .instructor-showcase {
         flex-direction: column;
         gap: 32px;
-        text-align: center;
     }
     
     .instructor-image-hero {
         order: -1;
         width: 100%;
         max-width: 350px;
-        margin: 0 auto;
     }
     
     .instructor-image-featured {
