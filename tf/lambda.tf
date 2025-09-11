@@ -75,13 +75,13 @@ resource "aws_lambda_function" "contact_handler" {
   }
 }
 
-# Livestream Handler Lambda
-resource "aws_lambda_function" "livestream_handler" {
-  filename         = "../lambda/livestream-handler.zip"
-  function_name    = "${var.project_name}-livestream-handler"
+# Application Handler Lambda
+resource "aws_lambda_function" "application_handler" {
+  filename         = "../lambda/application_handler.zip"
+  function_name    = "${var.project_name}-application-handler"
   role            = aws_iam_role.lambda_execution_role.arn
   handler         = "lambda_function.lambda_handler"
-  source_code_hash = filebase64sha256("../lambda/livestream-handler.zip")
+  source_code_hash = filebase64sha256("../lambda/application_handler.zip")
   runtime         = "python3.11"
   timeout         = 30
 
@@ -96,7 +96,7 @@ resource "aws_lambda_function" "livestream_handler" {
   }
 
   tags = {
-    Name        = "${var.project_name}-livestream-handler"
+    Name        = "${var.project_name}-application-handler"
     Environment = var.environment
   }
 }

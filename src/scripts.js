@@ -435,6 +435,11 @@ function initApplicationForm() {
                 return { isValid: false, error: 'You must consent to being contacted about this course' };
             }
             
+            // Validate terms checkbox
+            if (!data.terms) {
+                return { isValid: false, error: 'You must agree to the terms and conditions' };
+            }
+            
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(data.email)) {
                 return { isValid: false, error: 'Please enter a valid email address' };
@@ -442,7 +447,7 @@ function initApplicationForm() {
             
             return { isValid: true };
         },
-        successMessage: 'Application submitted successfully!<br>We\'ll review your application and get back to you within 3-5 business days.',
+        successMessage: 'Thanks for taking the time to apply, we take all applications seriously and will respond within 48 hours',
         errorMessage: 'There was an error submitting your application. Please try again later or contact us directly.',
         validityChecker: checkApplicationFormValidity
     };
@@ -461,7 +466,8 @@ function checkApplicationFormValidity() {
         '#automationInterest[required]',
         '#automationBarriers[required]',
         '#attendance[required]',
-        '#contactConsent[required]'
+        '#contactConsent[required]',
+        '#terms[required]'
     ]);
 }
 
@@ -762,9 +768,8 @@ async function handleGenericFormSubmission(event, config) {
             body: JSON.stringify(data)
         });
         
-        const result = await response.json();
-        
         if (response.ok) {
+            const result = await response.json();
             // Show success toast
             showGenericSuccessMessage(config.successMessage);
             
@@ -772,13 +777,22 @@ async function handleGenericFormSubmission(event, config) {
             form.reset();
             config.validityChecker();
         } else {
-            // Check for duplicate registration error (409 status) for livestream
-            if (response.status === 409 && config.endpoint === 'livestream') {
-                showGenericErrorMessage('This email has already registered for this event. Please try another email.');
-            } else {
-                // Show generic error message
-                showGenericErrorMessage(config.errorMessage);
+            // Handle error responses
+            console.log('Error response status:', response.status);
+            
+            let errorMessage = config.errorMessage;
+            
+            // Try to get error message from response
+            try {
+                const errorResult = await response.json();
+                if (errorResult.error) {
+                    errorMessage = errorResult.error;
+                }
+            } catch (jsonError) {
+                console.log('Could not parse error response JSON');
             }
+            
+            showGenericErrorMessage(errorMessage);
         }
     } catch (error) {
         console.error(`${config.endpoint} form error:`, error);

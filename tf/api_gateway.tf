@@ -231,7 +231,7 @@ resource "aws_api_gateway_integration" "livestream_integration" {
   http_method             = aws_api_gateway_method.livestream_post.http_method
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.livestream_handler.invoke_arn
+  uri                     = aws_lambda_function.application_handler.invoke_arn
 }
 
 
@@ -249,13 +249,17 @@ resource "aws_api_gateway_deployment" "course_api" {
   rest_api_id = aws_api_gateway_rest_api.course_api.id
   stage_name  = var.environment
 
-  # Force redeployment when endpoints are added
+  # Force redeployment when endpoints or Lambda functions change
   triggers = {
     redeployment = sha1(jsonencode([
       aws_api_gateway_integration.register_integration.id,
       aws_api_gateway_integration.contact_integration.id,
       aws_api_gateway_integration.stripe_webhook_integration.id,
-      aws_api_gateway_integration.livestream_integration.id
+      aws_api_gateway_integration.livestream_integration.id,
+      aws_lambda_function.registration_handler.source_code_hash,
+      aws_lambda_function.contact_handler.source_code_hash,
+      aws_lambda_function.payment_webhook.source_code_hash,
+      aws_lambda_function.application_handler.source_code_hash
     ]))
   }
 
@@ -291,7 +295,7 @@ resource "aws_lambda_permission" "api_gateway_contact" {
 resource "aws_lambda_permission" "api_gateway_livestream" {
   statement_id  = "AllowExecutionFromAPIGateway"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.livestream_handler.function_name
+  function_name = aws_lambda_function.application_handler.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.course_api.execution_arn}/*/*"
 }

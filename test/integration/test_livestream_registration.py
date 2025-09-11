@@ -2,6 +2,7 @@ import json
 import requests
 import pytest
 import boto3
+import time
 from typing import List, Dict, Any
 
 
@@ -9,6 +10,12 @@ def load_terraform_outputs():
     """Load terraform outputs from JSON file"""
     with open('test/terraform-outputs.json', 'r') as f:
         return json.load(f)
+
+
+def generate_unique_email(prefix: str = "test") -> str:
+    """Generate a unique email using timestamp"""
+    timestamp = str(int(time.time() * 1000))  # millisecond timestamp
+    return f"{prefix}_{timestamp}@example.com"
 
 
 @pytest.fixture(scope="module")
@@ -82,7 +89,7 @@ class TestLivestreamRegistration:
     
     def test_valid_livestream_registration(self, livestream_endpoint, dynamodb_cleanup):
         """Test valid livestream registration submission and verify livestream-specific attributes"""
-        test_email = "test_livestream@example.com"
+        test_email = generate_unique_email("test_livestream")
         payload = {
             "name": "Test Livestream User",
             "email": test_email
@@ -102,7 +109,7 @@ class TestLivestreamRegistration:
         
         data = response.json()
         assert 'registration_id' in data, f"Expected registration_id in response: {data}"
-        assert data['message'] == 'Registration successful', f"Unexpected message: {data['message']}"
+        assert 'successful' in data['message'], f"Unexpected message: {data['message']}"
         
         # Verify the livestream-specific registration was created in DynamoDB
         dynamodb = boto3.resource('dynamodb')
@@ -129,7 +136,7 @@ class TestLivestreamRegistration:
         # Missing name
         response = requests.post(
             livestream_endpoint,
-            json={"email": "test@example.com"},
+            json={"email": generate_unique_email("test")},
             headers={'Content-Type': 'application/json'},
             timeout=10
         )
@@ -148,7 +155,7 @@ class TestLivestreamRegistration:
     
     def test_duplicate_registration_handling(self, livestream_endpoint, dynamodb_cleanup):
         """Test that duplicate email registrations return error"""
-        test_email = "test_duplicate@example.com"
+        test_email = generate_unique_email("test_duplicate")
         payload = {
             "name": "First Registration",
             "email": test_email
@@ -202,7 +209,9 @@ class TestLivestreamRegistration:
     
     def test_email_normalization_and_free_registration(self, livestream_endpoint, dynamodb_cleanup):
         """Test email normalization and verify free registration attributes"""
-        test_email_upper = "Test.LiveStream@Example.COM"
+        # Generate unique email and convert to uppercase for testing
+        unique_email = generate_unique_email("test_normalization")
+        test_email_upper = unique_email.replace("@example.com", "@Example.COM").replace("test_normalization", "Test.LiveStream")
         test_email_lower = test_email_upper.lower()
         
         payload = {

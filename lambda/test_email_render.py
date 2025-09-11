@@ -1,8 +1,8 @@
 # import importlib.util
-# spec = importlib.util.spec_from_file_location("livestream_handler", "livestream-handler.py")
-# livestream_handler = importlib.util.module_from_spec(spec)
-# spec.loader.exec_module(livestream_handler)
-# create_email_message = livestream_handler.create_email_message
+# spec = importlib.util.spec_from_file_location("application_handler", "application_handler.py")
+# application_handler = importlib.util.module_from_spec(spec)
+# spec.loader.exec_module(application_handler)
+# create_email_message = application_handler.create_email_message
 
 # output = create_email_message("John Doe", "REG123456")
 

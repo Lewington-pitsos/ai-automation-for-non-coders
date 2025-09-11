@@ -7,7 +7,7 @@ aws logs tail /aws/lambda/ai-automation-course-payment-webhook
 aws logs tail /aws/lambda/ai-automation-course-contact-handler
 
 
-aws logs tail /aws/lambda/ai-automation-course-livestream-handler
+aws logs tail /aws/lambda/ai-automation-course-application-handler
 
 
 
