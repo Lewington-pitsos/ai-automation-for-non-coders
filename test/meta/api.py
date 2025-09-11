@@ -1,11 +1,13 @@
 import requests
 import time
+from test.meta.constants import TEST_EVENT_CODE
+
 
 # CORRECT PIXEL ID
 pixel_id = '1232612085335834'  # Your course website pixel
 access_token = 'EAASwaXmwgBsBPTeZCrEXniBubi0Fu0nBfOu4rrEB1l2aDsEw6qbVwZBURWkpUQJds3ZAZBCaxP3ZAf3Eh9c9ZB4cWmUA0saofs0PIHxKGGIKZAiMUzkytpbsC5zg4eoF9EC4vjgkQGptNWKzWguIUu3dCPvdIX37eTRjbEB2PEQS7H4QwjlPQvUwPTk5ncZB7ZCt1aAZDZD'
 
-test_id = 'TEST62526'
+test_id = TEST_EVENT_CODE  # Same test code as your working test
 # Prepare test event for WEBSITE pixel
 event_data = {
     'data': [{
@@ -16,7 +18,7 @@ event_data = {
             'client_ip_address': '192.168.1.1',
             'client_user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
         },
-        'event_source_url': 'https://your-website.com/test-page',
+        'event_source_url': 'https://anyone-can-build.com/test-page',
         'custom_data': {
             'test_parameter': 'API test',
             'currency': 'USD',
