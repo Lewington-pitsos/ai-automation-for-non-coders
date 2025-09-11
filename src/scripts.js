@@ -119,13 +119,8 @@ window.addEventListener('load', async () => {
     
     
     // Initialize Perlin backgrounds - DISABLED FOR TESTING
-    initPerlinBackgrounds();
+    // initPerlinBackgrounds();
 });
-
-window.addEventListener('resize', () => {
-    handlePerlinResize();
-});
-
 // FAQ Accordion functionality
 function toggleFAQ(header) {
     const faqItem = header.parentElement;
@@ -478,7 +473,7 @@ function initLivestreamForm() {
         loadingText: 'SIGNING UP...',
         validationFn: validateLivestreamFormData,
         successMessage: 'You\'re registered for the livestream!<br>Check your email for confirmation and access details.',
-        errorMessage: 'There was an error processing your livestream registration, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>',
+        errorMessage: 'There was an error processing your livestream registration, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #888;">linkedin</a>',
         validityChecker: checkLivestreamFormValidity
     };
     initGenericForm('livestreamForm', (event) => handleGenericFormSubmission(event, config), checkLivestreamFormValidity, true);
@@ -562,7 +557,7 @@ function showGenericSuccessMessage(message) {
     toastContainer.appendChild(toast);
     
     // Initialize Perlin noise animation with green particles
-    initToastPerlinNoise(canvas, { colorProfile: 'green' });
+    // initToastPerlinNoise(canvas, { colorProfile: 'green' });
     
     // Dismiss function
     const dismissToast = () => {
@@ -667,7 +662,7 @@ function initContactForm() {
         loadingText: 'SENDING...',
         validationFn: validateContactFormData,
         successMessage: 'Your message has been received by our team.<br>We will respond ASAP, thanks for reaching out.',
-        errorMessage: 'There was an error processing your query, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #4eff9f;">linkedin</a>',
+        errorMessage: 'There was an error processing your query, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #888;">linkedin</a>',
         validityChecker: checkContactFormValidity
     };
     initGenericForm('contactForm', (event) => handleGenericFormSubmission(event, config), checkContactFormValidity, true);

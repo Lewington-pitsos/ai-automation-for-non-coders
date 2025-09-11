@@ -17,13 +17,13 @@ function initChart() {
             datasets: [{
                 label: 'Search Interest',
                 data: [10, 8, 13, 16, 20, 25, 20, 22, 18, 32, 100],
-                borderColor: '#4eff9f',
-                backgroundColor: 'rgba(78, 255, 159, 0.1)',
+                borderColor: '#888',
+                backgroundColor: 'rgba(136, 136, 136, 0.1)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.3,
-                pointBackgroundColor: '#4eff9f',
-                pointBorderColor: '#4eff9f',
+                pointBackgroundColor: '#888',
+                pointBorderColor: '#888',
                 pointBorderWidth: 2,
                 pointRadius: 5,
                 pointHoverRadius: 8
