@@ -528,32 +528,34 @@ nav {
 
 .section-header-image .image-link {
     height: 300px;
-    background: #111;
-    border: 1px solid #333;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
     cursor: pointer;
 }
 
 .section-header-image .image-link:hover {
-    border-color: #666;
-    background: #1a1a1a;
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-2px);
 }
 
 .section-header-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    opacity: 0.8;
-    transition: opacity 0.3s ease;
+    opacity: 0.9;
+    transition: all 0.4s ease;
     border: 3px solid #fff;
 }
 
 .section-header-image .image-link:hover img {
     opacity: 1;
+    transform: scale(1.03);
 }
 
 .image-caption {
@@ -1455,6 +1457,11 @@ a:hover {
     object-position: 0% 38%;
 }
 
+.instructor-image-hero .image-link {
+    /* existing styles */
+    line-height: 0; /* This removes the space below images */
+}
+
 .instructor-section-title {
     color: #fff;
     margin-bottom: 16px;
@@ -1512,15 +1519,35 @@ a:hover {
 .instructor-image-hero {
     width: 350px;
     flex-shrink: 0;
+}
 
+.instructor-image-hero .image-link {
+    display: block;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    transition: all 0.4s ease;
+    cursor: pointer;
+}
+
+.instructor-image-hero .image-link:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .instructor-image-featured {
     width: 100%;
     height: 500px;
     object-fit: cover;
-    object-position: 20% 38%;
+    object-position: 50% 0%;
     border: 3px solid #fff;
+    opacity: 0.9;
+    transition: all 0.4s ease;
+}
+
+.instructor-image-hero .image-link:hover .instructor-image-featured {
+    opacity: 1;
+    transform: scale(1.02);
 }
 
 @media (max-width: 768px) {
@@ -1691,6 +1718,7 @@ a:hover {
     border: 2px solid #888;
     min-width: 120px;
     animation: pulse 2s ease-in-out infinite;
+    cursor: pointer;
 }
 
 @keyframes pulse {
@@ -2356,77 +2384,6 @@ a:hover {
     animation: shiver 1s linear infinite;
 }
 
-/* @keyframes waver1 {
-    0% { transform: translateX(0) translateY(0) rotate(0deg); }
-    8% { transform: translateX(-2px) translateY(1px) rotate(0.3deg); }
-    16% { transform: translateX(1px) translateY(-7px) rotate(-0.2deg); }
-    24% { transform: translateX(7px) translateY(2px) rotate(0.4deg); }
-    32% { transform: translateX(-1px) translateY(-2px) rotate(-0.3deg); }
-    40% { transform: translateX(2px) translateY(7px) rotate(0.2deg); }
-    48% { transform: translateX(-7px) translateY(-1px) rotate(-0.4deg); }
-    56% { transform: translateX(1px) translateY(2px) rotate(0.3deg); }
-    64% { transform: translateX(2px) translateY(-7px) rotate(-0.2deg); }
-    72% { transform: translateX(-2px) translateY(1px) rotate(0.4deg); }
-    80% { transform: translateX(7px) translateY(-2px) rotate(-0.3deg); }
-    88% { transform: translateX(-1px) translateY(7px) rotate(0.2deg); }
-    96% { transform: translateX(1px) translateY(-1px) rotate(-0.4deg); }
-    100% { transform: translateX(0) translateY(0) rotate(0deg); }
-}
-
-@keyframes waver2 {
-    0% { transform: translateX(0) translateY(0) rotate(0deg); }
-    10% { transform: translateX(3px) translateY(-2px) rotate(-0.2deg); }
-    20% { transform: translateX(-5px) translateY(3px) rotate(0.3deg); }
-    30% { transform: translateX(2px) translateY(-6px) rotate(-0.4deg); }
-    40% { transform: translateX(-7px) translateY(1px) rotate(0.2deg); }
-    50% { transform: translateX(4px) translateY(5px) rotate(-0.3deg); }
-    60% { transform: translateX(-2px) translateY(-4px) rotate(0.4deg); }
-    70% { transform: translateX(6px) translateY(2px) rotate(-0.2deg); }
-    80% { transform: translateX(-3px) translateY(-5px) rotate(0.3deg); }
-    90% { transform: translateX(1px) translateY(3px) rotate(-0.4deg); }
-    100% { transform: translateX(0) translateY(0) rotate(0deg); }
-}
-
-@keyframes waver3 {
-    0% { transform: translateX(0) translateY(0) rotate(0deg); }
-    12% { transform: translateX(5px) translateY(4px) rotate(0.4deg); }
-    25% { transform: translateX(-3px) translateY(-5px) rotate(-0.3deg); }
-    37% { transform: translateX(-6px) translateY(3px) rotate(0.2deg); }
-    50% { transform: translateX(2px) translateY(-7px) rotate(-0.4deg); }
-    62% { transform: translateX(7px) translateY(-2px) rotate(0.3deg); }
-    75% { transform: translateX(-4px) translateY(6px) rotate(-0.2deg); }
-    87% { transform: translateX(3px) translateY(-3px) rotate(0.4deg); }
-    100% { transform: translateX(0) translateY(0) rotate(0deg); }
-}
-
-@keyframes waver4 {
-    0% { transform: translateX(0) translateY(0) rotate(0deg); }
-    15% { transform: translateX(-4px) translateY(-3px) rotate(-0.3deg); }
-    28% { transform: translateX(6px) translateY(-5px) rotate(0.2deg); }
-    42% { transform: translateX(3px) translateY(6px) rotate(-0.4deg); }
-    55% { transform: translateX(-7px) translateY(2px) rotate(0.3deg); }
-    68% { transform: translateX(-2px) translateY(-6px) rotate(-0.2deg); }
-    82% { transform: translateX(5px) translateY(4px) rotate(0.4deg); }
-    95% { transform: translateX(-1px) translateY(-2px) rotate(-0.3deg); }
-    100% { transform: translateX(0) translateY(0) rotate(0deg); }
-}
-
-@keyframes shiver {
-    0% { transform: translateX(0) translateY(0) rotate(0deg); }
-    8% { transform: translateX(-2px) translateY(1px) rotate(0.3deg); }
-    16% { transform: translateX(1px) translateY(-3px) rotate(-0.2deg); }
-    24% { transform: translateX(3px) translateY(2px) rotate(0.4deg); }
-    32% { transform: translateX(-1px) translateY(-2px) rotate(-0.3deg); }
-    40% { transform: translateX(2px) translateY(3px) rotate(0.2deg); }
-    48% { transform: translateX(-3px) translateY(-1px) rotate(-0.4deg); }
-    56% { transform: translateX(1px) translateY(2px) rotate(0.3deg); }
-    64% { transform: translateX(2px) translateY(-3px) rotate(-0.2deg); }
-    72% { transform: translateX(-2px) translateY(1px) rotate(0.4deg); }
-    80% { transform: translateX(3px) translateY(-2px) rotate(-0.3deg); }
-    88% { transform: translateX(-1px) translateY(3px) rotate(0.2deg); }
-    96% { transform: translateX(1px) translateY(-1px) rotate(-0.4deg); }
-    100% { transform: translateX(0) translateY(0) rotate(0deg); }
-} */
 
 .persona-card.visible {
     opacity: 1;
@@ -2682,14 +2639,15 @@ a:hover {
     top: 0;
     left: 0;
     right: 0;
-    height: 0;
-    background: linear-gradient(90deg, #888, #666);
-    transition: height 0.4s ease;
+    height: 2px;
+    background: #fff;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
     z-index: 1;
 }
 
 .course-timeline-item:hover .course-timeline-content::before {
-    height: 3px;
+    transform: translateX(0);
 }
 
 .course-timeline-content::after {
@@ -2748,10 +2706,6 @@ a:hover {
     margin-bottom: 16px;
     letter-spacing: -0.5px;
     transition: color 0.3s ease;
-}
-
-.course-timeline-item:hover .course-timeline-title {
-    color: #888;
 }
 
 .course-timeline-description {

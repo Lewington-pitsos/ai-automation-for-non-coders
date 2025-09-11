@@ -1035,8 +1035,15 @@ document.addEventListener('DOMContentLoaded', function() {
     hoverAudio.loop = false;
     hoverAudio.preload = 'auto';
     
+    // Hover sound for cards and images
+    const cardHoverAudio = new Audio('assets/audio/hover.wav');
+    cardHoverAudio.volume = 0.3;
+    cardHoverAudio.loop = false;
+    cardHoverAudio.preload = 'auto';
+    
     // Ensure audio is loaded
     hoverAudio.load();
+    cardHoverAudio.load();
     
     // Track if audio context is unlocked
     let audioUnlocked = false;
@@ -1052,6 +1059,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 silentAudio.pause();
                 // Now preload the actual audio
                 hoverAudio.load();
+                cardHoverAudio.load();
             }).catch(() => {
                 // Still locked, will try again on next interaction
             });
@@ -1062,6 +1070,30 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', unlockAudio);
     document.addEventListener('keydown', unlockAudio);
     document.addEventListener('touchstart', unlockAudio);
+    
+    // Add hover sound to cards
+    const hoverElements = document.querySelectorAll('.persona-card, .feature-item, .detail-card, .course-timeline-item, .session-stat, .total-hours, .faq-item');
+    
+    hoverElements.forEach(element => {
+        element.addEventListener('mouseenter', function() {
+            if (audioUnlocked) {
+                // Stop and reset audio before playing
+                cardHoverAudio.pause();
+                cardHoverAudio.currentTime = 0;
+                
+                // Play with promise handling
+                const playPromise = cardHoverAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        // Silently fail - audio might still be loading
+                    });
+                }
+            } else {
+                // Try to unlock audio context on hover
+                unlockAudio();
+            }
+        });
+    });
     
     const ctaButtons = document.querySelectorAll('.cta-button');
     
