@@ -62,7 +62,7 @@ def lambda_handler(event, context):
         # Extract contact data
         name = body['name'].strip()
         sender_email = body['email'].strip()
-        phone = body.get('phone', '').strip() if body.get('phone') else ''
+        phone = body.get('mobile', '').strip() if body.get('mobile') else ''
         message = body['message'].strip()
         
         # Get environment variables
