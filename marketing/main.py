@@ -44,8 +44,8 @@ prompts = [
 ]
 
 prompts = [
-    "An eye-catching youtube thumbnail with the title AI Does My Taxes, A renaissance man sits at a complex computer surrounded by money at dawn, dramatic chiaroscuro lighting on hill slope, Renaissance painting style, empty void background, golden hour rim lighting, photorealistic rendering",
-
+    "Minimalist illustration of frowning Sisyphus pushing enormous boulder made entirely of crumpled white invoices and receipts up steep hill, figure leaning hard into difficult task, unhappy expression visible, stark silhouette against empty sky ascending diagonal hillside, clean geometric composition, dramatic side lighting on inclined slope, monochromatic palette with paper texture, Greek pottery art style, ultra simple background",
+    
 
 ] * 10
 
