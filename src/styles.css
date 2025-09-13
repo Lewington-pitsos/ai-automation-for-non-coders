@@ -2827,24 +2827,6 @@ a:hover {
     z-index: 2;
 }
 
-/* Livestream page specific styles */
-.livestream-details {
-    margin: 40px 0;
-}
-
-.livestream-details h2 {
-    margin-bottom: 20px;
-}
-
-.livestream-list {
-    list-style-position: outside;
-    margin-left: 0;
-    padding-left: 20px;
-}
-
-.livestream-list li {
-    margin-bottom: 10px;
-}
 
 .event-details {
     margin-top: 30px;

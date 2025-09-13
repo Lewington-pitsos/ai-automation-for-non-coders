@@ -466,57 +466,6 @@ function checkApplicationFormValidity() {
     ]);
 }
 
-// Livestream Form Handling
-function initLivestreamForm() {
-    const config = {
-        endpoint: 'livestream',
-        loadingText: 'SIGNING UP...',
-        validationFn: validateLivestreamFormData,
-        successMessage: 'You\'re registered for the livestream!<br>Check your email for confirmation and access details.',
-        errorMessage: 'There was an error processing your livestream registration, please try again in 24 hours or reach out to louka on <a href="https://www.linkedin.com/in/louka-ewington-pitsos-2a92b21a0/" target="_blank" style="color: #888;">linkedin</a>',
-        validityChecker: checkLivestreamFormValidity
-    };
-    initGenericForm('livestreamForm', (event) => handleGenericFormSubmission(event, config), checkLivestreamFormValidity, true);
-}
-
-function checkLivestreamFormValidity() {
-    const form = document.getElementById('livestreamForm');
-    if (!form) return;
-    
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (!submitButton) return;
-    
-    // Get form data to validate
-    const formData = new FormData(form);
-    const livestreamData = {};
-    for (let [key, value] of formData.entries()) {
-        livestreamData[key] = value.trim();
-    }
-    
-    // Use the same validation logic as form submission
-    const validationResult = validateLivestreamFormData(livestreamData);
-    const isValid = validationResult.isValid;
-    
-    // Enable/disable button based on validity
-    if (isValid) {
-        submitButton.disabled = false;
-        submitButton.classList.remove('disabled');
-    } else {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
-}
-
-function validateLivestreamFormData(data) {
-    if (!data.name || !data.email) {
-        return { isValid: false, error: 'Please fill in all required fields' };
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(data.email)) {
-        return { isValid: false, error: 'Please enter a valid email address' };
-    }
-    return { isValid: true };
-}
 
 function showGenericSuccessMessage(message) {
     // Get toast container
@@ -1072,7 +1021,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initFeatureCards();
     initApplicationForm();
     initContactForm();
-    initLivestreamForm();
     animateNumbers();
     initDetailCardAnimations();
 });
