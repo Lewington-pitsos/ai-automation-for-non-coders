@@ -1,0 +1,239 @@
+1
+00:00:00,000 --> 00:00:04,000
+ This will save you personally 100 minutes every single week,
+
+2
+00:00:06,000 --> 00:00:10,333
+ as long as you are a knowledge worker who sends emails regularly.
+
+3
+00:00:11,000 --> 00:00:13,350
+ This is me answering the exact same email, a real
+
+4
+00:00:13,450 --> 00:00:15,900
+email I actually received, in two different ways.
+
+5
+00:00:16,000 --> 00:00:17,900
+ Above, you see me typing out the response word by word,
+
+6
+00:00:18,000 --> 00:00:19,900
+and below, you see the brain dump method, which is where you
+
+7
+00:00:20,000 --> 00:00:23,800
+use dictation software to very loosely say what you want,
+
+8
+00:00:25,000 --> 00:00:26,900
+ turn that into text, give the text to a large language model, and then
+
+9
+00:00:27,000 --> 00:00:28,900
+have the large language model craft a nice email for you, which you
+
+10
+00:00:29,000 --> 00:00:33,733
+then copy paste into your actual email client and then do a final pass.
+
+11
+00:00:36,000 --> 00:00:38,900
+ I type at 80 to 90 words per minute, which is considered fairly fast, but
+
+12
+00:00:39,000 --> 00:00:43,800
+even so, the brain dump method is still about two times as fast as that.
+
+13
+00:00:44,000 --> 00:00:46,850
+ And more importantly, it's also a lot more enjoyable, since
+
+14
+00:00:46,950 --> 00:00:50,900
+typing fast and without errors is quite mentally strenuous.
+- and you're bound to make some errors anyway.
+
+15
+00:00:51,000 --> 00:00:51,900
+ You're going to need two things.
+
+16
+00:00:52,000 --> 00:00:55,900
+ A subscription to Claude or Chat GPT or something similar to that,
+
+17
+00:00:56,000 --> 00:00:58,900
+ and a MacBook.  This will work on any MacBook.
+
+18
+00:00:59,000 --> 00:01:03,733
+ All you have to do is open up the settings.  Then search for dictation.
+
+19
+00:01:04,000 --> 00:01:06,900
+ It'll bring up this like keyboard dictation menu.
+
+20
+00:01:07,000 --> 00:01:08,850
+ And then you scroll down and then all you have
+
+21
+00:01:08,950 --> 00:01:10,900
+to do is make sure that this thing is toggled on.
+
+22
+00:01:11,000 --> 00:01:13,900
+ Probably also set the language to whatever your language is.
+
+23
+00:01:14,000 --> 00:01:16,850
+ Now that dictation is enabled, whenever we press control twice, the
+
+24
+00:01:16,950 --> 00:01:19,900
+computer will pick up our voice and enter that as if we were typing.
+
+25
+00:01:20,000 --> 00:01:21,600
+ So, press control twice.
+
+26
+00:01:22,000 --> 00:01:25,900
+ Claude, I want you to start writing an email for me.  And here we go.
+
+27
+00:01:26,000 --> 00:01:27,533
+ We're off to the races.
+
+28
+00:01:28,000 --> 00:01:29,900
+ The only important thing to remember here is that at the
+
+29
+00:01:30,000 --> 00:01:31,900
+end of your email, when you've said, hey, I want you to
+
+30
+00:01:32,000 --> 00:01:35,933
+say this, that, and the other, you add dash dash dash dash,
+
+31
+00:01:37,000 --> 00:01:38,866
+ make this into a nice draft.
+
+32
+00:01:40,000 --> 00:01:41,900
+ email for me.  And then you press enter.
+
+33
+00:01:42,000 --> 00:01:45,900
+ But the quickness isn't even the main advantage in my opinion.
+
+34
+00:01:46,000 --> 00:01:49,200
+ The main advantage is that it is a lot more fun.
+
+35
+00:01:50,000 --> 00:01:51,066
+ So give it a go.
+
+36
+00:01:52,000 --> 00:01:52,900
+ Definitely try it out.
+
+37
+00:01:53,000 --> 00:01:55,900
+ And something else to try out if you're in Melbourne
+
+38
+00:01:56,000 --> 00:01:58,900
+ is my course where we are going to teach you to automate more of your
+
+39
+00:01:59,000 --> 00:02:03,400
+workflow using more sophisticated tools than just voice recording.
+
+40
+00:02:04,000 --> 00:02:06,900
+ And rather than saving you 100 minutes a week, hopefully
+
+41
+00:02:07,000 --> 00:02:10,900
+we'll save you something closer to 200, 300 minutes a week.
+
+42
+00:02:11,000 --> 00:02:12,900
+ 15 seats, check it out, apply now.
+
+43
+00:02:13,000 --> 00:02:15,900
+ If you're not in Melbourne though, you can't attend.
+
+44
+00:02:16,000 --> 00:02:17,400
+ So maybe something you want to look into is this other course,
+
+45
+00:02:17,500 --> 00:02:18,900
+which is a free online course that I did with IT Masters called
+
+46
+00:02:19,000 --> 00:02:20,400
+practical AI for non-coders, which goes over some of the
+
+47
+00:02:20,500 --> 00:02:24,833
+theoretical aspects of AI for someone who isn't technical at all.
+
+48
+00:02:28,000 --> 00:02:32,800
+ Very cool, very great online course.
+- But everyone who watches this video has to
+
+49
+00:02:32,900 --> 00:02:35,833
+try this audio email pipeline at least once.
+
+50
+00:02:38,000 --> 00:02:40,500
+ It has changed my life and it takes less
+
+51
+00:02:40,600 --> 00:02:43,200
+than five minutes to set up and test.
+
+52
+00:02:46,000 --> 00:02:47,466
+ So, you have to do it.
+
+53
+00:02:48,000 --> 00:02:53,133
+ It is now incumbent upon you to do it
+at least once with one email this week.
+
+54
+00:02:54,000 --> 00:02:58,200
+ And if you're not going to do it, then you have to tell me why.
+
+55
+00:02:59,000 --> 00:03:02,900
+ You have to give me your excuse and it better be a a really good one.
+
+56
+00:03:03,000 --> 00:03:07,900
+ If it's not a good excuse, I'm I'm
+unfollowing, I'm disconnecting from you.
+
+57
+00:03:08,000 --> 00:03:11,266
+ Those are the rules, okay?  You have to try it.
+
+58
+00:03:12,000 --> 00:03:15,933
+ And it'll save you a lot of your life and it'll be awesome.
+
+59
+00:03:17,000 --> 00:03:18,333
+ Those are the rules.

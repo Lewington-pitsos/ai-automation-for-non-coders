@@ -1,0 +1,33 @@
+Look, I type reasonably fast, Like 80-90 WPM. But this brain dump method is still twice as quick and way less annoying.
+Here's what I do: press control twice on my MacBook, ramble into the microphone about what I want to say, feed that mess to Claude or ChatGPT, and it spits out a proper email. Copy, paste, send. Done.
+The setup takes literally 5 minutes. Go to Settings, search "dictation", turn it on. That's it.
+When you're voice-noting, just end with "---- make this into a nice draft email for me" and the AI knows what to do.
+
+Chapters:
+
+0:00 - Why this saves 100 minutes weekly
+0:11 - Me doing the same email two ways
+0:51 - MacBook dictation setup
+1:56 - Melbourne course mention
+2:13 - IT Masters
+2:32 - You literally have to try Once
+
+The speed isn't even the best part. It's just more enjoyable than the mental strain of fast typing without errors.
+
+You have to try this with one email this week. If you don't, tell me why in the comments. It better be good or I'm unfollowing you. Those are the rules.
+
+---
+
+In Person Course - AI Automation for Non Coders, take it for 7 days and save hours every week for the rest of your life: https://anyone-can-build.com/ 
+
+Online Course - Practical AI for Non Coders with Charles Sturt University/IT Masters: https://itmasters.edu.au/short-courses/practical-ai-for-non-coders/
+
+they do lots of other high quality free courses too
+
+---
+
+Citations:
+
+https://slack.com/intl/en-au/blog/productivity/save-employees-time Karat CM, 
+
+Halverson C, Horn D, Karat J (1999). "Patterns of entry and correction in large vocabulary continuous speech recognition systems". Proceedings of the SIGCHI conference on Human Factors in Computing Systems (CHI '99). New York, NY, US: ACM. pp. 568–575. doi:10.1145/302979.303160. ISBN 0-201-48559-1.

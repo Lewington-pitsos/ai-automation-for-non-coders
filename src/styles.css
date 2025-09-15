@@ -157,6 +157,22 @@ nav {
     color: #fff;
 }
 
+.youtube-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.youtube-link svg {
+    width: 20px;
+    height: 20px;
+}
+
+.youtube-link:hover {
+    transform: scale(1.1);
+}
+
 /* Hero Section */
 .hero {
     padding: 180px 0 100px 0;
