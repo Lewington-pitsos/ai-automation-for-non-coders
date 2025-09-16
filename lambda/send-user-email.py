@@ -31,7 +31,7 @@ def lambda_handler(event, context):
                 <li>You will receive another email with your login details within 24 hours</li>
                 <li>Please arrive 10 minutes early for the in-person sessions on October 19th and October 26th</li>
                 <li>Sessions start at 10:00 AM sharp and you will need to be let into the building</li>
-                <li>Address: 3/251 Flinders Ln, Melbourne VIC 3000, 3.1 Jenny Florence Room</li>
+                <li>Address: 3/251 Flinders Ln, Melbourne VIC 3000, Level 4 Rainbow Room</li>
             </ul>
             
             <h3>What to bring:</h3>
@@ -63,7 +63,7 @@ def lambda_handler(event, context):
         - You will receive another email with your login details within 24 hours
         - Please arrive 10 minutes early for the in-person sessions on October 19th and October 26th
         - Sessions start at 10:00 AM sharp and you will need to be let into the building
-        - Address: 3/251 Flinders Ln, Melbourne VIC 3000, 3.1 Jenny Florence Room
+        - Address: 3/251 Flinders Ln, Melbourne VIC 3000, Level 4 Rainbow Room
         
         What to bring:
         - A laptop

@@ -568,6 +568,47 @@ nav {
     text-decoration: none !important;
 }
 
+/* Calendar Booking Button - distinct from CTA with inverted colors */
+.calendar-button {
+    display: inline-block;
+    padding: 18px 36px;
+    background: #000;
+    color: #fff;
+    text-decoration: none !important;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 2px solid #fff;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.calendar-button:hover {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+    transform: scale(1.02);
+}
+
+.calendar-button:active {
+    transform: scale(0.98);
+}
+
+.calendar-button:focus {
+    outline: 2px solid #888;
+    outline-offset: 4px;
+    text-decoration: none !important;
+}
+
+.calendar-button:hover,
+.calendar-button:active,
+.calendar-button:visited {
+    text-decoration: none !important;
+}
+
 .cta-button:disabled,
 .cta-button.disabled {
     background: #333;

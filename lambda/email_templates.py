@@ -136,7 +136,7 @@ def get_user_confirmation_email(name, registration_id, amount_paid):
                 <h2 class="section-title">Important Information</h2>
                 
                 <div class="info-item">
-                    <strong>Venue Details:</strong> In-person sessions will be held at 3/251 Flinders Ln, Melbourne VIC 3000, 3.1 Jenny Florence Room.
+                    <strong>Venue Details:</strong> In-person sessions will be held at 3/251 Flinders Ln, Melbourne VIC 3000, Level 4 Rainbow Room.
                 </div>
                 
                 <div class="info-item">
@@ -191,7 +191,7 @@ Amount Paid: ${amount_paid:.2f}
 
 IMPORTANT INFORMATION:
 
-▪ Venue Details: In-person sessions will be held at 3/251 Flinders Ln, Melbourne VIC 3000, 3.1 Jenny Florence Room.
+▪ Venue Details: In-person sessions will be held at 3/251 Flinders Ln, Melbourne VIC 3000, Level 4 Rainbow Room.
 
 ▪ What to Bring: Please bring your laptop and charger to all sessions.
 
