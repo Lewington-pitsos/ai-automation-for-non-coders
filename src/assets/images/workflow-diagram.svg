@@ -1,0 +1,62 @@
+<svg width="700" height="350" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Arrow marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4a5568"/>
+    </marker>
+    
+    <!-- Drop shadow filter -->
+    <filter id="dropshadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#00000020"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="700" height="350" fill="#fafafa" rx="10"/>
+  
+  <!-- Brain/Voice icon -->
+  <g filter="url(#dropshadow)">
+    <circle cx="120" cy="175" r="50" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+    <text x="120" y="185" text-anchor="middle" font-size="35" font-family="Arial, sans-serif">🧠</text>
+    <text x="120" y="245" text-anchor="middle" font-size="16" font-family="Arial, sans-serif" font-weight="500" fill="#374151">Stream of consciousness</text>
+  </g>
+  
+  <!-- Arrow 1 -->
+  <path d="M 170 175 L 230 175" stroke="#4a5568" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Dictation -->
+  <g filter="url(#dropshadow)">
+    <rect x="230" y="135" width="120" height="80" rx="15" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+    <text x="290" y="170" text-anchor="middle" font-size="35" font-family="Arial, sans-serif">🎤</text>
+    <text x="290" y="195" text-anchor="middle" font-size="14" font-family="Arial, sans-serif" font-weight="500" fill="#374151">Dictation</text>
+  </g>
+  
+  <!-- Arrow 2 -->
+  <path d="M 350 175 L 410 175" stroke="#4a5568" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- LLM -->
+  <g filter="url(#dropshadow)">
+    <rect x="410" y="135" width="120" height="80" rx="15" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+    <text x="470" y="170" text-anchor="middle" font-size="35" font-family="Arial, sans-serif">🤖</text>
+    <text x="470" y="195" text-anchor="middle" font-size="14" font-family="Arial, sans-serif" font-weight="500" fill="#374151">Claude/ChatGPT</text>
+    <text x="470" y="210" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#6b7280">Copy + Paste</text>
+  </g>
+  
+  <!-- Arrow 3 -->
+  <path d="M 530 175 L 580 175" stroke="#4a5568" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Email -->
+  <g filter="url(#dropshadow)">
+    <circle cx="620" cy="175" r="40" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+    <text x="620" y="185" text-anchor="middle" font-size="35" font-family="Arial, sans-serif">✉️</text>
+    <text x="620" y="235" text-anchor="middle" font-size="16" font-family="Arial, sans-serif" font-weight="500" fill="#374151">Professional email</text>
+  </g>
+  
+  <!-- Process labels -->
+  <text x="200" y="120" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#6b7280" font-style="italic">"I need to tell Steve..."</text>
+  <text x="380" y="120" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#6b7280" font-style="italic">Raw transcript</text>
+  <text x="555" y="120" text-anchor="middle" font-size="13" font-family="Arial, sans-serif" fill="#6b7280" font-style="italic">Polished</text>
+  
+  <!-- Title -->
+  <text x="350" y="40" text-anchor="middle" font-size="20" font-family="Arial, sans-serif" font-weight="600" fill="#1f2937">Voice → Email Workflow</text>
+</svg>
