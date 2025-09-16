@@ -28,8 +28,7 @@
   <g filter="url(#dropshadow)">
     <rect x="230" y="135" width="120" height="80" rx="15" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
     <text x="290" y="170" text-anchor="middle" font-size="35" font-family="Arial, sans-serif">🎤</text>
-    <text x="290" y="195" text-anchor="middle" font-size="14" font-family="Arial, sans-serif" font-weight="500" fill="#374151">Mac Dictation</text>
-    <text x="290" y="210" text-anchor="middle" font-size="12" font-family="Arial, sans-serif" fill="#6b7280">Ctrl+Ctrl</text>
+    <text x="290" y="195" text-anchor="middle" font-size="14" font-family="Arial, sans-serif" font-weight="500" fill="#374151">Dictation</text>
   </g>
   
   <!-- Arrow 2 -->

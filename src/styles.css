@@ -56,6 +56,179 @@ body {
     overflow-x: hidden;
 }
 
+/* Blog Styles */
+.blog-listing {
+    padding: 120px 0 80px;
+    min-height: 100vh;
+}
+
+.blog-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.blog-title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 60px;
+    text-align: center;
+    letter-spacing: -1px;
+}
+
+.blog-posts {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.blog-post-card-link {
+    text-decoration: none !important;
+    display: block;
+    cursor: pointer;
+}
+
+.blog-post-card-link:hover {
+    text-decoration: none !important;
+}
+
+.blog-post-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.blog-post-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.blog-post-card h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    line-height: 1.3;
+    color: #fff;
+}
+
+.blog-excerpt {
+    color: #999;
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+/* Individual Blog Post */
+.blog-post {
+    padding: 120px 0 80px;
+    min-height: 100vh;
+}
+
+.blog-post-content {
+    max-width: 60ch;
+    margin: 0;
+    color: #fff;
+    text-align: left;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.blog-post-content h1 {
+    font-size: 38px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+}
+
+.blog-post-content h2 {
+    font-size: 26px;
+    font-weight: 600;
+    margin: 40px 0 20px;
+    color: #fff;
+}
+
+.blog-post-content p {
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    color: #ccc;
+}
+
+.blog-post-content img {
+    max-width: 100%;
+    height: auto;
+    margin: 30px 0;
+    display: block;
+}
+
+.blog-post-content ol,
+.blog-post-content ul {
+    margin: 20px 0 30px 30px;
+    color: #ccc;
+}
+
+.blog-post-content ol li,
+.blog-post-content ul li {
+    font-size: 18px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+}
+
+.blog-post-content ol ol,
+.blog-post-content ol ul {
+    margin: 10px 0 10px 30px;
+}
+
+.blog-post-content a {
+    color: #fff;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+    word-break: break-all;
+    overflow-wrap: break-word;
+}
+
+.blog-post-content a:hover {
+    color: #ccc;
+}
+
+.blog-post-content hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 40px 0;
+}
+
+.blog-post-content strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+.blog-cta {
+    margin-top: 80px;
+    text-align: left;
+}
+
+.blog-cta p {
+    font-size: 20px;
+    margin-bottom: 30px;
+    color: #fff;
+}
+
+.blog-cta .cta-button {
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.citation-link {
+    cursor: pointer;
+    text-decoration: none;
+    color: #fff;
+}
+
+.citation-link:hover {
+    text-decoration: underline;
+}
+
 .container {
     max-width: 1440px;
     margin: 0 auto;
@@ -68,14 +241,6 @@ body {
     background: transparent;
 }
 
-.canvas-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-}
 
 .canvas-section .container {
     position: relative;
@@ -1052,6 +1217,19 @@ footer {
         padding: 0 20px;
     }
     
+    .blog-post-content {
+        padding: 0 15px;
+        max-width: none;
+    }
+    
+    .blog-post-content h1 {
+        font-size: 36px;
+    }
+    
+    .blog-post-content h2 {
+        font-size: 24px;
+    }
+    
     /* Navigation responsive - increased padding for mobile */
     nav {
         position: fixed !important;
@@ -1330,6 +1508,25 @@ footer {
         transform: rotate(90deg);
     }
     
+    /* Blog responsive styles */
+    .blog-title {
+        font-size: 32px;
+        margin-bottom: 40px;
+    }
+    
+    .blog-post-card h2 {
+        font-size: 20px;
+        margin-bottom: 16px;
+    }
+    
+    .blog-excerpt {
+        font-size: 16px;
+    }
+    
+    .blog-listing {
+        padding: 140px 0 60px;
+    }
+    
     /* FAQ mobile overrides - must come at end to override later definitions */
     .faq-question {
         font-size: 1rem !important;
@@ -1395,6 +1592,25 @@ footer {
     .tab-button {
         padding: 10px 16px;
         font-size: 13px;
+    }
+    
+    /* Blog responsive styles for extra small screens */
+    .blog-title {
+        font-size: 24px;
+        margin-bottom: 30px;
+    }
+    
+    .blog-post-card h2 {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+    
+    .blog-excerpt {
+        font-size: 14px;
+    }
+    
+    .blog-listing {
+        padding: 130px 0 50px;
     }
 }
 

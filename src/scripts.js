@@ -1,4 +1,3 @@
-// Perlin background functionality is loaded from perlin-background.js
 // Chart functionality is loaded from chart.js
 
 // Load shared components
@@ -1013,6 +1012,25 @@ document.addEventListener('DOMContentLoaded', function() {
             clearInterval(shakeInterval);
             button.style.setProperty('transform', '', '');
             button.style.transition = originalTransition;
+        });
+    });
+    
+    // Add hover sound for blog cards
+    const blogCards = document.querySelectorAll('[data-hover-sound]');
+    blogCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            if (audioUnlocked) {
+                cardHoverAudio.pause();
+                cardHoverAudio.currentTime = 0;
+                const playPromise = cardHoverAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        // Silently fail
+                    });
+                }
+            } else {
+                unlockAudio();
+            }
         });
     });
     
