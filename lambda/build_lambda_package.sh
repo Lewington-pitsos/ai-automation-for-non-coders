@@ -84,9 +84,12 @@ build_lambda "registration-handler" "registration-handler.py"
 build_lambda "contact-handler" "contact-handler.py"
 
 # Build view-content-handler (needs requests for Meta API calls)
-build_lambda "view-content-handler" "view_content_handler.py"
+# build_lambda "view-content-handler" "view_content_handler.py"
 
 # Build application_handler (needs requests for Meta API calls)
 build_lambda "application_handler" "application_handler.py"
+
+# Build referral-handler (no external dependencies needed, boto3 is in Lambda runtime)
+build_lambda "referral-handler" "referral-handler.py"
 
 echo "All Lambda packages built successfully!"

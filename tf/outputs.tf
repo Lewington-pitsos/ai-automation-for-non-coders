@@ -13,6 +13,11 @@ output "dynamodb_table_name" {
   value       = aws_dynamodb_table.course_registrations.name
 }
 
+output "referral_events_table_name" {
+  description = "Referral events DynamoDB table name"
+  value       = aws_dynamodb_table.referral_events.name
+}
+
 
 output "stripe_webhook_url" {
   description = "Stripe webhook URL"

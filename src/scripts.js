@@ -412,16 +412,11 @@ function initApplicationForm() {
             }
             
             // Validate required fields
-            const requiredFields = ['name', 'email', 'phone', 'company', 'jobTitle', 'timeCommitment', 'automationInterest', 'automationBarriers'];
+            const requiredFields = ['name', 'email', 'phone', 'company', 'jobTitle', 'dietaryRequirements', 'automationInterest'];
             for (const field of requiredFields) {
                 if (!data[field]) {
                     return { isValid: false, error: `Please fill in all required fields` };
                 }
-            }
-            
-            // Validate attendance checkbox
-            if (!data.attendance) {
-                return { isValid: false, error: 'You must confirm you can attend both in person sessions' };
             }
             
             // Validate consent checkbox
@@ -456,10 +451,8 @@ function checkApplicationFormValidity() {
         '#phone[required]',
         '#company[required]',
         '#jobTitle[required]',
-        '#timeCommitment[required]',
+        '#dietaryRequirements[required]',
         '#automationInterest[required]',
-        '#automationBarriers[required]',
-        '#attendance[required]',
         '#contactConsent[required]',
         '#terms[required]'
     ]);

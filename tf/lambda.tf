@@ -101,4 +101,26 @@ resource "aws_lambda_function" "application_handler" {
   }
 }
 
+# Referral Handler Lambda
+resource "aws_lambda_function" "referral_handler" {
+  filename         = "../lambda/referral-handler.zip"
+  function_name    = "${var.project_name}-referral-handler"
+  role            = aws_iam_role.lambda_execution_role.arn
+  handler         = "lambda_function.lambda_handler"
+  source_code_hash = filebase64sha256("../lambda/referral-handler.zip")
+  runtime         = "python3.11"
+  timeout         = 30
+
+  environment {
+    variables = {
+      REFERRAL_EVENTS_TABLE = aws_dynamodb_table.referral_events.name
+    }
+  }
+
+  tags = {
+    Name        = "${var.project_name}-referral-handler"
+    Environment = var.environment
+  }
+}
+
 

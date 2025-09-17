@@ -14,6 +14,11 @@
     "type": "string",
     "value": "course_registrations"
   },
+  "referral_events_table_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "referral_events"
+  },
   "stripe_webhook_url": {
     "sensitive": false,
     "type": "string",

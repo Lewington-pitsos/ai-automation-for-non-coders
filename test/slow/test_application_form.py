@@ -72,10 +72,7 @@ class TestApplicationForm:
         page.fill("#company", "Test Company")
         page.fill("#jobTitle", "Test Role")
         page.fill("#dietaryRequirements", "None")
-        page.select_option("#timeCommitment", "1.5")
         page.fill("#automationInterest", "I want to automate my weekly reports which takes 3 hours")
-        page.fill("#automationBarriers", "I don't know where to start")
-        page.check("#attendance")
         page.check("#contactConsent")
         page.check("#terms")
         
@@ -96,10 +93,7 @@ class TestApplicationForm:
         page.fill("#company", "Test Company")
         page.fill("#jobTitle", "Test Role")
         page.fill("#dietaryRequirements", "None")
-        # Leave timeCommitment empty - required field
         page.fill("#automationInterest", "Test automation")
-        page.fill("#automationBarriers", "Test barriers")
-        page.check("#attendance")
         page.check("#contactConsent")
         page.check("#terms")
         
@@ -111,36 +105,15 @@ class TestApplicationForm:
 
         border_color = email_field.evaluate("el => window.getComputedStyle(el).borderColor")
         
-        # Check for error messages
-        error_messages = page.locator(".field-error").count()
-        
-        # Check if submit button is disabled
-        submit_disabled = page.locator("button[type='submit']").is_disabled()
-        
+
         # The field should have some kind of error indication
         # Since we can't guarantee the exact color, let's check if it's not the default
         default_border = "rgb(0, 0, 0)"  # or similar default
         assert border_color != default_border, f"Email field should show validation error, but border color is: {border_color}"
         
-        # Try to submit - the validation should prevent actual submission
         submit_button = page.locator("button[type='submit']")
-        
-        # If button is disabled due to client-side validation, that's good
-        if submit_button.is_disabled():
-            assert True, "Form correctly prevented submission via disabled button"
-        else:
-            # If button is enabled, click it and check that validation errors appear
-            original_text = submit_button.text_content()
-            submit_button.click()
-            
-            # Wait a moment for any validation to trigger
-            page.wait_for_timeout(1000)
-            
-            # Either validation errors should appear or button text should remain unchanged
-            current_text = submit_button.text_content()
-            has_errors = page.locator(".form-errors, .field-error").count() > 0
-            
-            assert has_errors or current_text == original_text, "Form should show validation errors or prevent submission"
+        assert submit_button.count() == 1, "Submit button should be present"
+        assert submit_button.is_disabled(), "Submit button should be disabled due to invalid data"
     
     def test_required_field_validation(self, page):
         """Test that required fields show some indication when empty"""
@@ -163,26 +136,9 @@ class TestApplicationForm:
         assert has_error_message or submit_disabled or "rgb(255, 68, 68)" in border_color, \
             "Required field validation should provide some indication when field is empty"
 
-    def test_dropdown_validation(self, page):
-        """Test that time commitment dropdown validation works"""
-        time_commitment_field = page.locator("#timeCommitment")
-        
-        # Focus on dropdown then blur without selecting
-        time_commitment_field.focus()
-        time_commitment_field.blur()
-        
-        # Wait for validation
-        page.wait_for_timeout(500)
-        
-        # Check if submit button is disabled (should be since it's required)
-        submit_disabled = page.locator("button[type='submit']").is_disabled()
-        assert submit_disabled, "Submit button should be disabled when required dropdown is empty"
-        
-        # Select a value and check that validation passes
-        page.select_option("#timeCommitment", "1.5")
-        page.wait_for_timeout(500)
-        
-        # Fill other required fields to see if dropdown validation clears
+    def test_form_validation_with_all_required_fields(self, page):
+        """Test that form validation works when all required fields are filled"""
+        # Fill all required fields
         page.fill("#firstName", "Test")
         page.fill("#lastName", "User")
         page.fill("#email", "test@example.com")
@@ -191,14 +147,12 @@ class TestApplicationForm:
         page.fill("#jobTitle", "Test Role")
         page.fill("#dietaryRequirements", "None")
         page.fill("#automationInterest", "Test automation")
-        page.fill("#automationBarriers", "Test barriers")
-        page.check("#attendance")
         page.check("#contactConsent")
         page.check("#terms")
         
         page.wait_for_timeout(500)
         submit_button = page.locator("button[type='submit']")
-        assert submit_button.is_enabled(), "Submit button should be enabled when dropdown has valid selection"
+        assert submit_button.is_enabled(), "Submit button should be enabled when all required fields are filled"
 
     def test_checkbox_validation(self, page):
         """Test that required checkboxes work properly"""
@@ -210,9 +164,7 @@ class TestApplicationForm:
         page.fill("#company", "Test Company")
         page.fill("#jobTitle", "Test Role")
         page.fill("#dietaryRequirements", "None")
-        page.select_option("#timeCommitment", "1.5")
         page.fill("#automationInterest", "Test automation")
-        page.fill("#automationBarriers", "Test barriers")
         
         # Leave checkboxes unchecked
         page.wait_for_timeout(500)
@@ -220,11 +172,6 @@ class TestApplicationForm:
         # Submit button should be disabled
         submit_button = page.locator("button[type='submit']")
         assert submit_button.is_disabled(), "Submit button should be disabled when required checkboxes are unchecked"
-        
-        # Check attendance but not consent or terms
-        page.check("#attendance")
-        page.wait_for_timeout(500)
-        assert submit_button.is_disabled(), "Submit button should still be disabled with only one checkbox checked"
         
         # Check consent but not terms
         page.check("#contactConsent")
@@ -247,10 +194,7 @@ class TestApplicationForm:
         page.fill("#company", "Test Company UI")
         page.fill("#jobTitle", "Test Role UI")
         page.fill("#dietaryRequirements", "No dietary restrictions")
-        page.select_option("#timeCommitment", "1.5")
         page.fill("#automationInterest", "I want to automate my weekly reporting process that currently takes 3 hours every Monday.")
-        page.fill("#automationBarriers", "I don't have the technical knowledge to build automations and don't know where to start.")
-        page.check("#attendance")
         page.check("#contactConsent")
         page.check("#terms")
         

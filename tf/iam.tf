@@ -36,7 +36,9 @@ data "aws_iam_policy_document" "lambda_permissions" {
     ]
     resources = [
       aws_dynamodb_table.course_registrations.arn,
-      "${aws_dynamodb_table.course_registrations.arn}/index/registration-id-index"
+      "${aws_dynamodb_table.course_registrations.arn}/index/registration-id-index",
+      aws_dynamodb_table.referral_events.arn,
+      "${aws_dynamodb_table.referral_events.arn}/index/referral-code-index"
     ]
   }
 
