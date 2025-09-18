@@ -25,50 +25,103 @@ function fixFooterCursors() {
     });
 }
 
-// Generic form validation function
-function checkGenericFormValidity(formId, fieldSelectors, extraValidations = null) {
+// Unified validation function that handles all field validation
+function validateFormField(field) {
+    const value = field.value ? field.value.trim() : '';
+    const errors = [];
+    
+    // Check required fields
+    if (field.hasAttribute('required')) {
+        if (field.type === 'checkbox' && !field.checked) {
+            errors.push('This field is required');
+        } else if (field.type !== 'checkbox' && !value) {
+            errors.push('This field is required');
+        }
+    }
+    
+    // Email validation
+    if (field.type === 'email' && value) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+            errors.push('Please enter a valid email address');
+        }
+    }
+    
+    // Phone validation
+    if (field.type === 'tel' && value) {
+        const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+        if (!phoneRegex.test(value)) {
+            errors.push('Please enter a valid phone number');
+        }
+    }
+    
+    return {
+        isValid: errors.length === 0,
+        errors: errors
+    };
+}
+
+// Unified form validation that returns complete validation state
+function validateForm(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return { isValid: false, fieldErrors: {} };
+    
+    const fieldErrors = {};
+    let isValid = true;
+    
+    // Validate all fields with validation requirements
+    // This includes all required fields, email fields, and phone fields
+    const fields = form.querySelectorAll('input[required], select[required], textarea[required], input[type="email"], input[type="tel"]');
+    
+    fields.forEach(field => {
+        const validation = validateFormField(field);
+        if (!validation.isValid) {
+            fieldErrors[field.name || field.id] = validation.errors;
+            isValid = false;
+        }
+    });
+    
+    return {
+        isValid: isValid,
+        fieldErrors: fieldErrors
+    };
+}
+
+// Update form UI based on validation state
+function updateFormValidationUI(formId, validationState, showFieldErrors = false) {
     const form = document.getElementById(formId);
     if (!form) return;
     
     const submitButton = form.querySelector('button[type="submit"]');
-    if (!submitButton) return;
     
-    // Get all required fields and check validity
-    let isValid = true;
-    
-    for (const selector of fieldSelectors) {
-        const field = form.querySelector(selector);
-        if (!field) {
-            isValid = false;
-            break;
-        }
-        
-        if (field.type === 'checkbox') {
-            if (!field.checked) {
-                isValid = false;
-                break;
-            }
+    // Update submit button state
+    if (submitButton) {
+        if (validationState.isValid) {
+            submitButton.disabled = false;
+            submitButton.classList.remove('disabled');
         } else {
-            if (field.value.trim() === '' || field.value === '') {
-                isValid = false;
-                break;
-            }
+            submitButton.disabled = true;
+            submitButton.classList.add('disabled');
         }
     }
     
-    // Run any extra validations
-    if (isValid && extraValidations) {
-        isValid = extraValidations(form);
+    // Show field errors if requested
+    if (showFieldErrors) {
+        Object.keys(validationState.fieldErrors).forEach(fieldKey => {
+            if (fieldKey !== '_form') {
+                const field = form.querySelector(`[name="${fieldKey}"], #${fieldKey}`);
+                if (field && validationState.fieldErrors[fieldKey].length > 0) {
+                    showFieldError(field, validationState.fieldErrors[fieldKey][0]);
+                }
+            }
+        });
     }
-    
-    // Enable/disable button based on validity
-    if (isValid) {
-        submitButton.disabled = false;
-        submitButton.classList.remove('disabled');
-    } else {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
+}
+
+// Generic form validation function (updated to use unified validation)
+function checkGenericFormValidity(formId) {
+    const validationState = validateForm(formId);
+    updateFormValidationUI(formId, validationState, false);
 }
 
 // Generic form initialization function
@@ -289,31 +342,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function validateField(event) {
     const field = event.target;
-    const value = field.value.trim();
     
     // Remove any existing error styling
     clearFieldError(event);
     
-    if (field.hasAttribute('required') && !value) {
-        showFieldError(field, 'This field is required');
+    // Use unified validation function
+    const validation = validateFormField(field);
+    
+    if (!validation.isValid && validation.errors.length > 0) {
+        showFieldError(field, validation.errors[0]);
         return false;
-    }
-    
-    // Specific field validations
-    if (field.type === 'email' && value) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-            showFieldError(field, 'Please enter a valid email address');
-            return false;
-        }
-    }
-    
-    if (field.type === 'tel' && value) {
-        const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
-        if (!phoneRegex.test(value)) {
-            showFieldError(field, 'Please enter a valid phone number');
-            return false;
-        }
     }
     
     return true;
@@ -444,18 +482,7 @@ function initApplicationForm() {
 }
 
 function checkApplicationFormValidity() {
-    checkGenericFormValidity('applicationForm', [
-        '#firstName[required]',
-        '#lastName[required]', 
-        '#email[required]',
-        '#phone[required]',
-        '#company[required]',
-        '#jobTitle[required]',
-        '#dietaryRequirements[required]',
-        '#automationInterest[required]',
-        '#contactConsent[required]',
-        '#terms[required]'
-    ]);
+    checkGenericFormValidity('applicationForm');
 }
 
 
@@ -605,31 +632,9 @@ function initContactForm() {
 }
 
 function checkContactFormValidity() {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
-    
-    const submitButton = form.querySelector('button[type="submit"]');
-    if (!submitButton) return;
-    
-    // Get form data to validate
-    const formData = new FormData(form);
-    const contactData = {};
-    for (let [key, value] of formData.entries()) {
-        contactData[key] = value.trim();
-    }
-    
-    // Use the same validation logic as form submission
-    const validationResult = validateContactFormData(contactData);
-    const isValid = validationResult.isValid;
-    
-    // Enable/disable button based on validity
-    if (isValid) {
-        submitButton.disabled = false;
-        submitButton.classList.remove('disabled');
-    } else {
-        submitButton.disabled = true;
-        submitButton.classList.add('disabled');
-    }
+    // Use unified validation for contact form
+    const validationState = validateForm('contactForm');
+    updateFormValidationUI('contactForm', validationState, false);
 }
 
 function validateContactFormData(data) {
@@ -1043,7 +1048,13 @@ window.toggleFAQ = toggleFAQ;
 
 
 function initRegistrationForm() {
-    initGenericForm('registrationForm', handleFormSubmission, checkFormValidity, true);
+    initGenericForm('registrationForm', handleFormSubmission, checkRegistrationFormValidity, true);
+}
+
+function checkRegistrationFormValidity() {
+    // Use unified validation for registration form
+    const validationState = validateForm('registrationForm');
+    updateFormValidationUI('registrationForm', validationState, false);
 }
 
 async function handleFormSubmission(event) {
@@ -1065,7 +1076,7 @@ async function handleFormSubmission(event) {
     }
     
     // Validate form
-    if (!validateForm(registrationData)) {
+    if (!validateRegistrationData(registrationData)) {
         return;
     }
     
@@ -1143,7 +1154,7 @@ async function handleFormSubmission(event) {
 
 
 
-function validateForm(data) {
+function validateRegistrationData(data, showErrors = true) {
     const errors = [];
     
     // Required field validation
@@ -1167,11 +1178,14 @@ function validateForm(data) {
         errors.push('Please enter a valid phone number');
     }
     
-    if (errors.length > 0) {
-        showFormErrors(errors);
-        return false;
+    // Only show errors if requested (for submission)
+    if (showErrors) {
+        if (errors.length > 0) {
+            showFormErrors(errors);
+            return false;
+        }
+        clearFormErrors();
     }
     
-    clearFormErrors();
-    return true;
+    return errors.length === 0;
 }
